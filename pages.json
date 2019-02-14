@@ -1,0 +1,66 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index"//,
+// 			"style": {
+// 				"navigationBarTitleText": "uni-app"
+// 			}
+		},
+		{
+			"path": "pages/index/outgo",
+			"style": {
+				"navigationBarTitleText": "支出"
+			}
+		},
+		{
+			"path": "pages/index/income",
+			"style": {
+				"navigationBarTitleText": "收入"
+			}
+		},
+		{
+			"path": "pages/index/loan",
+			"style": {
+				"navigationBarTitleText": "借贷"
+			}
+		},
+		{
+			"path": "pages/index/income.copy",
+			"style": {
+				"navigationBarTitleText": "收入2"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"tabBar" : {
+	    "color" : "#7A7E83",
+	    "selectedColor" : "#007AFF",
+	    "borderStyle" : "black",
+	    "backgroundColor" : "#F8F8F8",
+	    "list" : [
+	        {
+	            "pagePath" : "pages/index/outgo",
+	            "iconPath" : "static/component.png",
+	            "selectedIconPath" : "static/componentHL.png",
+	            "text" : "记账"
+	        },
+	        {
+	            "pagePath" : "pages/index/income.copy",
+	            "iconPath" : "static/api.png",
+	            "selectedIconPath" : "static/apiHL.png",
+	            "text" : "收入"
+	        },
+	        {
+	            "pagePath" : "pages/index/income",
+	            "iconPath" : "static/template.png",
+	            "selectedIconPath" : "static/templateHL.png",
+	            "text" : "我的"
+	        }
+	    ]
+	}
+}
