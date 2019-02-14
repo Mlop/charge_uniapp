@@ -25,9 +25,15 @@
 			}
 		},
 		{
-			"path": "pages/index/income.copy",
+			"path": "pages/index/incomecopy",
 			"style": {
 				"navigationBarTitleText": "收入2"
+			}
+		},
+		{
+			"path": "pages/category",
+			"style": {
+				"navigationBarTitleText": "分类"
 			}
 		}
 	],
@@ -44,13 +50,13 @@
 	    "backgroundColor" : "#F8F8F8",
 	    "list" : [
 	        {
-	            "pagePath" : "pages/index/outgo",
+	            "pagePath" : "pages/index/index",
 	            "iconPath" : "static/component.png",
 	            "selectedIconPath" : "static/componentHL.png",
 	            "text" : "记账"
 	        },
 	        {
-	            "pagePath" : "pages/index/income.copy",
+	            "pagePath" : "pages/index/incomecopy",
 	            "iconPath" : "static/api.png",
 	            "selectedIconPath" : "static/apiHL.png",
 	            "text" : "收入"

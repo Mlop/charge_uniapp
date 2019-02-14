@@ -2,9 +2,15 @@
 支出公用函数 
 作者 Vera
 */
-module.exports = {
+export const outgo = {
+	popType: 'middle',
+	// title: 'popup',
+	showPopupMiddle: false,
+	showPopupTop: false,
+	showPopupBottom: false,
 	//统一的关闭popup方法
 	hidePopup: function() {
+		console.log(this.showPopupMiddle);
 		this.showPopupMiddle = false;
 		this.showPopupTop = false;
 		this.showPopupBottom = false;
@@ -15,4 +21,4 @@ module.exports = {
 		this.popType = 'middle';
 		this.showPopupMiddle = true;
 	}
-}
+};

@@ -2,7 +2,7 @@
     <view>
 		<uni-popup :show="showPopupMiddle" :type="popType" v-on:hidePopup="hidePopup">
 			<view class="uni-center" style="font-size:0;">
-				<image class="image" style="width:150upx;height:150upx;" mode="widthFix" src="../../../static/uni.png" />
+				
 			</view>
 			<view class="uni-common-mt uni-helllo-text uni-center">
 				消息内容使用 slot 形式定义
@@ -14,7 +14,7 @@
 			 activeColor="#007aff"></uni-segmented-control>
 		</view>
 		<view class="content">
-			<view v-show="current === 0" style="height: 160px;">
+			<view v-show="current === 0" style="height: 160px; text-align:left;">
 				<form @submit="formSubmit">
 					<view class="uni-padding-wrap uni-common-mt">
 						<view class="uni-list">
@@ -31,7 +31,12 @@
 					<view class="uni-padding-wrap uni-common-mt">
 						<view class="uni-active">
 							<view class="" hover-class="uni-list-cell-hover">
-								<view class="uni-title uni-list-cell-navigate uni-navigate-right" @click="outgo.showMiddlePopup"><text>常用类别</text></view>
+								<navigator url="../category" hover-class="navigator-hover">
+									<view class="uni-title uni-list-cell-navigate uni-navigate-right">
+										<text>常用类别</text>
+									</view>
+								</navigator>
+								
 							</view>
 						</view>
 						<view class="tag-view">
@@ -44,7 +49,7 @@
 					<view class="uni-padding-wrap uni-common-mt">
 						现金（CNY）
 					</view>
-					<view>
+					<view class="uni-padding-wrap uni-common-mt">
 						<textarea style="height: 35upx;" maxlength="3" placeholder="备注" />
 					</view>
 					<view class="uni-padding-wrap uni-common-mt">
@@ -83,8 +88,7 @@
 	var  graceChecker = require("@/common/graceChecker.js");
 	import uniTag from '@/components/uni-tag.vue'
 	
-	//var  outgo = require("@/common/outgo.js");
-	import { outgo } from '@/common/outgo.js';
+	// import {outgo} from '@/common/outgo.js';
 	
 	export default {
 	    components: {
@@ -97,8 +101,9 @@
 				format: true
 			});
 	        return {
+				
 				popType: 'middle',
-				title: 'popup',
+				// title: 'popup',
 				showPopupMiddle: false,
 				showPopupTop: false,
 				showPopupBottom: false,
@@ -113,6 +118,13 @@
 					'借贷'
 				],
 				current: 0,
+				categoryList: [],
+				subCategoryList: [],
+				height: 0,
+				categoryActive: 0,
+				scrollTop: 0,
+				scrollHeight: 0,
+				name: "七月_",
 	        }
 	    },
 		computed: {
@@ -123,8 +135,48 @@
 				return this.getDate('end');
 			}
 		},
+		onLoad: function () {
+			this.getCategory();
+			this.height = uni.getSystemInfoSync().windowHeight;
+		},
 	    methods: {
+			scroll(e) {
+				this.scrollHeight = e.detail.scrollHeight;
+			},
+			categoryClickMain(categroy, index) {
+				this.categoryActive = index;
+				this.subCategoryList = categroy.subCategoryList;
+				this.scrollTop = -this.scrollHeight * index;
+			},
+			getCategory() {
+				for (var i = 1; i < 21; i++) {
+					var subList = [];
+					for (var j = 1; j < 31; j++) {
+						subList.push({
+							"NAME": "分类" + i + ":商品" + j,
+							"LOGO": "http://placehold.it/50x50"
+						})
+					}
+					this.categoryList.push({
+						"NAME": "分类" + i,
+						"subCategoryList": subList
+					})
+				}
+				this.subCategoryList = this.categoryList[0].subCategoryList;
+			},
 			
+			//统一的关闭popup方法
+			hidePopup: function() {
+				this.showPopupMiddle = false;
+				this.showPopupTop = false;
+				this.showPopupBottom = false;
+			},
+			//展示居中 popup
+			showMiddlePopup: function() {
+				this.hidePopup();
+				this.popType = 'middle';
+				this.showPopupMiddle = true;
+			},
 			onClickItem(index) {
 				if (this.current !== index) {
 					this.current = index;
@@ -214,5 +266,49 @@
 	}
 	page {
 		height: auto;
+	}
+	.page-body {
+		display: flex;
+	}
+	
+	.nav {
+		display: flex;
+		width: 100%;
+	}
+	
+	.nav-left {
+		width: 30%;
+	}
+	
+	.nav-left-item {
+		height: 100upx;
+		border-right: solid 1px #E0E0E0;
+		border-bottom: solid 1px #E0E0E0;
+		font-size: 30upx;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	
+	.nav-right {
+		width: 70%;
+	}
+	
+	.nav-right-item {
+		width: 28%;
+		height: 220upx;
+		float: left;
+		text-align: center;
+		padding: 11upx;
+		font-size: 28upx;
+	}
+	
+	.nav-right-item image {
+		width: 100upx;
+		height: 100upx;
+	}
+	
+	.active {
+		color: #007AFF;
 	}
 </style>
