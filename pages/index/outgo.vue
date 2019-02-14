@@ -1,5 +1,14 @@
 <template>
     <view>
+		<uni-popup :show="showPopupMiddle" :type="popType" v-on:hidePopup="hidePopup">
+			<view class="uni-center" style="font-size:0;">
+				<image class="image" style="width:150upx;height:150upx;" mode="widthFix" src="../../../static/uni.png" />
+			</view>
+			<view class="uni-common-mt uni-helllo-text uni-center">
+				消息内容使用 slot 形式定义
+			</view>
+		</uni-popup>
+		
 		<view class="uni-padding-wrap uni-common-mt">
 			<uni-segmented-control :current="current" :values="items" v-on:clickItem="onClickItem" styleType="text"
 			 activeColor="#007aff"></uni-segmented-control>
@@ -22,7 +31,7 @@
 					<view class="uni-padding-wrap uni-common-mt">
 						<view class="uni-active">
 							<view class="" hover-class="uni-list-cell-hover">
-								<view class="uni-title uni-list-cell-navigate uni-navigate-right"><text>常用类别</text></view>
+								<view class="uni-title uni-list-cell-navigate uni-navigate-right" @click="outgo.showMiddlePopup"><text>常用类别</text></view>
 							</view>
 						</view>
 						<view class="tag-view">
@@ -69,21 +78,31 @@
 
 <script>
 	import uniSegmentedControl from '@/components/uni-segmented-control.vue';
+	import uniPopup from '@/components/uni-popup.vue';
 	//来自 graceUI 的表单验证， 使用说明见手册 http://grace.hcoder.net/doc/info/73-3.html
 	var  graceChecker = require("@/common/graceChecker.js");
 	import uniTag from '@/components/uni-tag.vue'
 	
+	//var  outgo = require("@/common/outgo.js");
+	import { outgo } from '@/common/outgo.js';
+	
 	export default {
 	    components: {
 	        uniTag,
-			uniSegmentedControl
+			uniSegmentedControl,
+			uniPopup
 	    },
 	    data() {
 			const currentDate = this.getDate({
 				format: true
 			});
 	        return {
-	            title: 'tag',
+				popType: 'middle',
+				title: 'popup',
+				showPopupMiddle: false,
+				showPopupTop: false,
+				showPopupBottom: false,
+				msg: '',
 				date: currentDate,
 	            type: 'default',
 	            inverted: false,
@@ -105,6 +124,7 @@
 			}
 		},
 	    methods: {
+			
 			onClickItem(index) {
 				if (this.current !== index) {
 					this.current = index;
