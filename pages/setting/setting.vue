@@ -17,7 +17,7 @@
 					</view>
 				</view>
 				<view class="uni-list-cell uni-list-cell-last" hover-class="uni-list-cell-hover">
-					<view class="uni-list-cell-navigate uni-navigate-right">
+					<view class="uni-list-cell-navigate uni-navigate-right" @click="navigateTo('category?type=in')">
 						收入类别管理
 					</view>
 				</view>
