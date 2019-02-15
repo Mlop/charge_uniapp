@@ -9,8 +9,9 @@
 			</scroll-view>
 			<scroll-view class="nav-right" scroll-y :scroll-top="scrollTop" @scroll="scroll" :style="'height:'+height+'px'" scroll-with-animation>
 				<view :id="index===0?'first':''" class="nav-right-item" v-for="(item,index) in subCategoryList" :key="index">
-					<image :src="item.LOGO" />
+					<!-- <image :src="item.LOGO" /> -->
 					<view>{{item.NAME}}</view>
+					<view style="float: right;"><span class="uni-icon uni-icon-star"></span></view>
 				</view>
 				<page-foot :name="name" v-if="subCategoryList.length > 1"></page-foot>
 			</scroll-view>
@@ -41,9 +42,9 @@
 				this.scrollTop = -this.scrollHeight * index;
 			},
 			getCategory() {
-				for (var i = 1; i < 21; i++) {
+				for (var i = 1; i < 5; i++) {
 					var subList = [];
-					for (var j = 1; j < 31; j++) {
+					for (var j = 1; j < 15; j++) {
 						subList.push({
 							"NAME": "分类" + i + ":商品" + j,
 							"LOGO": "http://placehold.it/50x50"
@@ -76,12 +77,14 @@
 
 	.nav-left {
 		width: 30%;
+		background-color: #EEEEEE;
+		border-right: solid 1px #E0E0E0;
 	}
 
 	.nav-left-item {
-		height: 100upx;
-		border-right: solid 1px #E0E0E0;
-		border-bottom: solid 1px #E0E0E0;
+		height: 80upx;
+		/* border-right: solid 1px #E0E0E0; */
+		/* border-bottom: solid 1px #E0E0E0; */
 		font-size: 30upx;
 		display: flex;
 		align-items: center;
@@ -93,19 +96,21 @@
 	}
 
 	.nav-right-item {
-		width: 28%;
-		height: 220upx;
-		float: left;
+		/* width: 28%; */
+		height: 60upx;
+		/* float: left; */
+		border-bottom: solid 1px #EBEBEB;
 		text-align: center;
 		padding: 11upx;
 		font-size: 28upx;
+		display: flex;
 	}
 
 	.nav-right-item image {
 		width: 100upx;
 		height: 100upx;
 	}
-
+	
 	.active {
 		color: #007AFF;
 	}

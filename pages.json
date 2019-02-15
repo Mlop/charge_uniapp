@@ -35,6 +35,30 @@
 			"style": {
 				"navigationBarTitleText": "分类"
 			}
+		},
+		{
+			"path": "pages/setting/setting",
+			"style": {
+				"navigationBarTitleText": "设置"
+			}
+		},
+		{
+			"path": "pages/setting/book",
+			"style": {
+				"navigationBarTitleText": "账本设置"
+			}
+		},
+		{
+			"path": "pages/setting/category",
+			"style": {
+				"navigationBarTitleText": "支出类别管理"
+			}
+		},
+		{
+			"path": "pages/setting/about",
+			"style": {
+				"navigationBarTitleText": "关于版本"
+			}
 		}
 	],
 	"globalStyle": {
@@ -62,7 +86,7 @@
 	            "text" : "收入"
 	        },
 	        {
-	            "pagePath" : "pages/index/income",
+	            "pagePath" : "pages/setting/setting",
 	            "iconPath" : "static/template.png",
 	            "selectedIconPath" : "static/templateHL.png",
 	            "text" : "我的"
