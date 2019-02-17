@@ -8,9 +8,11 @@
 					</view>
 				</view>
 				<view class="uni-list-cell uni-list-cell-last" hover-class="uni-list-cell-hover">
-					<view class="uni-list-cell-navigate">
-						<span class="uni-icon uni-icon-plus"></span>
-						<text>添加新账本</text>
+					<view>
+						<view class="uni-list-cell-navigate">
+							<span class="uni-icon uni-icon-plus"></span>
+							<text>添加新账本</text>
+						</view>
 					</view>
 				</view>
 			</view>

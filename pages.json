@@ -37,27 +37,88 @@
 			}
 		},
 		{
+			"path": "pages/setting/category/edit",
+			"style": {
+				"navigationBarTitleText": "编辑分类",
+				"app-plus" : {
+				    "titleNView" : {
+				        "buttons" : [
+				            {
+				                "text" : "\ue401",
+				                "fontSrc" : "/static/uni.ttf",
+				                "fontSize" : "22px",
+				                "color" : "#999999"
+				            }
+				        ]
+				    }
+				}
+			}
+		},
+		{
 			"path": "pages/setting/setting",
 			"style": {
 				"navigationBarTitleText": "设置"
 			}
 		},
 		{
-			"path": "pages/setting/book",
+			"path": "pages/setting/book/book",
 			"style": {
 				"navigationBarTitleText": "账本设置"
 			}
 		},
 		{
-			"path": "pages/setting/category",
+			"path": "pages/setting/category/category",
 			"style": {
-				"navigationBarTitleText": "支出类别管理"
+				"navigationBarTitleText": "支出类别管理",
+				"enablePullDownRefresh" : true,
+				"app-plus" : {
+				    "titleNView" : {
+				        "buttons" : [
+				            {
+				                "text" : "\ue401",
+				                "fontSrc" : "/static/uni.ttf",
+				                "fontSize" : "22px",
+				                "color" : "#999999"
+				            }
+				        ]
+				    }
+				}
 			}
 		},
 		{
 			"path": "pages/setting/about",
 			"style": {
 				"navigationBarTitleText": "关于版本"
+			}
+		},
+		{
+			"path": "pages/user/user",
+			"style": {
+				"navigationBarTitleText": "",
+				"app-plus" : {
+				    "titleNView" : {
+				        "buttons" : [
+				            {
+				                "text" : "\ue502",
+				                "fontSrc" : "/static/uni.ttf",
+				                "fontSize" : "30px",
+				                "color" : "#999999"
+				            }
+				        ]
+				    }
+				}
+			}
+		},
+		{
+			"path": "pages/user/login",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
+		},
+		{
+			"path": "pages/user/register",
+			"style": {
+				"navigationBarTitleText": "注册"
 			}
 		}
 	],
@@ -86,7 +147,7 @@
 	            "text" : "收入"
 	        },
 	        {
-	            "pagePath" : "pages/setting/setting",
+	            "pagePath" : "pages/user/user",
 	            "iconPath" : "static/template.png",
 	            "selectedIconPath" : "static/templateHL.png",
 	            "text" : "我的"

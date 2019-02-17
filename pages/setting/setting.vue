@@ -6,18 +6,18 @@
 					记账设置
 				</view>
 				<view class="uni-list-cell" hover-class="uni-list-cell-hover">
-					<view class="uni-list-cell-navigate uni-navigate-right" @click="navigateTo('book')">
+					<view class="uni-list-cell-navigate uni-navigate-right" @click="navigateTo('book/book')">
 						账本设置
 						
 					</view>
 				</view>
 				<view class="uni-list-cell" hover-class="uni-list-cell-hover">
-					<view class="uni-list-cell-navigate uni-navigate-right" @click="navigateTo('category')">
+					<view class="uni-list-cell-navigate uni-navigate-right" @click="navigateTo('category/category?type=out')">
 						支出类别管理
 					</view>
 				</view>
 				<view class="uni-list-cell uni-list-cell-last" hover-class="uni-list-cell-hover">
-					<view class="uni-list-cell-navigate uni-navigate-right" @click="navigateTo('category?type=in')">
+					<view class="uni-list-cell-navigate uni-navigate-right" @click="navigateTo('category/category?type=in')">
 						收入类别管理
 					</view>
 				</view>
