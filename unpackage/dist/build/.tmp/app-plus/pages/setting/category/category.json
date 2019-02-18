@@ -1,0 +1,14 @@
+{
+  "navigationBarTitleText": "支出类别管理",
+  "enablePullDownRefresh": true,
+  "titleNView": {
+    "buttons": [
+      {
+        "text": "",
+        "fontSrc": "/static/uni.ttf",
+        "fontSize": "22px",
+        "color": "#999999"
+      }
+    ]
+  }
+}

@@ -12,7 +12,7 @@
 			</view>
 		</view>
 		<view class="uni-padding-wrap uni-common-mt">
-			<navigator url="outgo" hover-class="navigator-hover">
+			<navigator url="../outgo/outgo" hover-class="navigator-hover">
 				<button type="primary" >记一笔</button>
 			</navigator>
 		</view>

@@ -1,0 +1,13 @@
+{
+  "navigationBarTitleText": "",
+  "titleNView": {
+    "buttons": [
+      {
+        "text": "",
+        "fontSrc": "/static/uni.ttf",
+        "fontSize": "30px",
+        "color": "#999999"
+      }
+    ]
+  }
+}

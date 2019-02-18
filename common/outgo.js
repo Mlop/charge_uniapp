@@ -3,11 +3,13 @@
 作者 Vera
 */
 export const outgo = {
+	// baseUrl: '',
 	popType: 'middle',
 	// title: 'popup',
 	showPopupMiddle: false,
 	showPopupTop: false,
 	showPopupBottom: false,
+	// categoryList: [],
 	//统一的关闭popup方法
 	hidePopup: function() {
 		console.log(this.showPopupMiddle);

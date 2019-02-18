@@ -95,7 +95,7 @@
 			},
 			edit: function() {
 				uni.request({
-					// method: 'POST',
+					method: 'PUT',
 					dataType: 'json',
 					url: this.baseUrl+'category/' + this.id + '/edit',
 					data: {

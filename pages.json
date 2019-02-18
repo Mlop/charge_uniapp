@@ -7,7 +7,7 @@
 // 			}
 		},
 		{
-			"path": "pages/index/outgo",
+			"path": "pages/outgo/outgo",
 			"style": {
 				"navigationBarTitleText": "支出"
 			}

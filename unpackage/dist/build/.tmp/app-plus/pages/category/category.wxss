@@ -1,0 +1,61 @@
+
+.page-body {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+}
+.nav {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	width: 100%;
+}
+.nav-left {
+	width: 30%;
+	background-color: #EEEEEE;
+	border-right: solid 1px #E0E0E0;
+}
+.nav-left-item {
+	height: 80rpx;
+	/* border-right: solid 1px #E0E0E0; */
+	/* border-bottom: solid 1px #E0E0E0; */
+	font-size: 30rpx;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	    -ms-flex-align: center;
+	        align-items: center;
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	    -ms-flex-pack: center;
+	        justify-content: center;
+}
+.nav-right {
+	width: 70%;
+}
+.nav-right-item {
+	/* width: 28%; */
+	height: 60rpx;
+	/* float: left; */
+	border-bottom: solid 1px #EBEBEB;
+	text-align: center;
+	padding: 11rpx;
+	font-size: 28rpx;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+}
+.nav-right-item image {
+	width: 100rpx;
+	height: 100rpx;
+}
+.active {
+	color: #007AFF;
+}
+

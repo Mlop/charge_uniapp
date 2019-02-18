@@ -1,0 +1,7 @@
+<import src="/components/uni-popup.vue.wxml" />
+<import src="/components/uni-segmented-control.vue.wxml" />
+<import src="/components/uni-tag.vue.wxml" />
+<import src="/common/slots.wxml" />
+
+<template name="7cac4244-default-7cac4244-0"><view class="_view 7cac4244 uni-center" style="font-size:0;"></view><view class="_view 7cac4244 uni-common-mt uni-helllo-text uni-center">消息内容使用 slot 形式定义</view></template>
+

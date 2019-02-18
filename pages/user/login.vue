@@ -57,12 +57,11 @@
 			},
 			login: function (formData) {
 				uni.request({
-					// method: 'POST',
+					method: 'POST',
 					dataType: 'json',
 					url: this.baseUrl+'login',
 					data: formData,
 					success: (res) => {
-						console.log(res);
 						var result = res.data;
 						if (result.code == 0) {
 							//登录成功，保存用户信息@todo
@@ -85,7 +84,7 @@
 						}
 					},
 					fail: (err) => {
-						// console.log('request fail', err);
+						console.log('request fail', err);
 						uni.showModal({
 							content: err.errMsg,
 							showCancel: false

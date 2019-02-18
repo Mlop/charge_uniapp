@@ -1,0 +1,56 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/index/outgo",
+    "pages/index/income",
+    "pages/index/loan",
+    "pages/index/incomecopy",
+    "pages/category/category",
+    "pages/setting/category/edit",
+    "pages/setting/setting",
+    "pages/setting/book/book",
+    "pages/setting/category/category",
+    "pages/setting/about",
+    "pages/user/user",
+    "pages/user/login",
+    "pages/user/register"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "usingComponents": {},
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#007AFF",
+    "borderStyle": "black",
+    "backgroundColor": "#F8F8F8",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "static/component.png",
+        "selectedIconPath": "static/componentHL.png",
+        "text": "记账"
+      },
+      {
+        "pagePath": "pages/index/incomecopy",
+        "iconPath": "static/api.png",
+        "selectedIconPath": "static/apiHL.png",
+        "text": "收入"
+      },
+      {
+        "pagePath": "pages/user/user",
+        "iconPath": "static/template.png",
+        "selectedIconPath": "static/templateHL.png",
+        "text": "我的"
+      }
+    ]
+  },
+  "splashscreen": {
+    "autoclose": true
+  },
+  "appname": "charge-uniapp"
+}

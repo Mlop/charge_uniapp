@@ -1,0 +1,13 @@
+{
+  "navigationBarTitleText": "编辑分类",
+  "titleNView": {
+    "buttons": [
+      {
+        "text": "",
+        "fontSrc": "/static/uni.ttf",
+        "fontSize": "22px",
+        "color": "#999999"
+      }
+    ]
+  }
+}

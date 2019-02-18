@@ -4,13 +4,13 @@
 			<scroll-view class="nav-left" scroll-y :style="'height:'+height+'px'">
 				<view class="nav-left-item" @click="categoryClickMain(item,index)" :key="index" :class="index==categoryActive?'active':''"
 				    v-for="(item,index) in categoryList">
-					{{item.NAME}}
+					{{item.title}}
 				</view>
 			</scroll-view>
 			<scroll-view class="nav-right" scroll-y :scroll-top="scrollTop" @scroll="scroll" :style="'height:'+height+'px'" scroll-with-animation>
 				<view :id="index===0?'first':''" class="nav-right-item" v-for="(item,index) in subCategoryList" :key="index">
 					<!-- <image :src="item.LOGO" /> -->
-					<view>{{item.NAME}}</view>
+					<view>{{item.title}}</view>
 					<view style="float: right;"><span class="uni-icon uni-icon-star"></span></view>
 				</view>
 				<page-foot :name="name" v-if="subCategoryList.length > 1"></page-foot>
@@ -20,6 +20,7 @@
 </template>
 
 <script>
+	import {category} from '@/common/category.js';
 	export default {
 		data() {
 			return {
@@ -59,7 +60,9 @@
 			}
 		},
 		onLoad: function () {
-			this.getCategory();
+			category.baseUrl = this.baseUrl;
+			 category.getCategoryList(this.categoryList);
+			 console.log(category.categoryList);
 			this.height = uni.getSystemInfoSync().windowHeight;
 		}
 	}

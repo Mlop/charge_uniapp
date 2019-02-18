@@ -59,7 +59,7 @@
 			},
 			register: function (formData) {
 				uni.request({
-					// method: 'POST',
+					method: 'POST',
 					dataType: 'json',
 					url: this.baseUrl+'register',
 					data: formData,

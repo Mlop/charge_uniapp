@@ -1,0 +1,15 @@
+
+.uni-card{
+		margin-top:50rpx;
+}
+.page {
+        padding-top: 60rpx; background: #efeff4;
+}
+.image-view {
+        height: 480rpx;
+        overflow: hidden;
+}
+.image {
+        width: 100%;
+}
+

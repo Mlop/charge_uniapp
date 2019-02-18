@@ -31,7 +31,7 @@
 					<view class="uni-padding-wrap uni-common-mt">
 						<view class="uni-active">
 							<view class="" hover-class="uni-list-cell-hover">
-								<navigator url="../category" hover-class="navigator-hover">
+								<navigator url="../category/category" hover-class="navigator-hover">
 									<view class="uni-title uni-list-cell-navigate uni-navigate-right">
 										<text>常用类别</text>
 									</view>
@@ -88,7 +88,7 @@
 	var  graceChecker = require("@/common/graceChecker.js");
 	import uniTag from '@/components/uni-tag.vue'
 	
-	// import {outgo} from '@/common/outgo.js';
+	import {outgo} from '@/common/outgo.js';
 	
 	export default {
 	    components: {
@@ -136,8 +136,10 @@
 			}
 		},
 		onLoad: function () {
-			this.getCategory();
-			this.height = uni.getSystemInfoSync().windowHeight;
+// 			outgo.baseUrl = this.baseUrl;
+// 			outgo.getCategoryList();
+			// this.getCategory();
+			// this.height = uni.getSystemInfoSync().windowHeight;
 		},
 	    methods: {
 			scroll(e) {

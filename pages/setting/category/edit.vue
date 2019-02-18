@@ -34,7 +34,7 @@
 		methods: {
 			edit: function() {
 				uni.request({
-					// method: 'POST',
+					method: 'PUT',
 					dataType: 'json',
 					url: this.baseUrl+'category/' + this.id + '/edit',
 					data: {
@@ -66,7 +66,7 @@
 			},
 			delete: function() {
 				uni.request({
-					// method: 'POST',
+					method: 'DELETE',
 					dataType: 'json',
 					url: this.baseUrl+'category/' + this.id + '/del',
 					data: {
