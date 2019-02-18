@@ -20,10 +20,10 @@
 						<view class="uni-list">
 							<view class="uni-list-cell">
 								<view class="uni-list-cell-left">
-									{{category}}
+									{{category.title}}
 								</view>
 								<view class="uni-list-cell-db" style="text-align: right;">
-									<input class="uni-input" focus placeholder="0.00" name="cash" />
+									<input class="uni-input" type="number" focus placeholder="0.00" name="cash" />
 								</view>
 							</view>
 						</view>
@@ -31,7 +31,7 @@
 					<view class="uni-padding-wrap uni-common-mt">
 						<view class="uni-active">
 							<view class="" hover-class="uni-list-cell-hover">
-								<navigator url="../category/category" hover-class="navigator-hover">
+								<navigator url="../category/category?type=out" hover-class="navigator-hover">
 									<view class="uni-title uni-list-cell-navigate uni-navigate-right">
 										<text>常用类别</text>
 									</view>
@@ -39,11 +39,8 @@
 								
 							</view>
 						</view>
-						<view class="tag-view">
-							<uni-tag text="标签" type="warning" :inverted="inverted" @click="setType('abd')"></uni-tag>
-						</view>
-						<view class="tag-view">
-							<uni-tag text="标签2" type="warning" :inverted="inverted" @click="setType('标签sfsd')"></uni-tag>
+						<view class="tag-view" v-for="(item, index) in categoryFavorite" :key="index">
+							<uni-tag :text="item.title" type="warning" :inverted="item.inverted" @click="setType(item)"></uni-tag>
 						</view>
 					</view>
 					<view class="uni-padding-wrap uni-common-mt">
@@ -89,6 +86,7 @@
 	import uniTag from '@/components/uni-tag.vue'
 	
 	import {outgo} from '@/common/outgo.js';
+	import {category} from '@/common/category.js';
 	
 	export default {
 	    components: {
@@ -111,20 +109,14 @@
 				date: currentDate,
 	            type: 'default',
 	            inverted: false,
-				category: 'wan',
+				category: {},
 				items: [
 					'支出',
 					'收入',
 					'借贷'
 				],
 				current: 0,
-				categoryList: [],
-				subCategoryList: [],
-				height: 0,
-				categoryActive: 0,
-				scrollTop: 0,
-				scrollHeight: 0,
-				name: "七月_",
+				categoryFavorite: [],
 	        }
 	    },
 		computed: {
@@ -135,37 +127,21 @@
 				return this.getDate('end');
 			}
 		},
-		onLoad: function () {
-// 			outgo.baseUrl = this.baseUrl;
-// 			outgo.getCategoryList();
-			// this.getCategory();
-			// this.height = uni.getSystemInfoSync().windowHeight;
+		onLoad: function (options) {
+			category.baseUrl = this.baseUrl;
+			category.type = 'out';
+			var _this = this; 
+			category.getFavoriteCategory(function(data){
+				data[0]["inverted"] = false;
+				_this.categoryFavorite = data;
+				console.log(_this.categoryFavorite);
+				
+			});
+			if (options.category_id != undefined) {
+				this.category = {"id": options.category_id, "title": options.category_title};
+			}
 		},
 	    methods: {
-			scroll(e) {
-				this.scrollHeight = e.detail.scrollHeight;
-			},
-			categoryClickMain(categroy, index) {
-				this.categoryActive = index;
-				this.subCategoryList = categroy.subCategoryList;
-				this.scrollTop = -this.scrollHeight * index;
-			},
-			getCategory() {
-				for (var i = 1; i < 21; i++) {
-					var subList = [];
-					for (var j = 1; j < 31; j++) {
-						subList.push({
-							"NAME": "分类" + i + ":商品" + j,
-							"LOGO": "http://placehold.it/50x50"
-						})
-					}
-					this.categoryList.push({
-						"NAME": "分类" + i,
-						"subCategoryList": subList
-					})
-				}
-				this.subCategoryList = this.categoryList[0].subCategoryList;
-			},
 			
 			//统一的关闭popup方法
 			hidePopup: function() {
@@ -221,9 +197,19 @@
 					uni.showToast({ title: graceChecker.error, icon: "none" });
 				}
 			},
-			setType: function (categoryName) {
-				this.category = categoryName;
-				this.inverted = !this.inverted;
+			setType: function (category) {
+				// var categoryName = category.title;
+				this.category = category;
+				for(var i in this.categoryFavorite) {
+					//选中
+					if (this.categoryFavorite[i]["id"] == category["id"]) {
+						this.categoryFavorite[i]["inverted"] = false;
+					} else {//取消选择
+						this.categoryFavorite[i]["inverted"] = true;
+					}
+					console.log(this.categoryFavorite[i]);
+				}
+				// this.inverted = !this.inverted;
 			},
 	    }
 	}

@@ -8,12 +8,11 @@
 				</view>
 			</scroll-view>
 			<scroll-view class="nav-right" scroll-y :scroll-top="scrollTop" @scroll="scroll" :style="'height:'+height+'px'" scroll-with-animation>
-				<view :id="index===0?'first':''" class="nav-right-item" v-for="(item,index) in subCategoryList" :key="index">
+				<view :id="index===0?'first':''" class="nav-right-item" v-for="(item,index) in subCategoryList" :key="index" @click="categoryClickSub(item)">
 					<!-- <image :src="item.LOGO" /> -->
 					<view>{{item.title}}</view>
 					<view style="float: right;"><span class="uni-icon uni-icon-star"></span></view>
 				</view>
-				<page-foot :name="name" v-if="subCategoryList.length > 1"></page-foot>
 			</scroll-view>
 		</view>
 	</view>
@@ -30,7 +29,8 @@
 				categoryActive: 0,
 				scrollTop: 0,
 				scrollHeight: 0,
-				name: "七月_"
+				name: "abdd",
+				// type: 'in',
 			}
 		},
 		methods: {
@@ -39,30 +39,28 @@
 			},
 			categoryClickMain(categroy, index) {
 				this.categoryActive = index;
-				this.subCategoryList = categroy.subCategoryList;
+				this.subCategoryList = categroy.sub;
 				this.scrollTop = -this.scrollHeight * index;
 			},
-			getCategory() {
-				for (var i = 1; i < 5; i++) {
-					var subList = [];
-					for (var j = 1; j < 15; j++) {
-						subList.push({
-							"NAME": "分类" + i + ":商品" + j,
-							"LOGO": "http://placehold.it/50x50"
-						})
-					}
-					this.categoryList.push({
-						"NAME": "分类" + i,
-						"subCategoryList": subList
-					})
-				}
-				this.subCategoryList = this.categoryList[0].subCategoryList;
-			}
+			categoryClickSub(category) {
+				// console.log(category.title);
+				var pages = getCurrentPages();
+				var currPage = pages[pages.length - 1]; //当前页面
+				var prevPage = pages[pages.length - 2]; //上一个页面
+				// console.log(prevPage);
+				uni.navigateTo({
+					url: '/' + prevPage.route + '?category_id=' + category.id + '&category_title=' + category.title,
+				});
+			},
 		},
-		onLoad: function () {
+		onLoad: function (option) {
 			category.baseUrl = this.baseUrl;
-			 category.getCategoryList(this.categoryList);
-			 console.log(category.categoryList);
+			category.type = option.type;
+			var _this = this; 
+			category.getCategoryList(function(data){
+				_this.categoryList = data;
+				_this.subCategoryList = data[0].sub;
+			});
 			this.height = uni.getSystemInfoSync().windowHeight;
 		}
 	}
