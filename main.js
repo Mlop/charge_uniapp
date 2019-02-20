@@ -13,7 +13,7 @@ app.$mount()
 Vue.prototype.baseUrl = 'http://charge.com/';
 Vue.prototype.authToken = '';
 Vue.prototype.checkLogin = function(result) {
-	// console.log('checklogin');
+	// console.log(result);
 	if (result.code == 401) {
 		uni.navigateTo({
 			url:'/pages/user/login'
@@ -29,6 +29,6 @@ Vue.prototype.getAuthToken = function() {
 	});
 	//异步取auth token，所以延时500ms后执行后续操作
 	setTimeout(function(){
-	},  500);
+	},  1000);
 };
 Vue.prototype.getAuthToken();

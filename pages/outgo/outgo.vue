@@ -1,14 +1,34 @@
 <template>
     <view>
-		<uni-popup :show="showPopupMiddle" :type="popType" v-on:hidePopup="hidePopup">
+		<!-- <uni-popup :show="showPopupMiddle" :type="popType" v-on:hidePopup="hidePopup">
 			<view class="uni-center" style="font-size:0;">
 				
 			</view>
 			<view class="uni-common-mt uni-helllo-text uni-center">
 				消息内容使用 slot 形式定义
 			</view>
-		</uni-popup>
+		</uni-popup> -->
+		<view class="header">
+		<!-- #ifdef MP -->
+			<view class="icon" @click="showRightDrawer">
+				<uni-icon type="bars" color="#666666" :size="22"></uni-icon>
+			</view>
+			<!-- #endif -->
+		</view>
 		
+		<uni-drawer :visible="rightDrawerVisible" mode="right" @close="closeRightDrawer">
+			<view style="padding:30upx;">
+				<view class="uni-title">账本</view>
+				<view class="uni-list uni-common-mt">
+					<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(item, index) in bookList" :key="index">
+						<view class="uni-list-cell-navigate uni-navigate-right" @tap="selectBook(item)">
+							{{item.title}}
+						</view>
+					</view>
+					
+				</view>
+			</view>
+		</uni-drawer>
 		<view class="uni-padding-wrap uni-common-mt">
 			<uni-segmented-control :current="current" :values="items" v-on:clickItem="onClickItem" styleType="text"
 			 activeColor="#007aff"></uni-segmented-control>
@@ -22,6 +42,8 @@
 								<view class="uni-list-cell-left">
 									{{category.title}}
 									<input type="text" name="category_id" :value="category.id" v-show="false" />
+									<input type="text" name="book_id" :value="selectBookId" v-show="false" />
+									<input type="text" name="route" value="outgo" v-show="false" />
 								</view>
 								<view class="uni-list-cell-db" style="text-align: right;">
 									<input class="uni-input" type="number" focus placeholder="0.00" name="cash" />
@@ -48,7 +70,7 @@
 						现金（CNY）
 					</view>
 					<view class="uni-padding-wrap uni-common-mt">
-						<textarea style="height: 35upx;" maxlength="3" name="remark" placeholder="备注" />
+						<textarea style="height: 45upx;" maxlength="200" name="remark" placeholder="备注" />
 					</view>
 					<view class="uni-padding-wrap uni-common-mt">
 						<picker mode="date" :value="date" :start="startDate" :end="endDate" @change="bindDateChange">
@@ -68,11 +90,117 @@
 					</view>
 				</form> 
 			</view>
-			<view v-show="current === 1">
-				选项卡2的内容
+			<view v-show="current === 1" style="height: 160px; text-align:left;">
+				<form @submit="formSubmit">
+					<view class="uni-padding-wrap uni-common-mt">
+						<view class="uni-list">
+							<view class="uni-list-cell">
+								<view class="uni-list-cell-left">
+									{{category.title}}
+									<input type="text" name="category_id" :value="category.id" v-show="false" />
+									<input type="text" name="book_id" :value="selectBookId" v-show="false" />
+									<input type="text" name="route" value="income" v-show="false" />
+								</view>
+								<view class="uni-list-cell-db" style="text-align: right;">
+									<input class="uni-input" type="number" focus placeholder="0.00" name="cash" />
+								</view>
+							</view>
+						</view>
+					</view>
+					<view class="uni-padding-wrap uni-common-mt">
+						<view class="uni-active">
+							<view class="" hover-class="uni-list-cell-hover">
+								<navigator url="../category/category?type=out" hover-class="navigator-hover">
+									<view class="uni-title uni-list-cell-navigate uni-navigate-right">
+										<text>常用类别</text>
+									</view>
+								</navigator>
+								
+							</view>
+						</view>
+						<view class="tag-view" v-for="(item, index) in categoryFavorite" :key="index">
+							<uni-tag :text="item.title" inverted="true" :type="item.tagType" @click="setType(item)"></uni-tag>
+						</view>
+					</view>
+					<view class="uni-padding-wrap uni-common-mt">
+						现金（CNY）
+					</view>
+					<view class="uni-padding-wrap uni-common-mt">
+						<textarea style="height: 45upx;" maxlength="200" name="remark" placeholder="备注" />
+					</view>
+					<view class="uni-padding-wrap uni-common-mt">
+						<picker mode="date" :value="date" :start="startDate" :end="endDate" @change="bindDateChange">
+							<view class="uni-input">{{date}}<input type="text" :value="date" name="record_at" v-show="false" /></view>
+						</picker>
+					</view>
+					<view class="uni-padding-wrap uni-common-mt">
+						<view class="uni-flex uni-row" style="justify-content: flex-end;">
+							<view class="text">
+								<!-- <span class="uni-icon uni-icon-checkmarkempty"></span> -->
+								<button class="btn-submit" formType="submit" type="primary">保存再记</button>
+							</view>
+							<view class="text">
+								<button class="btn-submit" formType="submit" type="primary">保存</button>
+							</view>
+						</view>
+					</view>
+				</form>
 			</view>
-			<view v-show="current === 2">
-				选项卡3的内容
+			<view v-show="current === 2" style="height: 160px; text-align:left;">
+				<form @submit="formSubmit">
+					<view class="uni-padding-wrap uni-common-mt">
+						<view class="uni-list">
+							<view class="uni-list-cell">
+								<view class="uni-list-cell-left">
+									{{category.title}}
+									<input type="text" name="category_id" :value="category.id" v-show="false" />
+									<input type="text" name="book_id" :value="selectBookId" v-show="false" />
+									<input type="text" name="route" value="loan" v-show="false" />
+								</view>
+								<view class="uni-list-cell-db" style="text-align: right;">
+									<input class="uni-input" type="number" focus placeholder="0.00" name="cash" />
+								</view>
+							</view>
+						</view>
+					</view>
+					<view class="uni-padding-wrap uni-common-mt">
+						<view class="uni-active">
+							<view class="" hover-class="uni-list-cell-hover">
+								<navigator url="../category/category?type=out" hover-class="navigator-hover">
+									<view class="uni-title uni-list-cell-navigate uni-navigate-right">
+										<text>常用类别</text>
+									</view>
+								</navigator>
+								
+							</view>
+						</view>
+						<view class="tag-view" v-for="(item, index) in categoryFavorite" :key="index">
+							<uni-tag :text="item.title" inverted="true" :type="item.tagType" @click="setType(item)"></uni-tag>
+						</view>
+					</view>
+					<view class="uni-padding-wrap uni-common-mt">
+						现金（CNY）
+					</view>
+					<view class="uni-padding-wrap uni-common-mt">
+						<textarea style="height: 45upx;" maxlength="200" name="remark" placeholder="备注" />
+					</view>
+					<view class="uni-padding-wrap uni-common-mt">
+						<picker mode="date" :value="date" :start="startDate" :end="endDate" @change="bindDateChange">
+							<view class="uni-input">{{date}}<input type="text" :value="date" name="record_at" v-show="false" /></view>
+						</picker>
+					</view>
+					<view class="uni-padding-wrap uni-common-mt">
+						<view class="uni-flex uni-row" style="justify-content: flex-end;">
+							<view class="text">
+								<!-- <span class="uni-icon uni-icon-checkmarkempty"></span> -->
+								<button class="btn-submit" formType="submit" type="primary">保存再记</button>
+							</view>
+							<view class="text">
+								<button class="btn-submit" formType="submit" type="primary">保存</button>
+							</view>
+						</view>
+					</view>
+				</form>
 			</view>
 		</view>
 		
@@ -82,32 +210,38 @@
 <script>
 	import uniSegmentedControl from '@/components/uni-segmented-control.vue';
 	import uniPopup from '@/components/uni-popup.vue';
+	import uniDrawer from '@/components/uni-drawer.vue';
+	import uniIcon from '@/components/uni-icon.vue';
+	
 	//来自 graceUI 的表单验证， 使用说明见手册 http://grace.hcoder.net/doc/info/73-3.html
 	var  graceChecker = require("@/common/graceChecker.js");
 	import uniTag from '@/components/uni-tag.vue'
 	
 	import {outgo} from '@/common/outgo.js';
 	import {category} from '@/common/category.js';
+	import {book} from '@/common/book.js';
 	
 	export default {
 	    components: {
 	        uniTag,
 			uniSegmentedControl,
-			uniPopup
+			uniDrawer,
+			uniIcon
+			// uniPopup
 	    },
 	    data() {
 			const currentDate = this.getDate({
 				format: true
 			});
 	        return {
-				popType: 'middle',
-				// title: 'popup',
-				showPopupMiddle: false,
-				showPopupTop: false,
-				showPopupBottom: false,
-				msg: '',
+// 				popType: 'middle',
+// 				// title: 'popup',
+// 				showPopupMiddle: false,
+// 				showPopupTop: false,
+// 				showPopupBottom: false,
+				// msg: '',
 				date: currentDate,
-	            type: 'default',
+	            // type: 'default',
 	            // tagType: 'warning',
 				category: {},
 				items: [
@@ -117,9 +251,23 @@
 				],
 				current: 0,
 				categoryFavorite: [],
+				bookList: [],
+				selectBookId: 0,
+				//顶部账本选择菜单
+				rightDrawerVisible: false
 				// authToken: '',
 	        }
 	    },
+		onNavigationBarButtonTap(e) {
+			this.rightDrawerVisible = !this.rightDrawerVisible
+		},
+		onBackPress() {
+			// 返回按钮监听
+			if (this.rightDrawerVisible) {
+				this.rightDrawerVisible = false;
+				return true;
+			}
+		},
 		computed: {
 			startDate() {
 				return this.getDate('start');
@@ -133,43 +281,91 @@
 				this.category = {"id": options.category_id, "title": options.category_title};
 			}
 			var _this = this;
-			category.baseUrl = this.baseUrl;
-			category.type = 'out';
-			category.authToken = this.authToken;
-			category.getFavoriteCategory(function(result){
-				_this.checkLogin(result);
+			this.initCategory(options);
+			//初始化常用类别
+// 			category.baseUrl = this.baseUrl;
+// 			category.type = 'out';
+// 			category.authToken = this.authToken;
+// 			category.getFavoriteCategory(function(result){
+// 				_this.checkLogin(result);
+// 				if (result.code == 0) {
+// 					var data = result.data;
+// 					_this.categoryFavorite = data;
+// 					//未选择任何类别初始化第一个关注的常用类别
+// 					if (options.category_id == undefined) {
+// 						_this.setType(data[0]);
+// 					}
+// 				} else {
+// 					uni.showModal({
+// 						content: result.msg,
+// 						showCancel: false
+// 					});
+// 				}
+// 			});
+			//初始化账本
+			book.baseUrl = this.baseUrl;
+			book.authToken = this.authToken;
+			book.getBookList(function(result){
 				if (result.code == 0) {
 					var data = result.data;
-					_this.categoryFavorite = data;
-					//未选择任何类别初始化第一个关注的常用类别
-					if (options.category_id == undefined) {
-						_this.setType(data[0]);
-					}
+					_this.bookList = data;
+					_this.selectBookId = data[0]["id"];
 				} else {
 					uni.showModal({
 						content: result.msg,
 						showCancel: false
 					});
 				}
+					
+					//未选择任何类别初始化第一个关注的常用类别
+// 					if (options.category_id == undefined) {
+// 						_this.setType(data[0]);
+// 					}
 			});
 		},
 	    methods: {
-			//统一的关闭popup方法
-			hidePopup: function() {
-				this.showPopupMiddle = false;
-				this.showPopupTop = false;
-				this.showPopupBottom = false;
+			initCategory(options) {
+				var _this = this;
+				var types = ['out', 'in', 'loan'];
+				//初始化常用类别
+				category.baseUrl = this.baseUrl;
+				category.type = types[this.current];
+				category.authToken = this.authToken;
+				category.getFavoriteCategory(function(result){
+					_this.checkLogin(result);
+					if (result.code == 0) {
+						var data = result.data;
+						_this.categoryFavorite = data;
+						//未选择任何类别初始化第一个关注的常用类别
+						if (options == undefined || options.category_id == undefined) {
+							_this.setType(data[0]);
+						}
+					} else {
+						uni.showModal({
+							content: result.msg,
+							showCancel: false
+						});
+					}
+				});
 			},
-			//展示居中 popup
-			showMiddlePopup: function() {
-				this.hidePopup();
-				this.popType = 'middle';
-				this.showPopupMiddle = true;
+			closeRightDrawer() {
+				this.rightDrawerVisible = false;
+			},
+			showRightDrawer() {
+				this.rightDrawerVisible = true;
+			},
+			selectBook(item) {
+				this.rightDrawerVisible = false;
+				this.selectBookId = item.id;
+				uni.showToast({
+					title: '选中' + item.title
+				});
 			},
 			onClickItem(index) {
 				if (this.current !== index) {
 					this.current = index;
 				}
+				this.initCategory();
 			},
 			bindDateChange: function(e) {
 				this.date = e.target.value
@@ -210,7 +406,7 @@
 				uni.request({
 					method: 'POST',
 					dataType: 'json',
-					url: this.baseUrl+'outgo',
+					url: this.baseUrl+formData.route,
 					data: formData,
 					header: {
 						Authorization:this.authToken,
@@ -218,7 +414,7 @@
 					success: (res) => {
 						var result = res.data;
 						if (result.code == 0) {
-							uni.showToast({title:"添加成功!", icon:"none"});
+							uni.showToast({title:"添加成功!"});
 							// uni.navigateBack();
 						} else {
 							uni.showModal({

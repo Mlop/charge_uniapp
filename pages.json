@@ -9,7 +9,19 @@
 		{
 			"path": "pages/outgo/outgo",
 			"style": {
-				"navigationBarTitleText": "支出"
+				"navigationBarTitleText": "支出",
+				"app-plus" : {
+				    "titleNView" : {
+				        "buttons" : [
+				            {
+				                "text" : "\ue563",
+				                "fontSrc" : "/static/uni.ttf",
+				                "fontSize" : "22px"
+				            }
+				        ]
+				    },
+				    "bounce" : "none"
+				}
 			}
 		},
 		{

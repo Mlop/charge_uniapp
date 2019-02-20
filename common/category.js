@@ -30,9 +30,6 @@ export const category = {
 					content: err.errMsg,
 					showCancel: false
 				});
-			},
-			complete: () => {
-				this.loading = false;
 			}
 		});
 	},
@@ -50,7 +47,6 @@ export const category = {
 			success: (res) => {
 				var result = res.data;
 				setCategoryCallback(result);
-				
 			},
 			fail: (err) => {
 				uni.showModal({
