@@ -21,6 +21,7 @@
 							<view class="uni-list-cell">
 								<view class="uni-list-cell-left">
 									{{category.title}}
+									<input type="text" name="category_id" :value="category.id" v-show="false" />
 								</view>
 								<view class="uni-list-cell-db" style="text-align: right;">
 									<input class="uni-input" type="number" focus placeholder="0.00" name="cash" />
@@ -40,18 +41,18 @@
 							</view>
 						</view>
 						<view class="tag-view" v-for="(item, index) in categoryFavorite" :key="index">
-							<uni-tag :text="item.title" type="warning" :inverted="item.inverted" @click="setType(item)"></uni-tag>
+							<uni-tag :text="item.title" inverted="true" :type="item.tagType" @click="setType(item)"></uni-tag>
 						</view>
 					</view>
 					<view class="uni-padding-wrap uni-common-mt">
 						现金（CNY）
 					</view>
 					<view class="uni-padding-wrap uni-common-mt">
-						<textarea style="height: 35upx;" maxlength="3" placeholder="备注" />
+						<textarea style="height: 35upx;" maxlength="3" name="remark" placeholder="备注" />
 					</view>
 					<view class="uni-padding-wrap uni-common-mt">
 						<picker mode="date" :value="date" :start="startDate" :end="endDate" @change="bindDateChange">
-							<view class="uni-input">{{date}}</view>
+							<view class="uni-input">{{date}}<input type="text" :value="date" name="record_at" v-show="false" /></view>
 						</picker>
 					</view>
 					<view class="uni-padding-wrap uni-common-mt">
@@ -99,7 +100,6 @@
 				format: true
 			});
 	        return {
-				
 				popType: 'middle',
 				// title: 'popup',
 				showPopupMiddle: false,
@@ -108,7 +108,7 @@
 				msg: '',
 				date: currentDate,
 	            type: 'default',
-	            inverted: false,
+	            // tagType: 'warning',
 				category: {},
 				items: [
 					'支出',
@@ -117,6 +117,7 @@
 				],
 				current: 0,
 				categoryFavorite: [],
+				// authToken: '',
 	        }
 	    },
 		computed: {
@@ -128,21 +129,31 @@
 			}
 		},
 		onLoad: function (options) {
-			category.baseUrl = this.baseUrl;
-			category.type = 'out';
-			var _this = this; 
-			category.getFavoriteCategory(function(data){
-				data[0]["inverted"] = false;
-				_this.categoryFavorite = data;
-				console.log(_this.categoryFavorite);
-				
-			});
 			if (options.category_id != undefined) {
 				this.category = {"id": options.category_id, "title": options.category_title};
 			}
+			var _this = this;
+			category.baseUrl = this.baseUrl;
+			category.type = 'out';
+			category.authToken = this.authToken;
+			category.getFavoriteCategory(function(result){
+				_this.checkLogin(result);
+				if (result.code == 0) {
+					var data = result.data;
+					_this.categoryFavorite = data;
+					//未选择任何类别初始化第一个关注的常用类别
+					if (options.category_id == undefined) {
+						_this.setType(data[0]);
+					}
+				} else {
+					uni.showModal({
+						content: result.msg,
+						showCancel: false
+					});
+				}
+			});
 		},
 	    methods: {
-			
 			//统一的关闭popup方法
 			hidePopup: function() {
 				this.showPopupMiddle = false;
@@ -192,24 +203,51 @@
 				var formData = e.detail.value;
 				var checkRes = graceChecker.check(formData, rule);
 				if(checkRes){
-					uni.showToast({title:"验证通过!", icon:"none"});
+					// uni.showToast({title:"验证通过!", icon:"none"});
 				}else{
 					uni.showToast({ title: graceChecker.error, icon: "none" });
 				}
+				uni.request({
+					method: 'POST',
+					dataType: 'json',
+					url: this.baseUrl+'outgo',
+					data: formData,
+					header: {
+						Authorization:this.authToken,
+					},
+					success: (res) => {
+						var result = res.data;
+						if (result.code == 0) {
+							uni.showToast({title:"添加成功!", icon:"none"});
+							// uni.navigateBack();
+						} else {
+							uni.showModal({
+								content: result.msg,
+								showCancel: false
+							});
+						}
+					},
+					fail: (err) => {
+						uni.showModal({
+							content: err.errMsg,
+							showCancel: false
+						});
+					},
+					complete: () => {
+						this.loading = false;
+					}
+				});
 			},
 			setType: function (category) {
-				// var categoryName = category.title;
 				this.category = category;
 				for(var i in this.categoryFavorite) {
 					//选中
 					if (this.categoryFavorite[i]["id"] == category["id"]) {
-						this.categoryFavorite[i]["inverted"] = false;
+						this.categoryFavorite[i]["tagType"] = 'warning';
 					} else {//取消选择
-						this.categoryFavorite[i]["inverted"] = true;
+						this.categoryFavorite[i]["tagType"] = '';
 					}
-					console.log(this.categoryFavorite[i]);
 				}
-				// this.inverted = !this.inverted;
 			},
 	    }
 	}

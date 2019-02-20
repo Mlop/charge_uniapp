@@ -56,6 +56,7 @@
 		onLoad: function (option) {
 			category.baseUrl = this.baseUrl;
 			category.type = option.type;
+			category.authToken = this.authToken;
 			var _this = this; 
 			category.getCategoryList(function(data){
 				_this.categoryList = data;

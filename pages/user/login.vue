@@ -56,6 +56,7 @@
 				}
 			},
 			login: function (formData) {
+				var _this = this;
 				uni.request({
 					method: 'POST',
 					dataType: 'json',
@@ -69,8 +70,9 @@
 							uni.setStorage({
 								key:'user', 
 								'data':result.data,
-								success: function () {
-									console.log('storage success');	
+								success: function (data) {
+// 									_this.authToken = data.token;
+// 									console.log(_this.authToken);
 								},
 							});
 							uni.switchTab({
