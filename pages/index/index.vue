@@ -3,12 +3,12 @@
 		<view class="uni-common-mt">
 			<view class="uni-form-item uni-column">
 				<view class="title">本月支出</view>
-				<view class="uni-input uni-bold">{{outgo}}</view>
+				<view class="uni-input uni-bold out">￥{{result.totalOut}}</view>
 			</view>
 		</view>
 		<view class="uni-common-mt">
 			<view class="uni-form-item uni-column">
-				<view class="title">本月收入<label class="uni-input">{{income}}</label></view>
+				<view class="title">本月收入<label class="uni-input in">￥{{result.totalIn}}</label></view>
 			</view>
 		</view>
 		<view class="uni-padding-wrap uni-common-mt">
@@ -17,15 +17,15 @@
 			</navigator>
 		</view>
 		<view class="uni-padding-wrap uni-common-mt">
-			<view class="uni-list" v-for="(item,key) in lists" :key="key">
+			<view class="uni-list" v-for="(item,key) in result.items" :key="key">
 				<view class="title" >{{item.category}}</view>
 				<view class="uni-flex uni-row">
 					<view class="text" style="text-align: left;width: 100upx;">{{item.date}}</view>
 					<view class="text" style="text-align: left;flex: 1 1 0%;">{{item.remark}}</view>
-					<view class="text" style="text-align: right;width: 100upx;color:#09BB07">{{item.cash}}</view>
+					<view class="text" v-bind:class="item.type" style="text-align: right;width: 100upx;">￥{{item.cash}}</view>
 				</view>	
 			</view>
-			<view class="text"><span class="uni-icon uni-icon-arrowdown"></span></view>
+			<navigator url="list"><view class="text"><span class="uni-icon uni-icon-arrowdown"></span></view></navigator>
 		</view>
     </view>
 </template>
@@ -34,27 +34,52 @@
 	export default {
 		data() {
 			return {
-				title: 'Hello vera 7d',
-				outgo: '0.00',
-				income: '0.00',
-				lists: [{
-						category: '红包',
-						date: '02-04',
-						remark: '给的礼金',
-						cash: '￥1000',
-					},{
-						category: '红包',
-						date: '02-05',
-						remark: 'sfs给的礼金',
-						cash: '￥5000',
-					}],
+				result: {},
 			}
 		},
 		onLoad() {
-
+			var _this = this;
+			this.getAuthToken(this.init);
+			//异步取auth token，所以延时500ms后执行后续操作
+// 			setTimeout(function(){
+// 				_this.init();
+// 			},  500);
+			
 		},
 		methods: {
-
+			init() {
+				// console.log(this.authToken);
+				uni.request({
+					method: 'GET',
+					dataType: 'json',
+					url: this.baseUrl+'report',
+					data: {
+// 						type: this.type,
+// 						include_sub: true,
+					},
+					header: {
+						Authorization:this.authToken,
+					},
+					success: (res) => {
+						var result = res.data;
+						if (result.code == 0) {
+							this.result = result.data;
+							// setCategoryCallback(result.data);
+						} else {
+							uni.showModal({
+								content: result.msg,
+								showCancel: false
+							});
+						}
+					},
+					fail: (err) => {
+						uni.showModal({
+							content: err.errMsg,
+							showCancel: false
+						});
+					}
+				});
+			}
 		}
 	}
 </script>
@@ -88,5 +113,14 @@
 	}
 	.title {
 		padding: 10upx 25upx;
+	}
+	.out {
+		color: #dd524d;
+	}
+	.in {
+		color: #4cd964;
+	}
+	.loan {
+		color: #f0ad4e;
 	}
 </style>

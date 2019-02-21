@@ -20,15 +20,30 @@ Vue.prototype.checkLogin = function(result) {
 		});
 	}
 };
-Vue.prototype.getAuthToken = function() {
+// uni.getStorage({
+// 		key: 'user',
+// 		success: function (res) {
+// 			Vue.prototype.authToken = "Bearer " + res.data.token;
+// 			Vue.prototype.afterLogin();
+// 		}
+// 	});
+	// console.log('before');
+	
+	// console.log('after');
+	
+Vue.prototype.getAuthToken = function(afterLogin) {
 	uni.getStorage({
 		key: 'user',
 		success: function (res) {
 			Vue.prototype.authToken = "Bearer " + res.data.token;
+			afterLogin();
 		}
 	});
-	//异步取auth token，所以延时500ms后执行后续操作
-	setTimeout(function(){
-	},  1000);
+// 	console.log('before');
+// 	//异步取auth token，所以延时500ms后执行后续操作
+// 	setTimeout(function(){
+// 		console.log('in');
+// 	},  1000);
+// 	console.log('after');
 };
-Vue.prototype.getAuthToken();
+// Vue.prototype.getAuthToken();

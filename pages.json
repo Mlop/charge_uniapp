@@ -37,9 +37,9 @@
 			}
 		},
 		{
-			"path": "pages/index/incomecopy",
+			"path": "pages/index/list",
 			"style": {
-				"navigationBarTitleText": "收入2"
+				"navigationBarTitleText": "详细"
 			}
 		},
 		{
@@ -153,10 +153,10 @@
 	            "text" : "记账"
 	        },
 	        {
-	            "pagePath" : "pages/index/incomecopy",
+	            "pagePath" : "pages/index/loan",
 	            "iconPath" : "static/api.png",
 	            "selectedIconPath" : "static/apiHL.png",
-	            "text" : "收入"
+	            "text" : "统计"
 	        },
 	        {
 	            "pagePath" : "pages/user/user",
