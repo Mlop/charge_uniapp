@@ -11,6 +11,7 @@ const app = new Vue({
 app.$mount()
 
 Vue.prototype.baseUrl = 'http://charge.com/';
+//Vue.prototype.baseUrl = 'http://119.27.163.89:8082/';
 Vue.prototype.authToken = '';
 Vue.prototype.checkLogin = function(result) {
 	// console.log(result);

@@ -20,7 +20,7 @@
 			<view class="uni-list" v-for="(item,key) in result.items" :key="key">
 				<view class="title" >{{item.category}}</view>
 				<view class="uni-flex uni-row">
-					<view class="text" style="text-align: left;width: 100upx;">{{item.date}}</view>
+					<view class="text" style="text-align: left;width: 100upx;">{{item.ym}}</view>
 					<view class="text" style="text-align: left;flex: 1 1 0%;">{{item.remark}}</view>
 					<view class="text" v-bind:class="item.type" style="text-align: right;width: 100upx;">￥{{item.cash}}</view>
 				</view>	
@@ -48,7 +48,7 @@
 		},
 		methods: {
 			init() {
-				// console.log(this.authToken);
+				 // console.log(this.authToken);
 				uni.request({
 					method: 'GET',
 					dataType: 'json',
