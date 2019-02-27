@@ -46,7 +46,7 @@
 					<view class="text" v-bind:class="item.type" style="text-align: right;width: 100upx;">￥{{item.cash}}</view>
 				</view>	
 			</view>
-			<navigator url="../account/list"><view class="text"><span class="uni-icon uni-icon-arrowdown"></span></view></navigator>
+			<view class="text" @tap="openAccountList"><span class="uni-icon uni-icon-arrowdown"></span></view>
 		</view>
     </view>
 </template>
@@ -90,7 +90,18 @@
 				return month+'-'+day;
 			}
 		},
+		onPullDownRefresh(e) {
+			setTimeout(function () {
+				uni.stopPullDownRefresh();
+			}, 1000);
+			this.init();
+		},
 		methods: {
+			openAccountList() {
+				uni.switchTab({
+					url: '../account/list'
+				});
+			},
 			gotoDetail(item) {
 				uni.navigateTo({url:"../account/edit?type=" + item.type + "&id=" + item.id});
 			},

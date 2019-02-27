@@ -48,11 +48,9 @@
 				<view class="uni-padding-wrap uni-common-mt">
 					<view class="uni-active">
 						<view class="" hover-class="uni-list-cell-hover">
-							<navigator @click="gotoCategory" hover-class="navigator-hover">
-								<view class="uni-title uni-list-cell-navigate uni-navigate-right">
-									<text>常用类别</text>
-								</view>
-							</navigator>
+							<view @click="gotoCategory" class="uni-title uni-list-cell-navigate uni-navigate-right">
+								<text>常用类别</text>
+							</view>
 						</view>
 					</view>
 					<view class="tag-view" v-for="(item, index) in categoryFavorite" :key="index">
@@ -117,13 +115,15 @@
 					'收入',
 					'借贷'
 				],
+				types: ['outgo', 'income', 'loan'],
 				current: 0,
 				categoryFavorite: [],
 				bookList: [],
 				selectBookId: 0,
 				//顶部账本选择菜单
 				rightDrawerVisible: false,
-				options: {}
+				options: {},
+				
 	        }
 	    },
 		onNavigationBarButtonTap(e) {
@@ -153,6 +153,17 @@
 		},
 	    methods: {
 			init() {
+				switch (this.options.type) {
+					case 'outgo':
+						this.current = 0;
+					break;
+					case 'income':
+						this.current = 1;
+					break;
+					case 'loan':
+						this.current = 2;
+					break;
+				}
 				this.initCategory(this.options);
 				this.initBook();
 			},
@@ -176,10 +187,9 @@
 			},
 			initCategory(options) {
 				var _this = this;
-				var types = ['outgo', 'income', 'loan'];
 				//初始化常用类别
 				category.baseUrl = this.baseUrl;
-				category.type = types[this.current];
+				category.type = this.types[this.current];
 				category.authToken = this.authToken;
 				category.getFavoriteCategory(function(result){
 					_this.checkLogin(result);
@@ -196,6 +206,12 @@
 							showCancel: false
 						});
 					}
+				});
+			},
+			gotoCategory() {
+				this.options.type = this.types[this.current];
+				uni.navigateTo({
+					url: '../category/category?'+ this.jsonToQueryStr(this.options)
 				});
 			},
 			closeRightDrawer() {
@@ -253,8 +269,7 @@
 				}else{
 					uni.showToast({ title: graceChecker.error, icon: "none" });
 				}
-				var types = ['outgo', 'income', 'loan'];
-				formData.type = types[this.current];
+				formData.type = this.types[this.current];
 				uni.request({
 					method: 'POST',
 					dataType: 'json',

@@ -75,18 +75,18 @@
 						console.log(res);
 						var result = res.data;
 						if (result.code == 0) {
-							//登录成功，保存用户信息@todo
+							//成功，保存用户信息
 							uni.clearStorage();
 							uni.setStorage({
 								key:'user', 
 								'data':result.data,
 								success: function () {
-									console.log('storage success');	
+									uni.switchTab({
+										url:'../index/index'
+									});
 								},
 							});
-							uni.switchTab({
-								url:'../index/index'
-							})
+							
 						} else {
 							uni.showModal({
 								content: result.msg,
@@ -95,14 +95,10 @@
 						}
 					},
 					fail: (err) => {
-						// console.log('request fail', err);
 						uni.showModal({
 							content: err.errMsg,
 							showCancel: false
 						});
-					},
-					complete: () => {
-						this.loading = false;
 					}
 				});
 			},

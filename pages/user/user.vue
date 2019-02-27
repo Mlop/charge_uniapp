@@ -23,7 +23,7 @@
 			</view>
 		</view>
 		<view class="uni-btn-v uni-common-mt">
-			<button class="btn-submit" type="primary" @click="logout">退出登录</button>
+			<button class="btn-submit" type="primary" @click="logout" v-if="user">退出登录</button>
 		</view>
 	</view>
 </template>
@@ -41,9 +41,11 @@
 					url: this.baseUrl+'user',
 					data: {
 					},
+					header: {
+						Authorization:this.authToken,
+					},
 					success: (res) => {
 						var result = res.data;
-						console.log(result);
 						if (result.code == 0) {
 							this.user = result.data;
 						} else {
@@ -71,14 +73,7 @@
 			}
 		},
 		onLoad(option) {
-			uni.getStorage({
-				key: 'user',
-				success: function (res) {
-					this.user = res.data;
-					console.log(this.user);
-				}
-			});
-			// this.getUser();
+			this.getAuthToken(this.getUser);
 		},
 		onNavigationBarButtonTap(e) {
 			uni.navigateTo({

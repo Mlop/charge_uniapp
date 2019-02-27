@@ -191,13 +191,13 @@
 					});
 				} else {//无子分类直接编辑
 					uni.navigateTo({
-						url: '../category/edit?parent_id=' + pid + '&id=' + id + '&title=' + item.title + '&type=' + item.type
+						url: 'edit?parent_id=' + pid + '&id=' + id + '&title=' + item.title + '&type=' + item.type
 					});
 				}
 			},
 			navigateToNew() {
 				uni.navigateTo({
-					url: '../category/edit?parent_id=' + this.option.parent_id + '&type=' + this.option.type
+					url: 'edit?parent_id=' + this.option.parent_id + '&type=' + this.option.type
 				});
 			}
 		},

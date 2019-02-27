@@ -29,8 +29,7 @@
 				categoryActive: 0,
 				scrollTop: 0,
 				scrollHeight: 0,
-				// name: "abdd",
-				// type: 'in',
+				options: {},
 			}
 		},
 		methods: {
@@ -43,26 +42,41 @@
 				this.scrollTop = -this.scrollHeight * index;
 			},
 			categoryClickSub(category) {
-				// console.log(category.title);
 				var pages = getCurrentPages();
 				var currPage = pages[pages.length - 1]; //当前页面
 				var prevPage = pages[pages.length - 2]; //上一个页面
-				// console.log(prevPage);
+				this.options.category_id = category.id;
+				this.options.category_title = category.title;
+				
 				uni.navigateTo({
-					url: '/' + prevPage.route + '?category_id=' + category.id + '&category_title=' + category.title,
+					url: '/' + prevPage.route + '?' + this.jsonToQueryStr(this.options),
 				});
 			},
+			init() {
+				category.baseUrl = this.baseUrl;
+				category.type = this.options.type;
+				category.authToken = this.authToken;
+				var _this = this; 
+				category.getCategoryList(function(data){
+					_this.checkLogin(data);
+					if (data.code == 0) {
+						_this.categoryList = data.data;
+						_this.subCategoryList = data.data[0].sub;
+					} else {
+						uni.showModal({
+							content: data.msg,
+							showCancel: false
+						});
+					}
+					
+				});
+				this.height = uni.getSystemInfoSync().windowHeight;
+			},
 		},
-		onLoad: function (option) {
-			category.baseUrl = this.baseUrl;
-			category.type = option.type;
-			category.authToken = this.authToken;
-			var _this = this; 
-			category.getCategoryList(function(data){
-				_this.categoryList = data;
-				_this.subCategoryList = data[0].sub;
-			});
-			this.height = uni.getSystemInfoSync().windowHeight;
+		onLoad: function (options) {
+			console.log(options);
+			this.options = options;
+			this.getAuthToken(this.init);
 		}
 	}
 </script>

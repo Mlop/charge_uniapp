@@ -16,14 +16,7 @@ export const category = {
 			},
 			success: (res) => {
 				var result = res.data;
-				if (result.code == 0) {
-					setCategoryCallback(result.data);
-				} else {
-					uni.showModal({
-						content: result.msg,
-						showCancel: false
-					});
-				}
+				setCategoryCallback(result);
 			},
 			fail: (err) => {
 				uni.showModal({

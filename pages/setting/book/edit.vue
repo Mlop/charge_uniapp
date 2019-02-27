@@ -34,13 +34,14 @@
 		methods: {
 			edit: function() {
 				uni.request({
-					// method: 'POST',
+					method: 'PUT',
 					dataType: 'json',
-					url: this.baseUrl+'category/' + this.id + '/edit',
+					url: this.baseUrl+'book/' + this.id,
 					data: {
 						title: this.inputClearValue,
-						parent_id: this.me.parent_id,
-						type: this.me.type,
+					},
+					header: {
+						Authorization:this.authToken,
 					},
 					success: (res) => {
 						var result = res.data;
@@ -58,18 +59,16 @@
 							content: err.errMsg,
 							showCancel: false
 						});
-					},
-					complete: () => {
-						this.loading = false;
 					}
 				});
 			},
 			delete: function() {
 				uni.request({
-					// method: 'POST',
+					method: 'DELETE',
 					dataType: 'json',
-					url: this.baseUrl+'category/' + this.id + '/del',
-					data: {
+					url: this.baseUrl+'book/' + this.id,
+					header: {
+						Authorization:this.authToken,
 					},
 					success: (res) => {
 						var result = res.data;
@@ -88,9 +87,6 @@
 							content: err.errMsg,
 							showCancel: false
 						});
-					},
-					complete: () => {
-						this.loading = false;
 					}
 				});
 			},
@@ -116,8 +112,9 @@
 			this.showClearIcon = (this.inputClearValue.length > 0) ? true : false;
 			this.me = option; 
 			uni.setNavigationBarTitle({
-				title: (this.id == 0) ? '添加新类别' : '编辑类别' + this.title
+				title: (this.id == 0) ? '添加新账本' : '编辑账本' + this.title
 			});
+			this.getAuthToken();
 		}
 	}
 </script>

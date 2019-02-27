@@ -4,6 +4,7 @@
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "帐目",
+				"enablePullDownRefresh" : true,
 				"app-plus" : {
 				    "titleNView" : {
 				        "buttons" : [
@@ -93,7 +94,26 @@
 		{
 			"path": "pages/setting/book/book",
 			"style": {
-				"navigationBarTitleText": "账本设置"
+				"navigationBarTitleText": "账本设置",
+				"enablePullDownRefresh" : true
+			}
+		},
+		{
+			"path": "pages/setting/book/edit",
+			"style": {
+				"navigationBarTitleText": "编辑账本",
+				"app-plus" : {
+				    "titleNView" : {
+				        "buttons" : [
+				            {
+				                "text" : "\ue401",
+				                "fontSrc" : "/static/uni.ttf",
+				                "fontSize" : "22px",
+				                "color" : "#999999"
+				            }
+				        ]
+				    }
+				}
 			}
 		},
 		{
@@ -171,7 +191,7 @@
 	            "text" : "记账"
 	        },
 	        {
-	            "pagePath" : "pages/index/loan",
+	            "pagePath" : "pages/account/list",
 	            "iconPath" : "static/api.png",
 	            "selectedIconPath" : "static/apiHL.png",
 	            "text" : "统计"

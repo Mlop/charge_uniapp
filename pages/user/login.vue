@@ -66,18 +66,13 @@
 						var result = res.data;
 						console.log(result);
 						if (result.code == 0) {
-							//登录成功，保存用户信息@todo
+							//登录成功，保存用户信息
 							uni.clearStorage();
 							uni.setStorage({
 								key:'user', 
 								'data':result.data,
 								success: function (data) {
-// 									_this.authToken = data.token;
-// 									console.log(_this.authToken);
-uni.navigateBack();
-									// uni.switchTab({
-									// 								url:'../index/index'
-									// 							});
+									uni.navigateBack();
 								},
 							});
 							// uni.navigateBack();
