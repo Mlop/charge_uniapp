@@ -21,7 +21,7 @@
 				</view>
 				<view class="uni-btn-v uni-common-mt">
 					<button class="btn-submit" formType="submit" type="primary">登录</button>
-					<button type="default" formType="reset">Reset</button>
+					<navigator url="register"><button type="default">注册</button></navigator>
 				</view>
 			</form>
 		</view>
@@ -64,6 +64,7 @@
 					data: formData,
 					success: (res) => {
 						var result = res.data;
+						console.log(result);
 						if (result.code == 0) {
 							//登录成功，保存用户信息@todo
 							uni.clearStorage();
@@ -73,11 +74,16 @@
 								success: function (data) {
 // 									_this.authToken = data.token;
 // 									console.log(_this.authToken);
+uni.navigateBack();
+									// uni.switchTab({
+									// 								url:'../index/index'
+									// 							});
 								},
 							});
-							uni.switchTab({
-								url:'../index/index'
-							})
+							// uni.navigateBack();
+// 							uni.switchTab({
+// 								url:'../index/index'
+// 							});
 						} else {
 							uni.showModal({
 								content: result.msg,

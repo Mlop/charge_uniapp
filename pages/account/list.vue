@@ -5,33 +5,37 @@
                 <view class="uni-list-cell uni-collapse" v-for="(list,index) in lists" :key="index" :class="index === lists.length - 1 ? 'uni-list-cell-last' : ''">
                     <view class="uni-list-cell-navigate uni-navigate-bottom" hover-class="uni-list-cell-hover" :class="list.show ? 'uni-active' : ''"
                         @click="trigerCollapse(index)">
-                        {{list.ym}}
-						<!-- ￥<uni-badge :text="list.total" type="success"></uni-badge> -->
-						<view class="uni-triplex-row" hover-class="uni-list-cell-hover" v-for="(row,i) in list.item" :key="i">
-							<view class="uni-triplex-left">
-								<text class="uni-title uni-ellipsis">{{row.total}}</text>
-								<!-- <text class="uni-text-small uni-ellipsis">{{row.remark}}</text>
-								<text class="uni-text">{{row.total}}</text> -->
+						<view class="uni-media-list" style="width: 150upx;">
+							<view class="uni-media-list-logo">
+								<view class="uni-media-list-text-top">{{list.ym|formatYear}}</view>
+								<view class="uni-media-list-text-bottom uni-ellipsis">{{list.ym|formatMonth}}</view>
 							</view>
 						</view>
-						<view class="text" style="text-align: right;width: 100upx;">￥{{list.total}}</view>
-						
+						<view class="uni-media-list" hover-class="uni-list-cell-hover">
+							<view class="uni-media-list-body" style="height: 110upx;">
+								<view class="uni-media-list-text-top" v-for="(row,i) in list.item" :key="i">
+									<text v-bind:class="row.type">{{row|formatTotal}}</text>
+								</view>
+							</view>
+						</view>
+						<view class="text" style="width: 45%;">{{currency(list.total)}}</view>
                     </view>
                     <view class="uni-list uni-collapse" :class="list.show ? 'uni-active' : ''">
 						<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(item,key) in detail" :key="key" :class="key === detail.length - 1 ? 'uni-list-cell-last' : ''">
-							<view class="uni-triplex-row" hover-class="uni-list-cell-hover" >
+							<view class="uni-media-list-logo" style="width: 130upx;">
+								<view class="uni-media-list-text-top">{{item.title}}</view>
+								<view class="uni-media-list-text-bottom uni-ellipsis">{{item.days}}日</view>
+							</view>
+							<view class="uni-triplex-row" hover-class="uni-list-cell-hover" @click="editDetail(item)">
 							    <view class="uni-triplex-left">
-							        <text class="uni-title uni-ellipsis">{{item.title}}</text>
-									<text class="uni-text-small uni-ellipsis">{{item.remark}}</text>
-							        <text class="uni-text">{{item.created_at}}</text>
-							        
+							        <text class="uni-title uni-ellipsis">{{item.remark}}</text>
+									<text class="uni-text">{{item.created_at}} 创建</text>
 							    </view>
-							    <view class="uni-triplex-right">
-							        <text class="uni-h5">￥{{item.cash}}</text>
+							    <view class="uni-triplex-right" style="width: 25%;text-align: left;">
+							        <text class="uni-h5" v-bind:class="item.type">{{currency(item.cash)}}</text>
 							    </view>
 							</view>
 						</view>
-						
                     </view>
                 </view>
             </view>
@@ -67,7 +71,37 @@
 		components: {
 			uniBadge
 		},
+		filters: {
+			formatYear(ym) {
+				if (ym == undefined) {
+					return ym;
+				}
+				var date = ym.split('-');
+				return date[0];
+			},
+			formatMonth(ym) {
+				if (ym == undefined) {
+					return ym;
+				}
+				var date = ym.split('-');
+				return date[1];
+			},
+			formatTotal(item) {
+				var type = "";
+				switch (item.type) {
+					case "in":type = "收入";break;
+					case "out":type = "支出";break;
+					case "loan":type = "借贷";break;
+				}
+				return type + " ￥" + item.total;
+			}
+		},
         methods: {
+			editDetail(item) {
+				uni.navigateTo({
+					url:'edit?type=' + item.type + '&id=' + item.id
+				})
+			},
 			openMonthly(i) {
 				var _this = this;
 				var monthData = _this.lists[i];
@@ -156,10 +190,10 @@
 </script>
 
 <style>
-	.out {
+	.outgo {
 		color: #dd524d;
 	}
-	.in {
+	.income {
 		color: #4cd964;
 	}
 	.loan {

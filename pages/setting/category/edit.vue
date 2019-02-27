@@ -36,11 +36,14 @@
 				uni.request({
 					method: 'PUT',
 					dataType: 'json',
-					url: this.baseUrl+'category/' + this.id + '/edit',
+					url: this.baseUrl+'category/' + this.id,
 					data: {
 						title: this.inputClearValue,
 						parent_id: this.me.parent_id,
 						type: this.me.type,
+					},
+					header: {
+						Authorization:this.authToken,
 					},
 					success: (res) => {
 						var result = res.data;
@@ -68,8 +71,11 @@
 				uni.request({
 					method: 'DELETE',
 					dataType: 'json',
-					url: this.baseUrl+'category/' + this.id + '/del',
+					url: this.baseUrl+'category/' + this.id,
 					data: {
+					},
+					header: {
+						Authorization:this.authToken,
 					},
 					success: (res) => {
 						var result = res.data;
@@ -118,6 +124,7 @@
 			uni.setNavigationBarTitle({
 				title: (this.id == 0) ? '添加新类别' : '编辑类别' + this.title
 			});
+			this.getAuthToken();
 		}
 	}
 </script>

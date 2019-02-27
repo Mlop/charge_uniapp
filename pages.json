@@ -1,13 +1,25 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-			"path": "pages/index/index"//,
-// 			"style": {
-// 				"navigationBarTitleText": "uni-app"
-// 			}
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "帐目",
+				"app-plus" : {
+				    "titleNView" : {
+				        "buttons" : [
+				            {
+				                "text" : "\ue563",
+				                "fontSrc" : "/static/uni.ttf",
+				                "fontSize" : "22px"
+				            }
+				        ]
+				    },
+				    "bounce" : "none"
+				}
+			}
 		},
 		{
-			"path": "pages/outgo/outgo",
+			"path": "pages/account/add",
 			"style": {
 				"navigationBarTitleText": "支出",
 				"app-plus" : {
@@ -25,19 +37,25 @@
 			}
 		},
 		{
-			"path": "pages/index/income",
+			"path": "pages/account/edit",
 			"style": {
-				"navigationBarTitleText": "收入"
+				"navigationBarTitleText": "编辑",
+				"app-plus" : {
+				    "titleNView" : {
+				        "buttons" : [
+				            {
+				                "text" : "\ue563",
+				                "fontSrc" : "/static/uni.ttf",
+				                "fontSize" : "22px"
+				            }
+				        ]
+				    },
+				    "bounce" : "none"
+				}
 			}
 		},
 		{
-			"path": "pages/index/loan",
-			"style": {
-				"navigationBarTitleText": "借贷"
-			}
-		},
-		{
-			"path": "pages/index/list",
+			"path": "pages/account/list",
 			"style": {
 				"navigationBarTitleText": "详细"
 			}
@@ -106,7 +124,7 @@
 		{
 			"path": "pages/user/user",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "我的",
 				"app-plus" : {
 				    "titleNView" : {
 				        "buttons" : [

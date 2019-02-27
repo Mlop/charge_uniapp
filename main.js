@@ -10,11 +10,10 @@ const app = new Vue({
 })
 app.$mount()
 
-Vue.prototype.baseUrl = 'http://charge.com/';
-//Vue.prototype.baseUrl = 'http://119.27.163.89:8082/';
+// Vue.prototype.baseUrl = 'http://charge.com/';
+Vue.prototype.baseUrl = 'http://119.27.163.89:8082/';
 Vue.prototype.authToken = '';
 Vue.prototype.checkLogin = function(result) {
-	// console.log(result);
 	if (result.code == 401) {
 		uni.navigateTo({
 			url:'/pages/user/login'
@@ -40,11 +39,14 @@ Vue.prototype.getAuthToken = function(afterLogin) {
 			afterLogin();
 		}
 	});
-// 	console.log('before');
-// 	//异步取auth token，所以延时500ms后执行后续操作
-// 	setTimeout(function(){
-// 		console.log('in');
-// 	},  1000);
-// 	console.log('after');
-};
-// Vue.prototype.getAuthToken();
+}
+Vue.prototype.currency = function(price) {
+	return '￥' + price;
+}
+Vue.prototype.jsonToQueryStr = function(options) {
+	var tmps = [];
+	for (var key in options) {
+		tmps.push(key + '=' + options[key]);
+	}
+	return tmps.join('&');
+}

@@ -11,6 +11,14 @@
 					</view>
 				</view>
 				<view>
+					<view class="uni-title">名称</view>
+					<view class="uni-list">
+						<view class="uni-list-cell">
+							<input class="uni-input" name="name" placeholder="请填写您的登录名称" />
+						</view>
+					</view>
+				</view>
+				<view>
 					<view class="uni-title">密码</view>
 					<view class="uni-list">
 						<view class="with-fun" style="display: flex;">

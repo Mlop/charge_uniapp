@@ -38,7 +38,7 @@
 			return {
 				title: 'abcc',
 				loading: false,
-				requestUrl: this.baseUrl+'category/list',
+				requestUrl: this.baseUrl+'categories',
 				list: [],
 				showClearIcon: false,
 				inputClearValue: '',
@@ -55,8 +55,6 @@
 			this.delete();
 		},
 		onPullDownRefresh(e) {
-			console.log('refresh');
-			// console.log(e);
 			setTimeout(function () {
 				uni.stopPullDownRefresh();
 			}, 1000);
@@ -65,9 +63,9 @@
 		methods: {
 			delete: function() {
 				uni.request({
-					// method: 'POST',
+					method: 'DELETE',
 					dataType: 'json',
-					url: this.baseUrl+'category/' + this.id + '/del',
+					url: this.baseUrl+'category/' + this.id,
 					data: {
 					},
 					success: (res) => {
@@ -97,7 +95,7 @@
 				uni.request({
 					method: 'PUT',
 					dataType: 'json',
-					url: this.baseUrl+'category/' + this.id + '/edit',
+					url: this.baseUrl+'category/' + this.id,
 					data: {
 						title: this.inputClearValue,
 						parent_id: 0,
@@ -140,6 +138,7 @@
 				this.showClearIcon = false;
 			},
 			sendRequest: function() {
+				console.log(this.authToken);
 				var option = this.option;
 				if (option.id > 0) {
 					this.showTitleInput = true;
@@ -147,14 +146,19 @@
 					this.inputClearValue = option.title;
 					this.id = option.id;
 				}
+				var _this = this;
 				uni.request({
 					url: this.requestUrl,
 					data: {
 						type: option.type,
 						parent_id: option.parent_id,
 					},
+					header: {
+						Authorization:this.authToken,
+					},
 					success: (res) => {
 						var result = res.data;
+						this.checkLogin(result);
 						if (result.code == 0) {
 							this.list = result.data;
 							// console.log(this.list);
@@ -198,7 +202,6 @@
 			}
 		},
 		onLoad(option) {
-			console.log('category onload');
 			option.parent_id = (option.parent_id == undefined) ? 0 : option.parent_id;
 			option.type = (option.type == undefined) ? 'out' : option.type;
 			option.show_title = (option.title == undefined) ? '类别管理' : option.title;
@@ -211,7 +214,7 @@
 			});
 			// this.me = option;
 			this.option = option;
-			this.sendRequest();
+			this.getAuthToken(this.sendRequest);
 		}
 	}
 </script>
