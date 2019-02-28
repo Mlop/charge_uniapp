@@ -1456,3 +1456,15 @@ radio-group label, checkbox-group label{
     left: 0;
     transform: translateY(50%);
 }
+.outgo {
+	color: #dd524d;
+	font-weight: bold;
+}
+.income {
+	color: #4cd964;
+	font-weight: bold;
+}
+.loan {
+	color: #f0ad4e;
+	font-weight: bold;
+}

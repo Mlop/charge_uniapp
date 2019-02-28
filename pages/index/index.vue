@@ -198,13 +198,4 @@
 	.title {
 		padding: 10upx 25upx;
 	}
-	.outgo {
-		color: #dd524d;
-	}
-	.income {
-		color: #4cd964;
-	}
-	.loan {
-		color: #f0ad4e;
-	}
 </style>

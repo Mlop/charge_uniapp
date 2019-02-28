@@ -146,6 +146,7 @@
 			"path": "pages/user/user",
 			"style": {
 				"navigationBarTitleText": "我的",
+				"enablePullDownRefresh" : true,
 				"app-plus" : {
 				    "titleNView" : {
 				        "buttons" : [
