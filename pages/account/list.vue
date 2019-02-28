@@ -8,7 +8,7 @@
 						<view class="uni-media-list" style="width: 150upx;">
 							<view class="uni-media-list-logo">
 								<view class="uni-media-list-text-top">{{list.ym|formatYear}}</view>
-								<view class="uni-media-list-text-bottom uni-ellipsis">{{list.ym|formatMonth}}</view>
+								<view class="uni-media-list-text-bottom uni-ellipsis">{{list.ym|formatMonth}}月</view>
 							</view>
 						</view>
 						<view class="uni-media-list" hover-class="uni-list-cell-hover">
@@ -18,7 +18,7 @@
 								</view>
 							</view>
 						</view>
-						<view class="text" style="width: 45%;">{{currency(list.total)}}</view>
+						<view class="text" style="width: 60%;">{{currency(list.total)}}</view>
                     </view>
                     <view class="uni-list uni-collapse" :class="list.show ? 'uni-active' : ''">
 						<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(item,key) in detail" :key="key" :class="key === detail.length - 1 ? 'uni-list-cell-last' : ''">
@@ -165,7 +165,7 @@
 						_this.checkLogin(result);
 						if (result.code == 0) {
 							this.lists = result.data;
-							console.log(this.lists);
+							// console.log(this.lists);
 							// this.lists[0]['show'] = true;
 						} else {
 							uni.showModal({
@@ -183,6 +183,12 @@
 				});
 			}
         },
+		onPullDownRefresh(e) {
+			setTimeout(function () {
+				uni.stopPullDownRefresh();
+			}, 1000);
+			this.init();
+		},
 		onLoad(options) {
 			this.getAuthToken(this.init);
 		}

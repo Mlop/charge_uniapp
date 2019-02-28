@@ -163,6 +163,9 @@
 					case 'loan':
 						this.current = 2;
 					break;
+					default:
+						this.current = 0;
+					break;
 				}
 				this.initCategory(this.options);
 				this.initBook();
@@ -295,9 +298,6 @@
 							content: err.errMsg,
 							showCancel: false
 						});
-					},
-					complete: () => {
-						this.loading = false;
 					}
 				});
 			},

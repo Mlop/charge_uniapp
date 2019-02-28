@@ -58,7 +58,8 @@
 		{
 			"path": "pages/account/list",
 			"style": {
-				"navigationBarTitleText": "详细"
+				"navigationBarTitleText": "详细",
+				"enablePullDownRefresh" : true
 			}
 		},
 		{

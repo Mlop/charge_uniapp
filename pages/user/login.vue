@@ -6,7 +6,7 @@
 					<view class="uni-title">账户</view>
 					<view class="uni-list">
 						<view class="uni-list-cell">
-							<input class="uni-input" name="account" placeholder="请填写您的手机号码/邮箱地址" />
+							<input class="uni-input" name="account" placeholder="请填写您的名称/手机号码/邮箱地址" />
 						</view>
 					</view>
 				</view>

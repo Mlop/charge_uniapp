@@ -1,12 +1,5 @@
 <template>
     <view>
-		<view class="header">
-		<!-- #ifdef MP -->
-			<view class="icon" @click="showRightDrawer">
-				<uni-icon type="bars" color="#666666" :size="22"></uni-icon>
-			</view>
-			<!-- #endif -->
-		</view>
 		<uni-drawer :visible="rightDrawerVisible" mode="right" @close="closeRightDrawer">
 			<view style="padding:30upx;">
 				<view class="uni-title">账本</view>
@@ -48,12 +41,9 @@
 				<view class="uni-padding-wrap uni-common-mt">
 					<view class="uni-active">
 						<view class="" hover-class="uni-list-cell-hover">
-							<navigator @click="gotoCategory" hover-class="navigator-hover">
-								<view class="uni-title uni-list-cell-navigate uni-navigate-right">
-									<text>常用类别</text>
-								</view>
-							</navigator>
-							
+							<view @click="gotoCategory" class="uni-title uni-list-cell-navigate uni-navigate-right">
+								<text>常用类别</text>
+							</view>
 						</view>
 					</view>
 					<view class="tag-view" v-for="(item, index) in categoryFavorite" :key="index">
@@ -122,6 +112,7 @@
 					'收入',
 					'借贷'
 				],
+				types: ['outgo', 'income', 'loan'],
 				current: 0,
 				categoryFavorite: [],
 				bookList: [],
@@ -158,20 +149,20 @@
 		},
 	    methods: {
 			init() {
+				this.setTabIndex(this.options.type);
 				this.initCategory(this.options);
 				this.initForm(this.options);
 				this.initBook();
 			},
 			gotoCategory() {
-				var qs = this.jsonToQueryStr(this.options);
-				 uni.navigateTo({"url":"../category/category?" + qs});
+				this.options.type = this.types[this.current];
+				uni.navigateTo({"url":"../category/category?" + this.jsonToQueryStr(this.options)});
 			},
-			initCategory(options) {
+			initCategory(options, changeCategory) {
 				var _this = this;
-				var types = ['outgo', 'income', 'loan'];
 				//初始化常用类别
 				category.baseUrl = this.baseUrl;
-				category.type = types[this.current];
+				category.type = this.types[this.current];
 				category.authToken = this.authToken;
 				category.getFavoriteCategory(function(result){
 					_this.checkLogin(result);
@@ -180,8 +171,9 @@
 						_this.categoryFavorite = data;
 						//未选择任何类别初始化第一个关注的常用类别
 // 						if (options == undefined || options.category_id == undefined) {
-// 							// _this.setType(data[0]);
-// 						}
+						if (changeCategory != undefined) {
+							_this.setType(data[0]);
+						}
 					} else {
 						uni.showModal({
 							content: result.msg,
@@ -208,35 +200,26 @@
 					}
 				});
 			},
-			getRouteByType(type) {
-				var route = "outgo";
+			setTabIndex(type) {
 				switch (type) {
-					case "out":
-						route = "outgo";
-					break;
-					case "in":
-						route = "income";
-					break;
-					case "loan":
-						route = "loan";
+					case 'outgo':
+						this.current = 0;
+						break;
+					case 'income':
+						this.current = 1;
+						break;
+					case 'loan':
+						this.current = 2;
+						break;
+					default:
+						this.current = 0;
 					break;
 				}
-				return route;
 			},
 			initForm(options) {
 				var url = this.baseUrl + "account/" + this.options.id;
 				var _this = this;
-				switch (options.type) {
-					case 'outgo':
-						_this.current = 0;
-						break;
-					case 'income':
-						_this.current = 1;
-						break;
-					case 'loan':
-						_this.current = 2;
-						break;
-				}
+				this.setTabIndex(options.type);
 				uni.request({
 					method: 'GET',
 					// dataType: 'json',
@@ -297,8 +280,8 @@
 			onClickItem(index) {
 				if (this.current !== index) {
 					this.current = index;
-				}
-				this.initCategory();
+				}console.log('click');
+				this.initCategory('', true);
 			},
 			bindDateChange: function(e) {
 				this.initData.date = e.target.value;
@@ -350,8 +333,7 @@
 				}else{
 					uni.showToast({ title: graceChecker.error, icon: "none" });
 				}
-				var types = ['outgo', 'income', 'loan'];
-				formData.type = types[this.current];
+				formData.type = this.types[this.current];
 				uni.request({
 					method: 'PUT',
 					dataType: 'json',

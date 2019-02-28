@@ -1,11 +1,5 @@
 <template>
     <view>
-		<!-- #ifdef MP -->
-			<view class="icon" @click="showRightDrawer">
-				<uni-icon type="bars" color="#666666" :size="22"></uni-icon>
-			</view>
-			<!-- #endif -->
-		
 		<uni-drawer :visible="rightDrawerVisible" mode="right" @close="closeRightDrawer">
 			<view style="padding:30upx;">
 				<view class="uni-title">账本</view>

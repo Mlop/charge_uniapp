@@ -14,7 +14,7 @@ app.$mount()
 Vue.prototype.baseUrl = 'http://119.27.163.89:8082/';
 Vue.prototype.authToken = '';
 Vue.prototype.checkLogin = function(result) {
-	console.log('check login', result);
+	// console.log('check login', result);
 	if (result.code == 401) {
 		uni.navigateTo({
 			url:'/pages/user/login'

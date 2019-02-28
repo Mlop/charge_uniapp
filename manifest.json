@@ -64,6 +64,12 @@
     "h5" : {
         "devServer" : {
             "https" : false
-        }
+        },
+        "title" : "charge",
+        "router" : {
+            "base" : "",
+            "mode" : "history"
+        },
+        "domain" : ""
     }
 }
