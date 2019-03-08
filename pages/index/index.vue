@@ -1,6 +1,7 @@
 <template>
     <view>
-		<uni-drawer :visible="rightDrawerVisible" mode="right" @close="closeRightDrawer">
+		<book-menu>sfsfs</book-menu>
+		<!--<uni-drawer :visible="rightDrawerVisible" mode="right" @close="closeRightDrawer">
 			<view style="padding:30upx;">
 				<view class="uni-title">账本</view>
 				<view class="uni-list uni-common-mt">
@@ -9,10 +10,17 @@
 							{{item.title}}
 						</view>
 					</view>
-					
+					<view class="uni-list-cell uni-list-cell-last" hover-class="uni-list-cell-hover">
+						<view>
+							<view class="uni-list-cell-navigate" @click="goToNewBook">
+								<span class="uni-icon uni-icon-plus"></span>
+								<text>添加新账本</text>
+							</view>
+						</view>
+					</view>
 				</view>
 			</view>
-		</uni-drawer>
+		</uni-drawer>-->
 		
 		<view class="uni-common-mt">
 			<view class="uni-form-item uni-column">
@@ -46,20 +54,18 @@
 </template>
 
 <script>
-	import uniDrawer from '@/components/uni-drawer.vue';
+	// import uniDrawer from '@/components/uni-drawer.vue';
+	import bookMenu from '@/components/book-menu.vue';
 	import uniIcon from '@/components/uni-icon.vue';
 	import {book} from '@/common/book.js';
 	export default {
 		components: {
-			uniDrawer,
+			bookMenu,
 			uniIcon
 		},
 		data() {
 			return {
 				result: {},
-// 				showPopupTop:false,
-// 				popType: 'top',
-// 				msg:'',
 				bookList:[],
 				selectBookId: 0,
 				//顶部账本选择菜单
@@ -91,6 +97,11 @@
 			this.init();
 		},
 		methods: {
+			goToNewBook() {
+				uni.navigateTo({
+					url: '../setting/book/edit'
+				});
+			},
 			openAccountList() {
 				uni.switchTab({
 					url: '../account/list'
@@ -199,3 +210,4 @@
 		padding: 10upx 25upx;
 	}
 </style>
+

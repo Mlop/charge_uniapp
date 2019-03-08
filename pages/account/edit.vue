@@ -171,9 +171,15 @@
 						_this.categoryFavorite = data;
 						//未选择任何类别初始化第一个关注的常用类别
 // 						if (options == undefined || options.category_id == undefined) {
-						if (changeCategory != undefined) {
+	
+						if (!_this.category) {
 							_this.setType(data[0]);
+						} else {//console.log(_this.category);
+							_this.setType(_this.category);
 						}
+// 						if (changeCategory != undefined) {
+// 							_this.setType(data[0]);
+// 						}
 					} else {
 						uni.showModal({
 							content: result.msg,
@@ -235,7 +241,10 @@
 							var data = result.data;
 							_this.initData = data;
 							_this.date = this.formatDate(data.record_at);
-							_this.category = {"id":data.category_id, "title":data.category_title};
+							console.log(_this.options);
+							if (options.category_id == undefined) {
+								_this.category = {"id":data.category_id, "title":data.category_title};
+							}
 							_this.setType(_this.category);
 						} else {
 							uni.showModal({
