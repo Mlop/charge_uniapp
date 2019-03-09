@@ -1,24 +1,6 @@
 <template>
     <view>
-		<view class="header">
-		<!-- #ifdef MP -->
-			<view class="icon" @click="showRightDrawer">
-				<uni-icon type="bars" color="#666666" :size="22"></uni-icon>
-			</view>
-			<!-- #endif -->
-		</view>
-		<uni-drawer :visible="rightDrawerVisible" mode="right" @close="closeRightDrawer">
-			<view style="padding:30upx;">
-				<view class="uni-title">账本</view>
-				<view class="uni-list uni-common-mt">
-					<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(item, index) in bookList" :key="index">
-						<view class="uni-list-cell-navigate uni-navigate-right" @tap="selectBook(item)">
-							{{item.title}}
-						</view>
-					</view>
-				</view>
-			</view>
-		</uni-drawer>
+		<book-menu :rightDrawerVisible="rightDrawerVisible" ref="bookMenu"></book-menu>
 		<view class="uni-padding-wrap uni-common-mt">
 			<uni-segmented-control :current="current" :values="items" v-on:clickItem="onClickItem" styleType="text"
 			 activeColor="#007aff"></uni-segmented-control>
@@ -37,7 +19,7 @@
 							<view class="uni-list-cell-left">
 								{{category.title}}
 								<input type="text" name="category_id" :value="category.id" v-show="false" />
-								<input type="text" name="book_id" :value="selectBookId" v-show="false" />
+								<!-- <input type="text" name="book_id" :value="selectBookId" v-show="false" /> -->
 							</view>
 							<view class="uni-list-cell-db" style="text-align: right;">
 								<input class="uni-input" type="number" focus placeholder="0.00" name="cash" />
@@ -86,22 +68,20 @@
 
 <script>
 	import uniSegmentedControl from '@/components/uni-segmented-control.vue';
-	import uniDrawer from '@/components/uni-drawer.vue';
-	import uniIcon from '@/components/uni-icon.vue';
+	import bookMenu from '@/components/book-menu.vue';
 	
 	//来自 graceUI 的表单验证， 使用说明见手册 http://grace.hcoder.net/doc/info/73-3.html
 	var  graceChecker = require("@/common/graceChecker.js");
 	import uniTag from '@/components/uni-tag.vue'
 	
 	import {category} from '@/common/category.js';
-	import {book} from '@/common/book.js';
+	// import {book} from '@/common/book.js';
 	
 	export default {
 	    components: {
 	        uniTag,
 			uniSegmentedControl,
-			uniDrawer,
-			uniIcon
+			bookMenu
 	    },
 	    data() {
 			const currentDate = this.getDate({
@@ -118,8 +98,8 @@
 				types: ['outgo', 'income', 'loan'],
 				current: 0,
 				categoryFavorite: [],
-				bookList: [],
-				selectBookId: 0,
+// 				bookList: [],
+// 				selectBookId: 0,
 				//顶部账本选择菜单
 				rightDrawerVisible: false,
 				options: {},
@@ -127,7 +107,7 @@
 	        }
 	    },
 		onNavigationBarButtonTap(e) {
-			this.rightDrawerVisible = !this.rightDrawerVisible
+			this.$refs.bookMenu.showRightDrawer();
 		},
 		onBackPress() {
 			// 返回按钮监听
@@ -173,20 +153,20 @@
 			initBook() {
 				var _this = this;
 				//初始化账本
-				book.baseUrl = this.baseUrl;
-				book.authToken = this.authToken;
-				book.getBookList(function(result){
-					if (result.code == 0) {
-						var data = result.data;
-						_this.bookList = data;
-						_this.selectBook(data[0]);
-					} else {
-						uni.showModal({
-							content: result.msg,
-							showCancel: false
-						});
-					}
-				});
+// 				book.baseUrl = this.baseUrl;
+// 				book.authToken = this.authToken;
+// 				book.getBookList(function(result){
+// 					if (result.code == 0) {
+// 						var data = result.data;
+// 						_this.bookList = data;
+// 						// _this.selectBook(data[0]);
+// 					} else {
+// 						uni.showModal({
+// 							content: result.msg,
+// 							showCancel: false
+// 						});
+// 					}
+// 				});
 			},
 			initCategory(options) {
 				var _this = this;
@@ -215,19 +195,6 @@
 				this.options.type = this.types[this.current];
 				uni.navigateTo({
 					url: '../category/category?'+ this.jsonToQueryStr(this.options)
-				});
-			},
-			closeRightDrawer() {
-				this.rightDrawerVisible = false;
-			},
-			showRightDrawer() {
-				this.rightDrawerVisible = true;
-			},
-			selectBook(item) {
-				this.rightDrawerVisible = false;
-				this.selectBookId = item.id;
-				uni.showToast({
-					title: '选中' + item.title
 				});
 			},
 			onClickItem(index) {
@@ -273,6 +240,9 @@
 					uni.showToast({ title: graceChecker.error, icon: "none" });
 				}
 				formData.type = this.types[this.current];
+				//todo
+				var currentBook = uni.getStorageSync('book');
+				formData.book_id = currentBook.id;
 				uni.request({
 					method: 'POST',
 					dataType: 'json',

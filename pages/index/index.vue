@@ -1,26 +1,6 @@
 <template>
     <view>
-		<book-menu>sfsfs</book-menu>
-		<!--<uni-drawer :visible="rightDrawerVisible" mode="right" @close="closeRightDrawer">
-			<view style="padding:30upx;">
-				<view class="uni-title">账本</view>
-				<view class="uni-list uni-common-mt">
-					<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(item, index) in bookList" :key="index">
-						<view class="uni-list-cell-navigate uni-navigate-right" @tap="selectBook(item)">
-							{{item.title}}
-						</view>
-					</view>
-					<view class="uni-list-cell uni-list-cell-last" hover-class="uni-list-cell-hover">
-						<view>
-							<view class="uni-list-cell-navigate" @click="goToNewBook">
-								<span class="uni-icon uni-icon-plus"></span>
-								<text>添加新账本</text>
-							</view>
-						</view>
-					</view>
-				</view>
-			</view>
-		</uni-drawer>-->
+		<book-menu :rightDrawerVisible="rightDrawerVisible" ref="bookMenu"></book-menu>
 		
 		<view class="uni-common-mt">
 			<view class="uni-form-item uni-column">
@@ -54,29 +34,27 @@
 </template>
 
 <script>
-	// import uniDrawer from '@/components/uni-drawer.vue';
 	import bookMenu from '@/components/book-menu.vue';
-	import uniIcon from '@/components/uni-icon.vue';
-	import {book} from '@/common/book.js';
+	// import uniIcon from '@/components/uni-icon.vue';
 	export default {
 		components: {
 			bookMenu,
-			uniIcon
+			// uniIcon
 		},
 		data() {
 			return {
 				result: {},
-				bookList:[],
-				selectBookId: 0,
+// 				bookList:[],
+// 				selectBookId: 0,
 				//顶部账本选择菜单
-				rightDrawerVisible: false
+				rightDrawerVisible: true
 			}
 		},
 		onLoad() {
 			this.getAuthToken(this.init);
 		},
 		onNavigationBarButtonTap() {
-			this.rightDrawerVisible = !this.rightDrawerVisible
+			this.$refs.bookMenu.showRightDrawer();
 		},
 		filters:{
 			formatDate:function (val) {
@@ -97,11 +75,7 @@
 			this.init();
 		},
 		methods: {
-			goToNewBook() {
-				uni.navigateTo({
-					url: '../setting/book/edit'
-				});
-			},
+			
 			openAccountList() {
 				uni.switchTab({
 					url: '../account/list'
@@ -109,28 +83,6 @@
 			},
 			gotoDetail(item) {
 				uni.navigateTo({url:"../account/edit?type=" + item.type + "&id=" + item.id});
-			},
-			closeRightDrawer() {
-				this.rightDrawerVisible = false;
-			},
-			showRightDrawer() {
-				this.rightDrawerVisible = true;
-			},
-			selectBook(item) {
-				this.rightDrawerVisible = false;
-				this.selectBookId = item.id;
-				uni.showToast({
-					title: '选中' + item.title
-				});
-				uni.setNavigationBarTitle({
-					title: "帐目   " + item.title,
-					success: () => {
-						console.log('setNavigationBarTitle success')
-					},
-					fail: (err) => {
-						console.log('setNavigationBarTitle fail, err is', err)
-					}
-				})
 			},
 			init() {
 				uni.request({
@@ -154,22 +106,6 @@
 					fail: (err) => {
 						uni.showModal({
 							content: err.errMsg,
-							showCancel: false
-						});
-					}
-				});
-				//初始化账本
-				book.baseUrl = this.baseUrl;
-				book.authToken = this.authToken;
-				var _this = this;
-				book.getBookList(function(result){
-					if (result.code == 0) {
-						var data = result.data;
-						_this.bookList = data;
-						_this.selectBook(data[0]);
-					} else {
-						uni.showModal({
-							content: result.msg,
 							showCancel: false
 						});
 					}

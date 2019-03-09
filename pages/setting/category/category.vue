@@ -18,7 +18,7 @@
 						{{item.title}}
 					</view>
 				</view>
-				<view class="uni-list-cell uni-list-cell-last" hover-class="uni-list-cell-hover">
+				<view class="uni-list-cell uni-list-cell-last" hover-class="uni-list-cell-hover" v-if="this.list.length>0">
 					<view>
 						<view class="uni-list-cell-navigate" @click="navigateToNew">
 							<span class="uni-icon uni-icon-plus"></span>
@@ -60,6 +60,11 @@
 			}, 1000);
 			this.sendRequest();
 		},
+		onBackPress() {
+			uni.redirectTo({
+				url:"../setting"
+			});
+		},
 		methods: {
 			delete: function() {
 				uni.request({
@@ -68,16 +73,14 @@
 					url: this.baseUrl+'category/' + this.id,
 					data: {
 					},
+					header: {
+						Authorization:this.authToken,
+					},
 					success: (res) => {
 						var result = res.data;
+						this.showResult(res.data, true, "删除成功!");
 						if (result.code == 0) {
-							uni.showToast({title:"删除成功!"});
 							uni.navigateBack();
-						} else {
-							uni.showModal({
-								content: result.msg,
-								showCancel: false
-							});
 						}
 					},
 					fail: (err) => {
@@ -101,20 +104,17 @@
 						parent_id: 0,
 						type: this.option.type,
 					},
+					header: {
+						Authorization:this.authToken,
+					},
 					success: (res) => {
-						// console.log(res);
 						var result = res.data;
+						this.showResult(result);
 						if (result.code == 0) {
-							uni.showToast({title:"保存成功!"});
-						} else {
-							uni.showModal({
-								content: result.msg,
-								showCancel: false
-							});
+							uni.navigateBack();
 						}
 					},
 					fail: (err) => {
-						// console.log('request fail', err);
 						uni.showModal({
 							content: err.errMsg,
 							showCancel: false
@@ -138,7 +138,6 @@
 				this.showClearIcon = false;
 			},
 			sendRequest: function() {
-				console.log(this.authToken);
 				var option = this.option;
 				if (option.id > 0) {
 					this.showTitleInput = true;
@@ -158,19 +157,12 @@
 					},
 					success: (res) => {
 						var result = res.data;
-						this.checkLogin(result);
 						if (result.code == 0) {
 							this.list = result.data;
-							// console.log(this.list);
-						} else {
-							uni.showModal({
-								content: result.msg,
-								showCancel: false
-							});
 						}
+						this.showResult(result, false);
 					},
 					fail: (err) => {
-						// console.log('request fail', err);
 						uni.showModal({
 							content: err.errMsg,
 							showCancel: false
@@ -185,15 +177,15 @@
 				var id = item.id;
 				var pid = item.parent_category_id;
 				//有子分类
-				if (pid == 0 && item.type == 'out') {
+				// if (pid == 0 && item.type == 'out') {
 					uni.navigateTo({
 						url: 'category?parent_id=' + id + '&title=' + item.title + "&id=" + id + "&type=" + item.type
 					});
-				} else {//无子分类直接编辑
-					uni.navigateTo({
-						url: 'edit?parent_id=' + pid + '&id=' + id + '&title=' + item.title + '&type=' + item.type
-					});
-				}
+// 				} else {//无子分类直接编辑
+// 					uni.navigateTo({
+// 						url: 'edit?parent_id=' + pid + '&id=' + id + '&title=' + item.title + '&type=' + item.type
+// 					});
+// 				}
 			},
 			navigateToNew() {
 				uni.navigateTo({

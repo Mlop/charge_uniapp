@@ -64,21 +64,14 @@
 					data: formData,
 					success: (res) => {
 						var result = res.data;
-						console.log(result);
 						if (result.code == 0) {
 							//登录成功，保存用户信息
-							uni.clearStorage();
-							uni.setStorage({
-								key:'user', 
-								'data':result.data,
-								success: function (data) {
-									uni.navigateBack();
-								},
-							});
+							uni.clearStorageSync();
+							uni.setStorageSync('user', result.data);
 							// uni.navigateBack();
-// 							uni.switchTab({
-// 								url:'../index/index'
-// 							});
+							uni.switchTab({
+								url:'../index/index'
+							});
 						} else {
 							uni.showModal({
 								content: result.msg,
