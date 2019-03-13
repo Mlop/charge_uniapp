@@ -18,6 +18,12 @@ Vue.prototype.checkLogin = function(result) {
 		uni.navigateTo({
 			url:'/pages/user/login'
 		});
+	} else if (result.code == 402) {
+		Vue.prototype.authToken = "Bearer " + result.data;
+		//保存token信息
+		var user = uni.getStorageSync('user');
+		user.token = result.data;
+		uni.setStorageSync('user', user);
 	}
 };
 Vue.prototype.getAuthToken = function(afterLogin) {

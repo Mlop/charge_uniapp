@@ -1,17 +1,6 @@
 <template>
     <view>
-		<uni-drawer :visible="rightDrawerVisible" mode="right" @close="closeRightDrawer">
-			<view style="padding:30upx;">
-				<view class="uni-title">账本</view>
-				<view class="uni-list uni-common-mt">
-					<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(item, index) in bookList" :key="index">
-						<view class="uni-list-cell-navigate uni-navigate-right" @tap="selectBook(item)">
-							{{item.title}}
-						</view>
-					</view>
-				</view>
-			</view>
-		</uni-drawer>
+		<book-menu :rightDrawerVisible="rightDrawerVisible" ref="bookMenu"></book-menu>
 		<view class="uni-padding-wrap uni-common-mt">
 			<uni-segmented-control :current="current" :values="items" v-on:clickItem="onClickItem" styleType="text"
 			 activeColor="#007aff"></uni-segmented-control>
@@ -30,7 +19,6 @@
 							<view class="uni-list-cell-left">
 								{{category.title}}
 								<input type="text" name="category_id" :value="category.id" v-show="false" />
-								<input type="text" name="book_id" :value="selectBookId" v-show="false" />
 							</view>
 							<view class="uni-list-cell-db" style="text-align: right;">
 								<input class="uni-input" type="number" focus placeholder="0.00" :value="initData.cash" name="cash" />
@@ -80,9 +68,7 @@
 
 <script>
 	import uniSegmentedControl from '@/components/uni-segmented-control.vue';
-	import uniPopup from '@/components/uni-popup.vue';
-	import uniDrawer from '@/components/uni-drawer.vue';
-	import uniIcon from '@/components/uni-icon.vue';
+	import bookMenu from '@/components/book-menu.vue';
 	
 	//来自 graceUI 的表单验证， 使用说明见手册 http://grace.hcoder.net/doc/info/73-3.html
 	var  graceChecker = require("@/common/graceChecker.js");
@@ -90,14 +76,12 @@
 	
 	import {outgo} from '@/common/outgo.js';
 	import {category} from '@/common/category.js';
-	import {book} from '@/common/book.js';
 	
 	export default {
 	    components: {
 	        uniTag,
 			uniSegmentedControl,
-			uniDrawer,
-			uniIcon
+			bookMenu
 	    },
 	    data() {
 			const currentDate = this.getDate({
@@ -115,15 +99,13 @@
 				types: ['outgo', 'income', 'loan'],
 				current: 0,
 				categoryFavorite: [],
-				bookList: [],
-				selectBookId: 0,
 				//顶部账本选择菜单
 				rightDrawerVisible: false,
 				options: {},
 	        }
 	    },
 		onNavigationBarButtonTap(e) {
-			this.rightDrawerVisible = !this.rightDrawerVisible
+			this.$refs.bookMenu.showRightDrawer();
 		},
 		onBackPress() {
 			// 返回按钮监听
@@ -152,7 +134,6 @@
 				this.setTabIndex(this.options.type);
 				this.initCategory(this.options);
 				this.initForm(this.options);
-				this.initBook();
 			},
 			gotoCategory() {
 				this.options.type = this.types[this.current];
@@ -180,24 +161,6 @@
 // 						if (changeCategory != undefined) {
 // 							_this.setType(data[0]);
 // 						}
-					} else {
-						uni.showModal({
-							content: result.msg,
-							showCancel: false
-						});
-					}
-				});
-			},
-			initBook() {
-				var _this = this;
-				//初始化账本
-				book.baseUrl = this.baseUrl;
-				book.authToken = this.authToken;
-				book.getBookList(function(result){
-					if (result.code == 0) {
-						var data = result.data;
-						_this.bookList = data;
-						_this.selectBook(data[0]);
 					} else {
 						uni.showModal({
 							content: result.msg,
@@ -264,32 +227,10 @@
 					}
 				});
 			},
-			closeRightDrawer() {
-				this.rightDrawerVisible = false;
-			},
-			showRightDrawer() {
-				this.rightDrawerVisible = true;
-			},
-			selectBook(item) {
-				this.rightDrawerVisible = false;
-				this.selectBookId = item.id;
-				uni.showToast({
-					title: '选中' + item.title
-				});
-				uni.setNavigationBarTitle({
-					title: "编辑   " + item.title,
-					success: () => {
-						console.log('setNavigationBarTitle success')
-					},
-					fail: (err) => {
-						console.log('setNavigationBarTitle fail, err is', err)
-					}
-				});
-			},
 			onClickItem(index) {
 				if (this.current !== index) {
 					this.current = index;
-				}console.log('click');
+				}
 				this.initCategory('', true);
 			},
 			bindDateChange: function(e) {
@@ -329,20 +270,26 @@
 			formSubmit: function (e) {
 				//将下列代码加入到对应的检查位置
 				//定义表单规则
-				var rule = [
-					{name:"cash", checkType : "notnull", checkRule:"",  errorMsg:"请输入金额"},
-// 					{name:"gender", checkType : "in", checkRule:"男,女",  errorMsg:"请选择性别"},
-// 					{name:"loves", checkType : "notnull", checkRule:"",  errorMsg:"请选择爱好"}
-				];
+// 				var rule = [
+// 					{name:"cash", checkType : "notnull", checkRule:"",  errorMsg:"请输入金额"},
+// // 					{name:"gender", checkType : "in", checkRule:"男,女",  errorMsg:"请选择性别"},
+// // 					{name:"loves", checkType : "notnull", checkRule:"",  errorMsg:"请选择爱好"}
+// 				];
 				//进行表单检查
 				var formData = e.detail.value;
-				var checkRes = graceChecker.check(formData, rule);
-				if(checkRes){
-					// uni.showToast({title:"验证通过!", icon:"none"});
-				}else{
-					uni.showToast({ title: graceChecker.error, icon: "none" });
+				//金额和备注必须填写一个
+				if (formData.cash == "" && formData.remark == "") {
+					uni.showToast({ title: '金额和备注必须填写其中一个', icon: "none" });
 				}
+// 				var checkRes = graceChecker.check(formData, rule);
+// 				if(checkRes){
+// 					// uni.showToast({title:"验证通过!", icon:"none"});
+// 				}else{
+// 					uni.showToast({ title: graceChecker.error, icon: "none" });
+// 				}
 				formData.type = this.types[this.current];
+				var currentBook = uni.getStorageSync('book');
+				formData.book_id = currentBook.id;
 				uni.request({
 					method: 'PUT',
 					dataType: 'json',

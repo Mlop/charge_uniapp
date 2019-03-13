@@ -35,19 +35,15 @@
 
 <script>
 	import bookMenu from '@/components/book-menu.vue';
-	// import uniIcon from '@/components/uni-icon.vue';
 	export default {
 		components: {
 			bookMenu,
-			// uniIcon
 		},
 		data() {
 			return {
 				result: {},
-// 				bookList:[],
-// 				selectBookId: 0,
 				//顶部账本选择菜单
-				rightDrawerVisible: true
+				rightDrawerVisible: false
 			}
 		},
 		onLoad() {

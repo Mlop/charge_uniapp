@@ -8,10 +8,9 @@
 				</view>
 			</scroll-view>
 			<scroll-view class="nav-right" scroll-y :scroll-top="scrollTop" @scroll="scroll" :style="'height:'+height+'px'" scroll-with-animation>
-				<view :id="index===0?'first':''" class="nav-right-item" v-for="(item,index) in subCategoryList" :key="index" @click="categoryClickSub(item)">
-					<!-- <image :src="item.LOGO" /> -->
-					<view>{{item.title}}</view>
-					<view style="float: right;"><span class="uni-icon uni-icon-star"></span></view>
+				<view :id="index===0?'first':''" class="nav-right-item" v-for="(item,index) in subCategoryList" :key="index">
+					<view @click="categoryClickSub(item)">{{item.title}}</view>
+					<view style="float: right;" @click="changeFavorite(item)"><span class="uni-icon" :class="item.isFav == 1 ? 'uni-icon-star-filled' : 'uni-icon-star'"></span></view>
 				</view>
 			</scroll-view>
 		</view>
@@ -50,6 +49,37 @@
 				
 				uni.navigateTo({
 					url: '/' + prevPage.route + '?' + this.jsonToQueryStr(this.options),
+				});
+			},
+			changeFavorite(item) {
+				var method = 'DELETE';
+				if (item.isFav == 1) {
+					method = 'DELETE';
+				} else {
+					method = 'POST';
+				}
+				uni.request({
+					method: method,
+					dataType: 'json',
+					url: this.baseUrl+'category/' + item.id + '/favorite',
+					data: {
+					},
+					header: {
+						Authorization:this.authToken,
+					},
+					success: (res) => {
+						var result = res.data;
+						this.showResult(result, true, (method == 'POST') ? '收藏成功' : '取消成功');
+						if (result.code == 0) {
+							item.isFav = !item.isFav;
+						}
+					},
+					fail: (err) => {
+						uni.showModal({
+							content: err.errMsg,
+							showCancel: false
+						});
+					}
 				});
 			},
 			init() {

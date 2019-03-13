@@ -12,17 +12,16 @@
 			</view>
 			<view v-show="current === 2">
 			</view>
-			<form @submit="formSubmit" style="height: 160px;text-align:left;">
+			<form style="height: 160px;text-align:left;">
 				<view class="uni-padding-wrap uni-common-mt">
 					<view class="uni-list">
 						<view class="uni-list-cell">
 							<view class="uni-list-cell-left">
 								{{category.title}}
-								<input type="text" name="category_id" :value="category.id" v-show="false" />
-								<!-- <input type="text" name="book_id" :value="selectBookId" v-show="false" /> -->
+								<input type="text" name="category_id" v-model="formData.category_id" :value="category.id" v-show="false" />
 							</view>
 							<view class="uni-list-cell-db" style="text-align: right;">
-								<input class="uni-input" type="number" focus placeholder="0.00" name="cash" />
+								<input class="uni-input" type="number" v-model="formData.cash" focus placeholder="0.00" name="cash" />
 							</view>
 						</view>
 					</view>
@@ -40,10 +39,10 @@
 					</view>
 				</view>
 				<view class="uni-padding-wrap uni-common-mt">
-					现金（CNY）
+					现金（CNY）￥{{formData.cash}}
 				</view>
 				<view class="uni-padding-wrap uni-common-mt">
-					<textarea style="height: 45upx;" maxlength="200" name="remark" placeholder="备注" />
+					<textarea style="height: 45upx;" maxlength="200" v-model="formData.remark" name="remark" placeholder="备注" />
 				</view>
 				<view class="uni-padding-wrap uni-common-mt">
 					<picker mode="date" :value="date" :start="startDate" :end="endDate" @change="bindDateChange">
@@ -54,10 +53,10 @@
 					<view class="uni-flex uni-row" style="justify-content: flex-end;">
 						<view class="text">
 							<!-- <span class="uni-icon uni-icon-checkmarkempty"></span> -->
-							<button class="btn-submit" formType="submit" type="primary">保存再记</button>
+							<button class="btn-submit" type="primary" name="action" @click="formSubmit('copy')" value="copy" >保存再记</button>
 						</view>
 						<view class="text">
-							<button class="btn-submit" formType="submit" type="primary">保存</button>
+							<button class="btn-submit" type="primary" name="action" @click="formSubmit('save')" value="save">保存</button>
 						</view>
 					</view>
 				</view>
@@ -75,7 +74,6 @@
 	import uniTag from '@/components/uni-tag.vue'
 	
 	import {category} from '@/common/category.js';
-	// import {book} from '@/common/book.js';
 	
 	export default {
 	    components: {
@@ -98,12 +96,10 @@
 				types: ['outgo', 'income', 'loan'],
 				current: 0,
 				categoryFavorite: [],
-// 				bookList: [],
-// 				selectBookId: 0,
 				//顶部账本选择菜单
 				rightDrawerVisible: false,
 				options: {},
-				
+				formData: {"category_id":category.id, "cash":"", "remark":"", "date":currentDate}
 	        }
 	    },
 		onNavigationBarButtonTap(e) {
@@ -127,6 +123,7 @@
 		onLoad: function (options) {
 			if (options.category_id != undefined) {
 				this.category = {"id": options.category_id, "title": options.category_title};
+				this.formData.category_id = this.category.id;
 			}
 			this.options = options;
 			this.getAuthToken(this.init);
@@ -148,25 +145,6 @@
 					break;
 				}
 				this.initCategory(this.options);
-				this.initBook();
-			},
-			initBook() {
-				var _this = this;
-				//初始化账本
-// 				book.baseUrl = this.baseUrl;
-// 				book.authToken = this.authToken;
-// 				book.getBookList(function(result){
-// 					if (result.code == 0) {
-// 						var data = result.data;
-// 						_this.bookList = data;
-// 						// _this.selectBook(data[0]);
-// 					} else {
-// 						uni.showModal({
-// 							content: result.msg,
-// 							showCancel: false
-// 						});
-// 					}
-// 				});
 			},
 			initCategory(options) {
 				var _this = this;
@@ -205,6 +183,7 @@
 			},
 			bindDateChange: function(e) {
 				this.date = e.target.value
+				this.formData.date = this.date;
 			},
 			getDate(type) {
 				const date = new Date();
@@ -220,25 +199,28 @@
 				}
 				month = month > 9 ? month : '0' + month;;
 				day = day > 9 ? day : '0' + day;
-			
 				return `${year}-${month}-${day}`;
 			},
-			formSubmit: function (e) {
+			formSubmit: function (action) {
 				//将下列代码加入到对应的检查位置
 				//定义表单规则
-				var rule = [
-					{name:"cash", checkType : "notnull", checkRule:"",  errorMsg:"请输入金额"},
-// 					{name:"gender", checkType : "in", checkRule:"男,女",  errorMsg:"请选择性别"},
-// 					{name:"loves", checkType : "notnull", checkRule:"",  errorMsg:"请选择爱好"}
-				];
+// 				var rule = [
+// 					{name:"cash", checkType : "notnull", checkRule:"",  errorMsg:"请输入金额"},
+// // 					{name:"gender", checkType : "in", checkRule:"男,女",  errorMsg:"请选择性别"},
+// // 					{name:"loves", checkType : "notnull", checkRule:"",  errorMsg:"请选择爱好"}
+// 				];
 				//进行表单检查
-				var formData = e.detail.value;
-				var checkRes = graceChecker.check(formData, rule);
-				if(checkRes){
-					// uni.showToast({title:"验证通过!", icon:"none"});
-				}else{
-					uni.showToast({ title: graceChecker.error, icon: "none" });
+				var formData = this.formData;
+				//金额和备注必须填写一个
+				if (formData.cash == "" && formData.remark == "") {
+					uni.showToast({ title: '金额和备注必须填写其中一个', icon: "none" });
 				}
+// 				var checkRes = graceChecker.check(formData, rule);
+// 				if(checkRes){
+// 					// uni.showToast({title:"验证通过!", icon:"none"});
+// 				}else{
+// 					uni.showToast({ title: graceChecker.error, icon: "none" });
+// 				}
 				formData.type = this.types[this.current];
 				//todo
 				var currentBook = uni.getStorageSync('book');
@@ -255,7 +237,9 @@
 						var result = res.data;
 						if (result.code == 0) {
 							uni.showToast({title:"添加成功!"});
-							// uni.navigateBack();
+							if (action == 'save') {
+								uni.navigateBack();
+							}
 						} else {
 							uni.showModal({
 								content: result.msg,
@@ -273,6 +257,7 @@
 			},
 			setType: function (category) {
 				this.category = category;
+				this.formData.category_id = this.category.id;
 				for(var i in this.categoryFavorite) {
 					//选中
 					if (this.categoryFavorite[i]["id"] == category["id"]) {

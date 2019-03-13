@@ -6,7 +6,7 @@
 				<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(item, index) in bookList" :key="index">
 					<view class="uni-list-cell-navigate uni-navigate-right uni-navigate-badge" @tap="selectBook(item)">
 						{{item.title}}
-						<uni-badge text="1" type="danger" v-if="item.id==selectBookId"></uni-badge>
+						<uni-icon size="30" type="checkbox-filled" color="#007aff" v-if="item.id==selectBookId"></uni-icon>
 					</view>
 				</view>
 				<view class="uni-list-cell uni-list-cell-last" hover-class="uni-list-cell-hover">
@@ -14,7 +14,6 @@
 						<view class="uni-list-cell-navigate" @click="goToNewBook">
 							<span class="uni-icon uni-icon-plus"></span>
 							<text>添加新账本</text>
-							
 						</view>
 					</view>
 				</view>
@@ -25,14 +24,14 @@
 
 <script>
 	import uniDrawer from '@/components/uni-drawer.vue';
-	// import uniIcon from '@/components/uni-icon.vue';
+	import uniIcon from '@/components/uni-icon.vue';
 	import uniBadge from "@/components/uni-badge.vue";
 	import {book} from '@/common/book.js';
 	export default {
 		components: {
 			uniDrawer,
-			uniBadge
-			// uniIcon
+			uniBadge,
+			uniIcon
 		},
 		data() {
 			return {
@@ -91,7 +90,7 @@
 							_this.selectBook(currentBook);
 							uni.setStorageSync('book', currentBook);
 						}
-						this.selectBookId = currentBook.id;
+						_this.selectBookId = currentBook.id;
 					} else {
 						uni.showModal({
 							content: result.msg,
