@@ -18,10 +18,10 @@
 								</view>
 							</view>
 						</view>
-						<view class="text" style="width: 60%;">{{currency(list.total)}}</view>
+						<view class="text" style="width: 60%;">共{{currency(list.total)}}</view>
                     </view>
                     <view class="uni-list uni-collapse" :class="list.show ? 'uni-active' : ''">
-						<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(item,key) in detail" :key="key" :class="key === detail.length - 1 ? 'uni-list-cell-last' : ''">
+						<view class="uni-list-cell"  v-if="item.id>0" hover-class="uni-list-cell-hover" v-for="(item,key) in detail" :key="key" :class="key === detail.length - 1 ? 'uni-list-cell-last' : ''">
 							<view class="uni-media-list-logo" style="width: 130upx;">
 								<view class="uni-media-list-text-top">{{item.title}}</view>
 								<view class="uni-media-list-text-bottom uni-ellipsis">{{item.days}}日</view>
@@ -33,7 +33,11 @@
 							    </view>
 							    <view class="uni-triplex-right" style="width: 25%;text-align: left;">
 							        <text class="uni-h5" v-bind:class="item.type">{{currency(item.cash)}}</text>
+									
 							    </view>
+							</view>
+							<view>
+								<view class="uni-icon uni-icon-trash" @click="deleteDetail(item)"></view>
 							</view>
 						</view>
                     </view>
@@ -49,22 +53,7 @@
         data() {
             return {
                 type: 'out',
-                lists: [{
-                        title: "产品",
-                        show: false,
-                        item: ["iOS", "Android", "HTML5"]
-                    },
-                    {
-                        title: "方案",
-                        show: false,
-                        item: ["PC方案", "手机方案", "TV方案"]
-                    },
-                    {
-                        title: "新闻",
-                        show: false,
-                        item: ["公司新闻", "行业新闻"]
-                    }
-                ],
+                lists: [],
 				detail: []
             }
         },
@@ -89,8 +78,8 @@
 			formatTotal(item) {
 				var type = "";
 				switch (item.type) {
-					case "in":type = "收入";break;
-					case "out":type = "支出";break;
+					case "income":type = "收入";break;
+					case "outgo":type = "支出";break;
 					case "loan":type = "借贷";break;
 				}
 				return type + " ￥" + item.total;
@@ -101,6 +90,35 @@
 				uni.navigateTo({
 					url:'edit?type=' + item.type + '&id=' + item.id
 				})
+			},
+			deleteDetail: function(item) {
+				uni.request({
+					method: 'DELETE',
+					url: this.baseUrl + "account/" + item.id,
+					header: {
+						Authorization:this.authToken,
+					},
+					success: (res) => {
+						var result = res.data;
+						this.showResult(result, true, "删除成功!", function(){item.id=-1;});
+// 						if (result.code == 0) {
+// 							uni.showToast({title:"删除成功!", success() {
+// 								// uni.navigateBack();
+// 							}});
+// 						} else {
+// 							uni.showModal({
+// 								content: result.msg,
+// 								showCancel: false
+// 							});
+// 						}
+					},
+					fail: (err) => {
+						uni.showModal({
+							content: err.errMsg,
+							showCancel: false
+						});
+					}
+				});
 			},
 			openMonthly(i) {
 				var _this = this;
@@ -118,11 +136,7 @@
 					success: (res) => {
 						var result = res.data;
 						if (result.code == 0) {
-							// _this.lists[i]['detail'] = result.data;
 							_this.detail = result.data;
-							console.log(_this.detail);
-							// this.lists = result.data;
-							// setCategoryCallback(result.data);
 						} else {
 							uni.showModal({
 								content: result.msg,
@@ -162,16 +176,9 @@
 					},
 					success: (res) => {
 						var result = res.data;
-						_this.checkLogin(result);
+						_this.showResult(result, false);
 						if (result.code == 0) {
 							this.lists = result.data;
-							// console.log(this.lists);
-							// this.lists[0]['show'] = true;
-						} else {
-							uni.showModal({
-								content: result.msg,
-								showCancel: false
-							});
 						}
 					},
 					fail: (err) => {

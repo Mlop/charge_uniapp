@@ -99,7 +99,7 @@
 				//顶部账本选择菜单
 				rightDrawerVisible: false,
 				options: {},
-				formData: {"category_id":category.id, "cash":"", "remark":"", "date":currentDate}
+				formData: {"category_id":category.id, "cash":"", "remark":"", "record_at":currentDate}
 	        }
 	    },
 		onNavigationBarButtonTap(e) {
@@ -183,7 +183,7 @@
 			},
 			bindDateChange: function(e) {
 				this.date = e.target.value
-				this.formData.date = this.date;
+				this.formData.record_at = this.date;
 			},
 			getDate(type) {
 				const date = new Date();
@@ -211,9 +211,11 @@
 // 				];
 				//进行表单检查
 				var formData = this.formData;
+				// console.log(formData);return false;
 				//金额和备注必须填写一个
 				if (formData.cash == "" && formData.remark == "") {
 					uni.showToast({ title: '金额和备注必须填写其中一个', icon: "none" });
+					return false;
 				}
 // 				var checkRes = graceChecker.check(formData, rule);
 // 				if(checkRes){

@@ -43,6 +43,30 @@
 				</view>
 				<view class="uni-padding-wrap uni-common-mt">
 					<textarea style="height: 45upx;" maxlength="200" name="remark" placeholder="备注" :value="initData.remark" />
+					<!-- #ifndef H5 -->
+					<view class="uni-list list-pd">
+						<view class="uni-list-cell cell-pd">
+							<view class="uni-uploader">
+								<view class="uni-uploader-head">
+									<view class="uni-uploader-title">点击可预览选好的图片</view>
+									<view class="uni-uploader-info">{{imageList.length}}/9</view>
+								</view>
+								<view class="uni-uploader-body">
+									<view class="uni-uploader__files">
+										<block v-for="(image,index) in imageList" :key="index">
+											<view class="uni-uploader__file">
+												<image class="uni-uploader__img" :src="image" :data-src="image" @tap="previewImage"></image>
+											</view>
+										</block>
+										<view class="uni-uploader__input-box">
+											<view class="uni-uploader__input" @tap="chooseImage"></view>
+										</view>
+									</view>
+								</view>
+							</view>
+						</view>
+					</view>
+					<!-- #endif -->
 				</view>
 				<view class="uni-padding-wrap uni-common-mt">
 					<picker mode="date" :value="date" :start="startDate" :end="endDate" @change="bindDateChange">
@@ -102,6 +126,8 @@
 				//顶部账本选择菜单
 				rightDrawerVisible: false,
 				options: {},
+				imageList: ["blob:http://192.168.33.1:8081/1aa1af8a-f83c-4613-a7da-21e514781994"],
+				savedFilePath: ""
 	        }
 	    },
 		onNavigationBarButtonTap(e) {
@@ -130,6 +156,26 @@
 			this.getAuthToken(this.init);
 		},
 	    methods: {
+			chooseImage: async function() {
+				var _this = this;
+				if (this.imageList.length === 9) {
+					let isContinue = await this.isFullImg();
+					console.log("是否继续?", isContinue);
+					if (!isContinue) {
+						return;
+					}
+				}
+				uni.chooseImage({
+					sourceType: ['camera', 'album'],
+					sizeType: ['compressed', 'original'],
+					count: 3,
+					success: (res) => {
+						var img = res.tempFilePaths;
+						this.imageList = this.imageList.concat(res.tempFilePaths);
+						_this.savedFilePath = img[0];
+					}
+				})
+			},
 			init() {
 				this.setTabIndex(this.options.type);
 				this.initCategory(this.options);
@@ -151,16 +197,14 @@
 						var data = result.data;
 						_this.categoryFavorite = data;
 						//未选择任何类别初始化第一个关注的常用类别
-// 						if (options == undefined || options.category_id == undefined) {
-	
 						if (!_this.category) {
 							_this.setType(data[0]);
 						} else {//console.log(_this.category);
 							_this.setType(_this.category);
 						}
-// 						if (changeCategory != undefined) {
-// 							_this.setType(data[0]);
-// 						}
+						if (changeCategory != undefined) {
+							_this.setType(data[0]);
+						}
 					} else {
 						uni.showModal({
 							content: result.msg,
@@ -191,16 +235,13 @@
 				this.setTabIndex(options.type);
 				uni.request({
 					method: 'GET',
-					// dataType: 'json',
 					url: url,
-					// data: {},
 					header: {
 						Authorization:this.authToken,
 					},
 					success: (res) => {
 						var result = res.data;
 						if (result.code == 0) {
-							uni.showToast({title:"获取成功!"});
 							var data = result.data;
 							_this.initData = data;
 							_this.date = this.formatDate(data.record_at);
@@ -290,6 +331,9 @@
 				formData.type = this.types[this.current];
 				var currentBook = uni.getStorageSync('book');
 				formData.book_id = currentBook.id;
+				if (this.savedFilePath != "") {
+					formData.remark = this.savedFilePath;
+				}
 				uni.request({
 					method: 'PUT',
 					dataType: 'json',
@@ -299,16 +343,7 @@
 						Authorization:this.authToken,
 					},
 					success: (res) => {
-						var result = res.data;
-						if (result.code == 0) {
-							uni.showToast({title:"编辑成功!"});
-							// uni.navigateBack();
-						} else {
-							uni.showModal({
-								content: result.msg,
-								showCancel: false
-							});
-						}
+						this.showResult(res.data, true, "编辑成功!");
 					},
 					fail: (err) => {
 						uni.showModal({
@@ -345,8 +380,9 @@
 					success: (res) => {
 						var result = res.data;
 						if (result.code == 0) {
-							uni.showToast({title:"删除成功!"});
-							uni.navigateBack();
+							uni.showToast({title:"删除成功!", success() {
+								uni.navigateBack();
+							}});
 						} else {
 							uni.showModal({
 								content: result.msg,

@@ -16,9 +16,14 @@
 						支出类别管理
 					</view>
 				</view>
-				<view class="uni-list-cell uni-list-cell-last" hover-class="uni-list-cell-hover">
+				<view class="uni-list-cell" hover-class="uni-list-cell-hover">
 					<view class="uni-list-cell-navigate uni-navigate-right" @click="navigateTo('category/category?type=income')">
 						收入类别管理
+					</view>
+				</view>
+				<view class="uni-list-cell uni-list-cell-last" hover-class="uni-list-cell-hover">
+					<view class="uni-list-cell-navigate uni-navigate-right" @click="navigateTo('category/category?type=loan')">
+						借贷类别管理
 					</view>
 				</view>
 				<view class="uni-list-cell-divider" style="background-color: #EEEEEE;">

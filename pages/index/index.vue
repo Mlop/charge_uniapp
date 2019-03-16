@@ -92,12 +92,7 @@
 						this.checkLogin(result);
 						if (result.code == 0) {
 							this.result = result.data;
-						} else {
-							uni.showModal({
-								content: result.msg,
-								showCancel: false
-							});
-						}
+						} 
 					},
 					fail: (err) => {
 						uni.showModal({

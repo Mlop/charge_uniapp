@@ -24,6 +24,11 @@ Vue.prototype.checkLogin = function(result) {
 		var user = uni.getStorageSync('user');
 		user.token = result.data;
 		uni.setStorageSync('user', user);
+	} else if (result.code == 1) {
+		uni.showModal({
+			content: result.msg,
+			showCancel: false
+		});
 	}
 };
 Vue.prototype.getAuthToken = function(afterLogin) {
@@ -60,19 +65,16 @@ Vue.prototype.jsonToQueryStr = function(options) {
 	}
 	return tmps.join('&');
 }
-Vue.prototype.showResult = function(result, showSuccess = true, title = "保存成功!") {
+Vue.prototype.showResult = function(result, showSuccess = true, title = "保存成功!", callback = "") {
 	if (result.code == 0) {
 		if (showSuccess) {
-			uni.showToast({title:title});
+			uni.showToast({title:title, success() {
+				if (callback) {
+					callback();
+				}
+			}});
 		}
-	} else if (result.code == 401) {
-		uni.navigateTo({
-			url:'/pages/user/login'
-		});
 	} else {
-		uni.showModal({
-			content: result.msg,
-			showCancel: false
-		});
+		Vue.prototype.checkLogin(result);
 	}
 }

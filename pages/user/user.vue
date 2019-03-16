@@ -1,14 +1,14 @@
 <template>
 	<view class="page">
 		<view class="uni-common-mt">
-			<view class="uni-form-item uni-column">
+			<view class="uni-form-item uni-column" v-show="authToken==''">
 				<navigator url="login"><view class="title">请登录</view></navigator>
 			</view>
 			<view class="uni-form-item uni-column">
-				<navigator url="register"><view class="title">请注册</view></navigator>
+				<navigator url="register"><view class="title">去注册</view></navigator>
 			</view>
 		</view>
-		<view class="uni-card">
+		<view class="uni-card" v-show="authToken!=''">
 			<view class="uni-card-header uni-card-media">
 				<image class="uni-card-media-logo" src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/uni@2x.png"></image>
 				<view class="uni-card-media-body">
@@ -71,7 +71,7 @@
 		data() {
 			return {
 				user: {},
-				show: false,
+				// show: false,
 				list: [],
 				currentShow: -1
 			}
