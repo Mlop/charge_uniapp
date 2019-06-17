@@ -38,7 +38,7 @@
 										<view v-if="item.type == 'income'" >总收入</view>
 										<view v-if="item.type == 'balance'">净收入</view>
 										<view v-if="item.type == 'loan'">总借贷</view>
-										<view :class="item.type">￥{{item.total}}</view>
+										<view :class="item.type + ' ' + (item.type == 'balance' ? 'text-bold' : '')">￥{{item.total}}</view>
 									</label>
 								</view>
 								<view v-if="item.type == 'balance'" class="uni-list" style="color: #C0C0C0;padding-left: 50upx;">
@@ -70,6 +70,12 @@
 	export default {
 		data() {
 			return {
+				yearlyConf: {
+					"outgo": "总支出",
+					"income": "总收入",
+					"balance": "净收入",
+					"loan": "总借贷"
+				},
 				user: {},
 				// show: false,
 				list: [],
