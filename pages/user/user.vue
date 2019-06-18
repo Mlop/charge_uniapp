@@ -99,10 +99,11 @@
 						if (result.code == 0) {
 							this.user = result.data;
 						} else {
-							uni.showModal({
-								content: result.msg,
-								showCancel: false
-							});
+							this.checkLogin(result);
+							// uni.showModal({
+							// 	content: result.msg,
+							// 	showCancel: false
+							// });
 						}
 					},
 					fail: (err) => {
@@ -127,10 +128,11 @@
 							this.list = result.data;
 							console.log(this.list);
 						} else {
-							uni.showModal({
-								content: result.msg,
-								showCancel: false
-							});
+							this.checkLogin(result);
+							// uni.showModal({
+							// 	content: result.msg,
+							// 	showCancel: false
+							// });
 						}
 					},
 					fail: (err) => {

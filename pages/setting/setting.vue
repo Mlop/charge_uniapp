@@ -34,6 +34,14 @@
 						关于版本
 					</view>
 				</view>
+				<view class="uni-list-cell-divider" style="background-color: #EEEEEE;">
+					时间表
+				</view>
+				<view class="uni-list-cell uni-list-cell-last" hover-class="uni-list-cell-hover">
+					<view class="uni-list-cell-navigate uni-navigate-right" @click="navigateTo('timeline')">
+						时间表图
+					</view>
+				</view>
 			</view>
 		</view>
 	</view>
