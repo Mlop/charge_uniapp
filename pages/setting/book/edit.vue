@@ -5,12 +5,21 @@
 				<view class="uni-list-cell" hover-class="uni-list-cell-hover">
 					<view class="uni-form-item uni-column">
 						<view class="with-fun">
-							<input class="uni-input" maxlength="10" focus placeholder="请输入类别名称" :value="inputClearValue" @input="clearInput" />
-							<view class="uni-icon uni-icon-clear" v-if="showClearIcon" @click="clearIcon"></view>
-							<view @click="edit">
+							<input class="uni-input" maxlength="10" focus placeholder="请输入账本名称" ref="ipBook" :value="inputClearValue" data-type="book" @input="clearInput" />
+							<view class="uni-icon uni-icon-clear" v-if="showClearIcon" @click="clearIcon('book')"></view>
+							<view @click="edit()">
 								<span class="uni-icon uni-icon-checkmarkempty"></span>
 							</view>
 						</view>
+						<uni-section title="选择包含条目" type="line"></uni-section>
+						<view >
+							<checkbox-group @change="checkboxChange">
+								<label v-for="item in bookItems" :key="item.value">
+									<checkbox :value="item.value" :checked="item.checked" @click="checkBox($event, item)" />
+									{{item.name}}
+								</label>
+							</checkbox-group>
+						</view>						
 					</view>
 				</view>
 			</view>
@@ -19,6 +28,8 @@
 </template>
 <script>
 	import uniBadge from "@/components/uni-badge.vue";
+	import uniSection from '@/components/uni-section/uni-section.vue'
+	import {common} from '@/common/common.js';
 	export default {
 		data() {
 			return {
@@ -26,19 +37,22 @@
 				inputClearValue: '',
 				id: 0,
 				me: {},
+				bookItems: [],				
 			}
 		},
 		components: {
-			uniBadge
+			uniBadge,
+			uniSection
 		},
 		methods: {
 			edit: function() {
 				uni.request({
 					method: 'PUT',
 					dataType: 'json',
-					url: this.baseUrl+'book/' + this.id,
+					url: this.baseUrl + 'book/' + this.id,
 					data: {
 						title: this.inputClearValue,
+						book_id: this.id
 					},
 					header: {
 						Authorization:this.authToken,
@@ -91,17 +105,75 @@
 				});
 			},
 			clearInput: function(event) {
-				this.inputClearValue = event.target.value;
-				if (event.target.value.length > 0) {
-					this.showClearIcon = true;
+				if (event.target.dataset.type == "book") {
+					this.inputClearValue = event.target.value;
+					if (event.target.value.length > 0) {
+						this.showClearIcon = true;
+					} else {
+						this.showClearIcon = false;
+					}
 				} else {
-					this.showClearIcon = false;
+					this.itemValue = event.target.value;
+					if (event.target.value.length > 0) {
+						this.showClearItem = true;
+					} else {
+						this.showClearItem = false;
+					}
 				}
 			},
-			clearIcon: function() {
-				this.inputClearValue = '';
-				this.showClearIcon = false;
+			clearIcon: function(type) {
+				if (type == 'book') {
+					this.inputClearValue = '';
+					this.showClearIcon = false;
+				} else {
+					this.itemValue = '';
+					this.showClearItem = false;
+				}
 			},
+			checkboxChange: function (e) {
+				var items = this.bookItems,
+					values = e.detail.value;
+				for (var i = 0, lenI = items.length; i < lenI; ++i) {
+					const item = items[i]
+					if(values.includes(item.value)){
+						this.$set(item,'checked',true)
+					}else{
+						this.$set(item,'checked',false)
+					}
+					
+				}
+			},
+			checkBox: function(e, item) {
+				common.request(
+					'PUT', 
+					'bookitem/' + this.id + '/check', 
+					{"item_id":item.value, "is_check":item.checked}, 
+					function(data) {
+						if (typeof(data) == 'string') {
+							uni.showToast({title:data, icon:"none"});
+						} else {
+							uni.showToast({title:"选择成功", icon:"none"});
+						}
+					});
+			},
+			getBookItems: function() {
+				if (this.id != 0) {
+					var _this = this;
+					common.request('GET', 'bookitem', {"book_id":this.id}, function(data) {
+						_this.bookItems = data;
+					});
+				}
+			},
+			deleteItem: function(itemId) {
+				var _this = this;
+				common.request('DELETE', 'bookitem/' + itemId, {}, function(data) {
+					for (var i = 0; i < _this.bookItems.length; i++) {
+						if (_this.bookItems[i]['value'] == itemId) {
+							_this.bookItems.splice(i, 1);
+						}
+					}
+				});
+			}
 		},
 		onNavigationBarButtonTap(e) {
 			this.delete();
@@ -112,9 +184,12 @@
 			this.showClearIcon = (this.inputClearValue.length > 0) ? true : false;
 			this.me = option; 
 			uni.setNavigationBarTitle({
-				title: (this.id == 0) ? '添加新账本' : '编辑账本' + this.title
+				title: (this.id == 0) ? '添加新账本' : '编辑账本-' + this.title
 			});
 			this.getAuthToken();
+			common.baseUrl = this.baseUrl;
+			common.authToken = this.authToken;
+			this.getBookItems();
 		}
 	}
 </script>

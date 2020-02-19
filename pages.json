@@ -137,6 +137,13 @@
 			}
 		},
 		{
+			"path": "pages/setting/item",
+			"style": {
+				"navigationBarTitleText": "帐目列项管理",
+				"enablePullDownRefresh" : true
+			}
+		},
+		{
 			"path": "pages/setting/about",
 			"style": {
 				"navigationBarTitleText": "关于版本"
