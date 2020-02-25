@@ -201,7 +201,7 @@
 	    "list" : [
 	        {
 	            "pagePath" : "pages/index/index",
-	            "iconPath" : "static/component.png",
+	            "iconPath" : "static/componentIndex.png",
 	            "selectedIconPath" : "static/componentHL.png",
 	            "text" : "记账"
 	        },
@@ -211,6 +211,12 @@
 	            "selectedIconPath" : "static/apiHL.png",
 	            "text" : "统计"
 	        },
+			{
+			    "pagePath" : "pages/account/list",
+			    "iconPath" : "static/api.png",
+			    "selectedIconPath" : "static/apiHL.png",
+			    "text" : "搜索"
+			},
 	        {
 	            "pagePath" : "pages/user/user",
 	            "iconPath" : "static/template.png",

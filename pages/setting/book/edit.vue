@@ -146,7 +146,7 @@
 			checkBox: function(e, item) {
 				common.request(
 					'PUT', 
-					'bookitem/' + this.id + '/check', 
+					'book/' + this.id + '/checkitem', 
 					{"item_id":item.value, "is_check":item.checked}, 
 					function(data) {
 						if (typeof(data) == 'string') {
@@ -159,20 +159,10 @@
 			getBookItems: function() {
 				if (this.id != 0) {
 					var _this = this;
-					common.request('GET', 'bookitem', {"book_id":this.id}, function(data) {
+					common.request('GET', 'book/' + this.id + '/items', {}, function(data) {
 						_this.bookItems = data;
 					});
 				}
-			},
-			deleteItem: function(itemId) {
-				var _this = this;
-				common.request('DELETE', 'bookitem/' + itemId, {}, function(data) {
-					for (var i = 0; i < _this.bookItems.length; i++) {
-						if (_this.bookItems[i]['value'] == itemId) {
-							_this.bookItems.splice(i, 1);
-						}
-					}
-				});
 			}
 		},
 		onNavigationBarButtonTap(e) {
