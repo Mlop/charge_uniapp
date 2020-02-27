@@ -185,8 +185,14 @@
 			"style": {
 				"navigationBarTitleText": "注册"
 			}
-		}
-	],
+		},
+		{
+            "path" : "pages/stat/index",
+            "style" : {
+				"navigationBarTitleText": "搜索列表"
+			}
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "",
@@ -206,16 +212,16 @@
 	            "text" : "记账"
 	        },
 	        {
-	            "pagePath" : "pages/account/list",
-	            "iconPath" : "static/api.png",
-	            "selectedIconPath" : "static/apiHL.png",
-	            "text" : "统计"
+	            "pagePath" : "pages/stat/index",
+	            "iconPath" : "static/search.png",
+	            "selectedIconPath" : "static/search_selected.png",
+	            "text" : "搜索"
 	        },
 			{
 			    "pagePath" : "pages/account/list",
 			    "iconPath" : "static/api.png",
 			    "selectedIconPath" : "static/apiHL.png",
-			    "text" : "搜索"
+			    "text" : "统计"
 			},
 	        {
 	            "pagePath" : "pages/user/user",

@@ -84,7 +84,6 @@
 	import uniTag from '@/components/uni-tag.vue'
 	
 	import {category} from '@/common/category.js';
-	import {common} from '@/common/common.js';
 	
 	export default {
 	    components: {
@@ -159,8 +158,6 @@
 						this.current = 1;
 					break;
 				}
-				common.baseUrl = this.baseUrl;
-				common.authToken = this.authToken;
 				this.initCategory(this.options);
 				this.currentBook = uni.getStorageSync('book');
 				this.getBookItems();
@@ -191,13 +188,13 @@
 			},
 			getBookItems: function() {
 				var _this = this;
-				common.request('GET', 'book/' + this.currentBook.id + '/items', {"is_include_uncheck":0}, function(data) {
+				this.request('GET', 'book/' + this.currentBook.id + '/items', {"is_include_uncheck":0}, function(data) {
 					_this.bookItems = data;
 				});
 			},
 			loadContacts: function() {
 				var _this = this;
-				common.request('GET', 'contacts', {}, function(data) {
+				this.request('GET', 'contacts', {}, function(data) {
 					console.log(data);
 					_this.contacts = data;
 				});
@@ -268,7 +265,7 @@
 				// var currentBook = uni.getStorageSync('book');
 				formData.book_id = this.currentBook.id;
 				var _this = this;
-				common.request('POST', 'account', formData, function(result) {
+				this.request('POST', 'account', formData, function(result) {
 					uni.showToast({title:"添加成功!"});
 					if (action == 'save') {
 						uni.navigateBack();

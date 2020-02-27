@@ -10,8 +10,8 @@ const app = new Vue({
 })
 app.$mount()
 
-// Vue.prototype.baseUrl = 'http://charge.com/';
-Vue.prototype.baseUrl = 'http://119.27.163.89:8082/';
+Vue.prototype.baseUrl = 'http://charge.api.com/';
+// Vue.prototype.baseUrl = 'http://119.27.163.89:8082/';
 Vue.prototype.authToken = '';
 Vue.prototype.checkLogin = function(result) {
 	if (result.code == 401) {
@@ -78,3 +78,33 @@ Vue.prototype.showResult = function(result, showSuccess = true, title = "保存�
 		Vue.prototype.checkLogin(result);
 	}
 }
+
+Vue.prototype.request = function(method, uri, data, sucCallback) {
+		uni.request({
+			method: method,
+			dataType: 'json',
+			url: this.baseUrl + uri,
+			data: data,
+			header: {
+				Authorization:this.authToken,
+			},
+			success: (res) => {
+				var result = res.data;
+				if (result.code == 0) {
+					sucCallback((result.data == undefined) ? result.msg : result.data);
+				} else {
+					Vue.prototype.checkLogin(result);
+					uni.showModal({
+						content: result.msg,
+						showCancel: false
+					});
+				}
+			},
+			fail: (err) => {
+				uni.showModal({
+					content: err.errMsg,
+					showCancel: false
+				});
+			}
+		});
+	}
