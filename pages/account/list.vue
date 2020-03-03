@@ -92,64 +92,15 @@
 				})
 			},
 			deleteDetail: function(item) {
-				uni.request({
-					method: 'DELETE',
-					url: this.baseUrl + "account/" + item.id,
-					header: {
-						Authorization:this.authToken,
-					},
-					success: (res) => {
-						var result = res.data;
-						this.showResult(result, true, "删除成功!", function(){item.id=-1;});
-// 						if (result.code == 0) {
-// 							uni.showToast({title:"删除成功!", success() {
-// 								// uni.navigateBack();
-// 							}});
-// 						} else {
-// 							uni.showModal({
-// 								content: result.msg,
-// 								showCancel: false
-// 							});
-// 						}
-					},
-					fail: (err) => {
-						uni.showModal({
-							content: err.errMsg,
-							showCancel: false
-						});
-					}
+				this.request('DELETE', "account/" + item.id, function(result){
+					this.showResult(result, true, "删除成功!", function(){item.id=-1;});
 				});
 			},
 			openMonthly(i) {
 				var _this = this;
 				var monthData = _this.lists[i];
-				uni.request({
-					method: 'GET',
-					dataType: 'json',
-					url: this.baseUrl+'monthly',
-					data: {
-						date: monthData['ym']
-					},
-					header: {
-						Authorization:this.authToken,
-					},
-					success: (res) => {
-						var result = res.data;
-						if (result.code == 0) {
-							_this.detail = result.data;
-						} else {
-							uni.showModal({
-								content: result.msg,
-								showCancel: false
-							});
-						}
-					},
-					fail: (err) => {
-						uni.showModal({
-							content: err.errMsg,
-							showCancel: false
-						});
-					}
+				this.request('GET', 'monthly', {date: monthData['ym']}, function(data){
+					_this.detail = data;
 				});
 			},
             trigerCollapse(e) {

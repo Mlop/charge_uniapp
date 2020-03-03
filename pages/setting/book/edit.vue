@@ -46,62 +46,20 @@
 		},
 		methods: {
 			edit: function() {
-				uni.request({
-					method: 'PUT',
-					dataType: 'json',
-					url: this.baseUrl + 'book/' + this.id,
-					data: {
-						title: this.inputClearValue,
-						book_id: this.id
-					},
-					header: {
-						Authorization:this.authToken,
-					},
-					success: (res) => {
-						var result = res.data;
-						if (result.code == 0) {
-							uni.navigateBack();
-						} else {
-							uni.showModal({
-								content: result.msg,
-								showCancel: false
-							});
-						}
-					},
-					fail: (err) => {
-						uni.showModal({
-							content: err.errMsg,
-							showCancel: false
-						});
-					}
+				this.request('PUT', 'book/' + this.id, 
+				{
+					title: this.inputClearValue,
+					book_id: this.id
+				},
+				function(result){
+					uni.navigateBack();
 				});
 			},
 			delete: function() {
-				uni.request({
-					method: 'DELETE',
-					dataType: 'json',
-					url: this.baseUrl+'book/' + this.id,
-					header: {
-						Authorization:this.authToken,
-					},
-					success: (res) => {
-						var result = res.data;
-						if (result.code == 0) {
-							uni.showToast({title:"删除成功!"});
-							uni.navigateBack();
-						} else {
-							uni.showModal({
-								content: result.msg,
-								showCancel: false
-							});
-						}
-					},
-					fail: (err) => {
-						uni.showModal({
-							content: err.errMsg,
-							showCancel: false
-						});
-					}
+				this.request('DELETE', 'book/' + this.id, {},
+				function(result){
+					uni.showToast({title:"删除成功!"});
+					uni.navigateBack();
 				});
 			},
 			clearInput: function(event) {
