@@ -11,9 +11,11 @@
 									<view class="uni-input">{{valueTypeList[item.value_type]}}</view>
 								</picker>
 							</view>
-							<view>
-								<icon type="success_no_circle" @click="editItem(index)" size="20"/>
-								<icon type="cancel" @click="deleteItem(index)" size="20"/>
+							<view @click="editItem(index)">
+								<icon type="success_no_circle" size="20"/>
+							</view>
+							<view @click="deleteItem(index)">
+								<icon type="cancel" size="20"/>
 							</view>
 						</view>
 						<view class="with-fun">
@@ -37,14 +39,13 @@
 </template>
 
 <script>
-	import {common} from '@/common/common.js';
 	export default {
 		data() {
 			return {
 				showClearItem: false,
 				itemValue: '',
 				list: [],
-				valueTypeList: ['string', 'decimal', 'int'],
+				valueTypeList: ['string', 'decimal', 'int', 'combox'],
 				valueTypeIndex: 0
 			}
 		},
@@ -57,7 +58,7 @@
 		methods: {
 			getItems: function() {
 				var _this = this;
-				common.request(
+				_this.request(
 				'GET', 
 				'items', 
 				{}, 
@@ -80,7 +81,7 @@
 					params.title = (item.name == undefined) ? title : item.name;
 					params.value_type = (item.value_type == undefined) ? 0 : item.value_type;
 				}
-				common.request(
+				this.request(
 				'PUT', 
 				'item/' + id, 
 				params, 
@@ -92,7 +93,7 @@
 				var _this = this;
 				var item = _this.list[index];
 				var id = item.value;
-				common.request(
+				_this.request(
 				'DELETE', 
 				'item/' + id, 
 				{}, 
@@ -122,9 +123,6 @@
 			},
 		},
 		onLoad(option) {
-			this.getAuthToken();
-			common.baseUrl = this.baseUrl;
-			common.authToken = this.authToken;
 			this.getItems();
 		}
 	}

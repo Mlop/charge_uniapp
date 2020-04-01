@@ -27,10 +27,13 @@
 							<view class="uni-list-cell-left">
 								{{item.name}}
 							</view>
+							<view class="uni-list-cell-right" v-if="item.value_type==3" style="text-align: right;">
+								<uni-combox :candidates="contacts" placeholder="输入或选择姓名" emptyTips="" v-model="item.formValue"></uni-combox>
+							</view>
 							<view class="uni-list-cell-db" style="text-align: right;" v-if="item.value_type==0">
 								<input class="uni-input" v-model="item.formValue" focus :placeholder="item.default_value" />
 							</view>
-							<view class="uni-list-cell-db" style="text-align: right;" v-if="item.value_type!=0">
+							<view class="uni-list-cell-db" style="text-align: right;" v-if="item.value_type!=0 && item.value_type!=3">
 								<input class="uni-input" type="number" v-model="item.formValue" focus :placeholder="item.default_value" />
 							</view>
 						</view>
@@ -142,6 +145,12 @@
 			this.options = options;
 			this.getAuthToken(this.init);
 		},
+		//重新选择账本后回调函数
+		provide(){
+			return{
+				afterSelect:this.init
+			}
+		},
 	    methods: {
 			init() {
 				switch (this.options.type) {
@@ -195,7 +204,6 @@
 			loadContacts: function() {
 				var _this = this;
 				this.request('GET', 'contacts', {}, function(data) {
-					console.log(data);
 					_this.contacts = data;
 				});
 			},

@@ -6,7 +6,7 @@
 				<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(item, index) in bookList" :key="index">
 					<view class="uni-list-cell-navigate uni-navigate-right uni-navigate-badge" @tap="selectBook(item)">
 						{{item.title}}
-						<uni-icon size="30" type="checkbox-filled" color="#007aff" v-if="item.id==selectBookId"></uni-icon>
+						<uni-icons size="20" type="location-filled" v-if="item.id==selectBookId"></uni-icons>
 					</view>
 				</view>
 				<view class="uni-list-cell uni-list-cell-last" hover-class="uni-list-cell-hover">
@@ -24,14 +24,14 @@
 
 <script>
 	import uniDrawer from '@/components/uni-drawer.vue';
-	import uniIcon from '@/components/uni-icon.vue';
+	import uniIcons from "@/components/uni-icons/uni-icons.vue"
 	import uniBadge from "@/components/uni-badge.vue";
 	import {book} from '@/common/book.js';
 	export default {
 		components: {
 			uniDrawer,
 			uniBadge,
-			uniIcon
+			uniIcons
 		},
 		data() {
 			return {
@@ -47,6 +47,7 @@
 		mounted() {
 			this.init();
 		},
+		inject:['afterSelect'],
 		methods: {
 			closeRightDrawer() {
 				this.visible = false;
@@ -73,6 +74,10 @@
 // 					}
 // 				});
 				uni.setStorageSync('book', item);
+				//选择账本后的回调函数
+				if (this.afterSelect != undefined) {
+					this.afterSelect();
+				}
 			},
 			init() {
 				//初始化账本

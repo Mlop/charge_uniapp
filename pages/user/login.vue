@@ -62,7 +62,8 @@
 					dataType: 'json',
 					url: this.baseUrl+'login',
 					data: formData,
-					success: (res) => {
+					success: (res, statusCode, header) => {
+						
 						var result = res.data;
 						if (result.code == 0) {
 							//登录成功，保存用户信息

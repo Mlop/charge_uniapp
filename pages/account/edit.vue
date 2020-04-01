@@ -38,8 +38,24 @@
 						<uni-tag :text="item.title" inverted="true" :type="item.tagType" @click="setType(item)"></uni-tag>
 					</view>
 				</view>
-				<view class="uni-padding-wrap uni-common-mt">
-					现金（CNY）
+				<view class="uni-list-cell">
+					<view class="uni-list-cell-left">
+						姓名
+					</view>
+					<view class="uni-list-cell-right" style="text-align: right;">
+						<uni-combox :candidates="contacts" placeholder="输入或选择姓名" emptyTips="" v-model="initData.contact"></uni-combox>
+					</view>
+				</view>
+				<view class="uni-list-cell" v-for="item in bookItems">
+					<view class="uni-list-cell-left">
+						{{item.name}}
+					</view>
+					<view class="uni-list-cell-db" style="text-align: right;" v-if="item.value_type==0">
+						<input class="uni-input" v-model="item.formValue" focus :placeholder="item.default_value" />
+					</view>
+					<view class="uni-list-cell-db" style="text-align: right;" v-if="item.value_type!=0">
+						<input class="uni-input" type="number" v-model="item.formValue" focus :placeholder="item.default_value" />
+					</view>
 				</view>
 				<view class="uni-padding-wrap uni-common-mt">
 					<textarea style="height: 45upx;" maxlength="200" name="remark" placeholder="备注" :value="initData.remark" />
@@ -127,7 +143,9 @@
 				rightDrawerVisible: false,
 				options: {},
 				imageList: ["blob:http://192.168.33.1:8081/1aa1af8a-f83c-4613-a7da-21e514781994"],
-				savedFilePath: ""
+				savedFilePath: "",
+				bookItems: [],
+				contacts: []
 	        }
 	    },
 		onNavigationBarButtonTap(e) {
@@ -155,6 +173,12 @@
 			}
 			this.getAuthToken(this.init);
 		},
+		//重新选择账本后回调函数
+		provide(){
+			return{
+				afterSelect:this.init
+			}
+		},
 	    methods: {
 			chooseImage: async function() {
 				var _this = this;
@@ -180,6 +204,20 @@
 				this.setTabIndex(this.options.type);
 				this.initCategory(this.options);
 				this.initForm(this.options);
+				this.getBookItems();
+				this.loadContacts();
+			},
+			getBookItems: function() {
+				var _this = this;
+				this.request('GET', 'book/' + this.currentBook.id + '/items', {"is_include_uncheck":0}, function(data) {
+					_this.bookItems = data;
+				});
+			},
+			loadContacts: function() {
+				var _this = this;
+				this.request('GET', 'contacts', {}, function(data) {
+					_this.contacts = data;
+				});
 			},
 			gotoCategory() {
 				this.options.type = this.types[this.current];
@@ -245,7 +283,6 @@
 							var data = result.data;
 							_this.initData = data;
 							_this.date = this.formatDate(data.record_at);
-							console.log(_this.options);
 							if (options.category_id == undefined) {
 								_this.category = {"id":data.category_id, "title":data.category_title};
 							}
@@ -277,7 +314,6 @@
 			bindDateChange: function(e) {
 				this.initData.date = e.target.value;
 				this.date = e.target.value;
-				console.log(this.date); 
 			},
 			formatDate(dateStr) {
 				const date = new Date(dateStr);

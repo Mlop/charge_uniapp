@@ -70,8 +70,13 @@
 			}, 1000);
 			this.init();
 		},
+		//重新选择账本后回调函数
+		provide(){
+			return{
+				afterSelect:this.init
+			}
+		},
 		methods: {
-			
 			openAccountList() {
 				uni.switchTab({
 					url: '../account/list'

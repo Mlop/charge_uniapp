@@ -125,7 +125,8 @@
 					header: {
 						Authorization:this.authToken,
 					},
-					success: (res) => {
+					success: (res,statusCode, header) => {
+						console.log(res,statusCode, header);return false;
 						var result = res.data;
 						_this.showResult(result, false);
 						if (result.code == 0) {

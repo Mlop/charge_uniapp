@@ -156,6 +156,12 @@
 			}
 		},
 		{
+			"path": "pages/setting/train",
+			"style": {
+				"navigationBarTitleText": "火车票可购买区间"
+			}
+		},
+		{
 			"path": "pages/user/user",
 			"style": {
 				"navigationBarTitleText": "我的",

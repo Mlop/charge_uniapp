@@ -9,7 +9,6 @@ const app = new Vue({
     ...App
 })
 app.$mount()
-
 Vue.prototype.baseUrl = 'http://charge.api.com/';
 // Vue.prototype.baseUrl = 'http://119.27.163.89:8082/';
 Vue.prototype.authToken = '';
@@ -108,3 +107,18 @@ Vue.prototype.request = function(method, uri, data, sucCallback) {
 			}
 		});
 	}
+Vue.prototype.getQueryParams = function(searchKey) {
+	var query = window.location.search.substring(1);
+	var vars = query.split("&");
+    var params = [];
+    for (var i=0;i<vars.length;i++) {
+	    var pair = vars[i].split("=");
+	    var key = pair[0];
+	    var val = pair[1];
+	    params[key] = val;
+	    if(key == searchKey) {
+		    return val;
+		}
+	}
+   return params;
+}
