@@ -1,6 +1,5 @@
 <template>
     <view>
-		<book-menu :rightDrawerVisible="rightDrawerVisible" ref="bookMenu"></book-menu>
 		<view class="uni-padding-wrap uni-common-mt">
 			<uni-segmented-control :current="current" :values="items" v-on:clickItem="onClickItem" styleType="text"
 			 activeColor="#007aff"></uni-segmented-control>
@@ -13,7 +12,7 @@
 			<view v-show="current === 2">
 			</view>
 			<form @submit="formSubmit" style="height: 160px;text-align:left;">
-				<view class="uni-padding-wrap uni-common-mt">
+				<!-- <view class="uni-padding-wrap uni-common-mt">
 					<view class="uni-list">
 						<view class="uni-list-cell">
 							<view class="uni-list-cell-left">
@@ -24,6 +23,20 @@
 								<input class="uni-input" type="number" focus placeholder="0.00" :value="initData.cash" name="cash" />
 							</view>
 						</view>
+					</view>
+				</view> -->
+				<view class="uni-list-cell" v-for="item in initData.items">
+					<view class="uni-list-cell-left">
+						{{item.name}}
+					</view>
+					<view class="uni-list-cell-right" v-if="item.value_type==3" style="text-align: right;">
+						<uni-combox :candidates="contacts" :placeholder="item.default_value" emptyTips="" v-model="item.formValue"></uni-combox>
+					</view>
+					<view class="uni-list-cell-db" style="text-align: right;" v-if="item.value_type==0">
+						<input class="uni-input" v-model="item.formValue" focus :placeholder="item.default_value" />
+					</view>
+					<view class="uni-list-cell-db" style="text-align: right;" v-if="item.value_type!=0 && item.value_type!=3">
+						<input class="uni-input" type="number" v-model="item.formValue" focus :placeholder="item.default_value" />
 					</view>
 				</view>
 				<view class="uni-padding-wrap uni-common-mt">
@@ -38,25 +51,15 @@
 						<uni-tag :text="item.title" inverted="true" :type="item.tagType" @click="setType(item)"></uni-tag>
 					</view>
 				</view>
-				<view class="uni-list-cell">
+				<!-- <view class="uni-list-cell">
 					<view class="uni-list-cell-left">
 						姓名
 					</view>
 					<view class="uni-list-cell-right" style="text-align: right;">
 						<uni-combox :candidates="contacts" placeholder="输入或选择姓名" emptyTips="" v-model="initData.contact"></uni-combox>
 					</view>
-				</view>
-				<view class="uni-list-cell" v-for="item in bookItems">
-					<view class="uni-list-cell-left">
-						{{item.name}}
-					</view>
-					<view class="uni-list-cell-db" style="text-align: right;" v-if="item.value_type==0">
-						<input class="uni-input" v-model="item.formValue" focus :placeholder="item.default_value" />
-					</view>
-					<view class="uni-list-cell-db" style="text-align: right;" v-if="item.value_type!=0">
-						<input class="uni-input" type="number" v-model="item.formValue" focus :placeholder="item.default_value" />
-					</view>
-				</view>
+				</view> -->
+				
 				<view class="uni-padding-wrap uni-common-mt">
 					<textarea style="height: 45upx;" maxlength="200" name="remark" placeholder="备注" :value="initData.remark" />
 					<!-- #ifndef H5 -->
@@ -108,7 +111,7 @@
 
 <script>
 	import uniSegmentedControl from '@/components/uni-segmented-control.vue';
-	import bookMenu from '@/components/book-menu.vue';
+	import uniCombox from "@/components/uni-combox/uni-combox"
 	
 	//来自 graceUI 的表单验证， 使用说明见手册 http://grace.hcoder.net/doc/info/73-3.html
 	var  graceChecker = require("@/common/graceChecker.js");
@@ -121,7 +124,7 @@
 	    components: {
 	        uniTag,
 			uniSegmentedControl,
-			bookMenu
+			uniCombox
 	    },
 	    data() {
 			const currentDate = this.getDate({
@@ -145,12 +148,12 @@
 				imageList: ["blob:http://192.168.33.1:8081/1aa1af8a-f83c-4613-a7da-21e514781994"],
 				savedFilePath: "",
 				bookItems: [],
-				contacts: []
+				contacts: [],
 	        }
 	    },
-		onNavigationBarButtonTap(e) {
-			this.$refs.bookMenu.showRightDrawer();
-		},
+// 		onNavigationBarButtonTap(e) {
+// 			this.$refs.bookMenu.showRightDrawer();
+// 		},
 		onBackPress() {
 			// 返回按钮监听
 			if (this.rightDrawerVisible) {
@@ -172,12 +175,6 @@
 				this.category = {"id": options.category_id, "title": options.category_title};
 			}
 			this.getAuthToken(this.init);
-		},
-		//重新选择账本后回调函数
-		provide(){
-			return{
-				afterSelect:this.init
-			}
 		},
 	    methods: {
 			chooseImage: async function() {
@@ -204,14 +201,7 @@
 				this.setTabIndex(this.options.type);
 				this.initCategory(this.options);
 				this.initForm(this.options);
-				this.getBookItems();
 				this.loadContacts();
-			},
-			getBookItems: function() {
-				var _this = this;
-				this.request('GET', 'book/' + this.currentBook.id + '/items', {"is_include_uncheck":0}, function(data) {
-					_this.bookItems = data;
-				});
 			},
 			loadContacts: function() {
 				var _this = this;
@@ -271,38 +261,13 @@
 				var url = this.baseUrl + "account/" + this.options.id;
 				var _this = this;
 				this.setTabIndex(options.type);
-				uni.request({
-					method: 'GET',
-					url: url,
-					header: {
-						Authorization:this.authToken,
-					},
-					success: (res) => {
-						var result = res.data;
-						if (result.code == 0) {
-							var data = result.data;
-							_this.initData = data;
-							_this.date = this.formatDate(data.record_at);
-							if (options.category_id == undefined) {
-								_this.category = {"id":data.category_id, "title":data.category_title};
-							}
-							_this.setType(_this.category);
-						} else {
-							uni.showModal({
-								content: result.msg,
-								showCancel: false
-							});
-						}
-					},
-					fail: (err) => {
-						uni.showModal({
-							content: err.errMsg,
-							showCancel: false
-						});
-					},
-					complete: () => {
-						this.loading = false;
+				this.request('GET', "account/" + this.options.id, {}, function(data){
+					_this.initData = data;
+					_this.date = _this.formatDate(data.record_at);
+					if (options.category_id == undefined) {
+						_this.category = {"id":data.category_id, "title":data.category_title};
 					}
+					_this.setType(_this.category);
 				});
 			},
 			onClickItem(index) {
@@ -345,19 +310,14 @@
 				return `${year}-${month}-${day}`;
 			},
 			formSubmit: function (e) {
-				//将下列代码加入到对应的检查位置
-				//定义表单规则
-// 				var rule = [
-// 					{name:"cash", checkType : "notnull", checkRule:"",  errorMsg:"请输入金额"},
-// // 					{name:"gender", checkType : "in", checkRule:"男,女",  errorMsg:"请选择性别"},
-// // 					{name:"loves", checkType : "notnull", checkRule:"",  errorMsg:"请选择爱好"}
-// 				];
+// 				console.log(e.detail.value,this.initData.items);
+// 				return false;
 				//进行表单检查
 				var formData = e.detail.value;
 				//金额和备注必须填写一个
-				if (formData.cash == "" && formData.remark == "") {
-					uni.showToast({ title: '金额和备注必须填写其中一个', icon: "none" });
-				}
+// 				if (formData.cash == "" && formData.remark == "") {
+// 					uni.showToast({ title: '金额和备注必须填写其中一个', icon: "none" });
+// 				}
 // 				var checkRes = graceChecker.check(formData, rule);
 // 				if(checkRes){
 // 					// uni.showToast({title:"验证通过!", icon:"none"});
@@ -365,8 +325,8 @@
 // 					uni.showToast({ title: graceChecker.error, icon: "none" });
 // 				}
 				formData.type = this.types[this.current];
-				var currentBook = uni.getStorageSync('book');
-				formData.book_id = currentBook.id;
+				formData.items = this.initData.items;
+				// formData.book_id = currentBook.id;
 				if (this.savedFilePath != "") {
 					formData.remark = this.savedFilePath;
 				}

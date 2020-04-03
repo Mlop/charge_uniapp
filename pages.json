@@ -195,7 +195,19 @@
 		{
             "path" : "pages/stat/index",
             "style" : {
-				"navigationBarTitleText": "搜索列表"
+				"navigationBarTitleText": "搜索列表",
+				"app-plus" : {
+				    "titleNView" : {
+				        "buttons" : [
+				            {
+				                "text" : "\ue563",
+				                "fontSrc" : "/static/uni.ttf",
+				                "fontSize" : "22px"
+				            }
+				        ]
+				    },
+				    "bounce" : "none"
+				}
 			}
         }
     ],

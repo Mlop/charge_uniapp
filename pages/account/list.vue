@@ -33,7 +33,6 @@
 							    </view>
 							    <view class="uni-triplex-right" style="width: 25%;text-align: left;">
 							        <text class="uni-h5" v-bind:class="item.type">{{currency(item.cash)}}</text>
-									
 							    </view>
 							</view>
 							<view>
@@ -116,29 +115,8 @@
             },
 			init() {
 				var _this = this;
-				uni.request({
-					method: 'GET',
-					dataType: 'json',
-					url: this.baseUrl+'summary',
-					data: {
-					},
-					header: {
-						Authorization:this.authToken,
-					},
-					success: (res,statusCode, header) => {
-						console.log(res,statusCode, header);return false;
-						var result = res.data;
-						_this.showResult(result, false);
-						if (result.code == 0) {
-							this.lists = result.data;
-						}
-					},
-					fail: (err) => {
-						uni.showModal({
-							content: err.errMsg,
-							showCancel: false
-						});
-					}
+				_this.request('GET', 'summary', {}, function(data){
+					_this.lists = data;
 				});
 			}
         },

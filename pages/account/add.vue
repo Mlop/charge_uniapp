@@ -15,20 +15,20 @@
 			<form style="height: 160px;text-align:left;">
 				<view class="uni-padding-wrap uni-common-mt">
 					<view class="uni-list">
-						<view class="uni-list-cell">
+						<!-- <view class="uni-list-cell">
 							<view class="uni-list-cell-left">
 								姓名
 							</view>
 							<view class="uni-list-cell-right" style="text-align: right;">
 								<uni-combox :candidates="contacts" placeholder="输入或选择姓名" emptyTips="" v-model="formData.contact"></uni-combox>
 							</view>
-						</view>
+						</view> -->
 						<view class="uni-list-cell" v-for="item in bookItems">
 							<view class="uni-list-cell-left">
 								{{item.name}}
 							</view>
 							<view class="uni-list-cell-right" v-if="item.value_type==3" style="text-align: right;">
-								<uni-combox :candidates="contacts" placeholder="输入或选择姓名" emptyTips="" v-model="item.formValue"></uni-combox>
+								<uni-combox :candidates="contacts" :placeholder="item.default_value" emptyTips="" v-model="item.formValue"></uni-combox>
 							</view>
 							<view class="uni-list-cell-db" style="text-align: right;" v-if="item.value_type==0">
 								<input class="uni-input" v-model="item.formValue" focus :placeholder="item.default_value" />
@@ -239,38 +239,17 @@
 				day = day > 9 ? day : '0' + day;
 				return `${year}-${month}-${day}`;
 			},
-			formSubmit: function (action) {
-				// var items = [];
-				// for (var item of this.bookItems) {
-				// 	console.log(item);
-				// 	items.push({"id":item.});
-				// }
+			formSubmit: function (action) {//提交表单
 				this.formData.items = this.bookItems;
-				// console.log(this.bookItems)
-				// return false;
-				//将下列代码加入到对应的检查位置
-				//定义表单规则
-// 				var rule = [
-// 					{name:"cash", checkType : "notnull", checkRule:"",  errorMsg:"请输入金额"},
-// // 					{name:"gender", checkType : "in", checkRule:"男,女",  errorMsg:"请选择性别"},
-// // 					{name:"loves", checkType : "notnull", checkRule:"",  errorMsg:"请选择爱好"}
-// 				];
-				//进行表单检查
-				var formData = this.formData;
-				//金额和备注必须填写一个
-				// if (formData.cash == "" && formData.remark == "") {
-				// 	uni.showToast({ title: '金额和备注必须填写其中一个', icon: "none" });
-				// 	return false;
-				// }
-// 				var checkRes = graceChecker.check(formData, rule);
-// 				if(checkRes){
-// 					// uni.showToast({title:"验证通过!", icon:"none"});
-// 				}else{
-// 					uni.showToast({ title: graceChecker.error, icon: "none" });
-// 				}
+				for (var i = 0; i < this.bookItems.length; i++) {
+					var type = this.bookItems[i]['value_type'];
+					if (type == 3) {//保存用户名称
+						this.formData.contact = this.bookItems[i]['formValue'];
+					} else if (type == 1) {//现金金额
+						this.formData.cash = this.bookItems[i]['formValue'];
+					}
+				}
 				formData.type = this.types[this.current];
-				//todo
-				// var currentBook = uni.getStorageSync('book');
 				formData.book_id = this.currentBook.id;
 				var _this = this;
 				this.request('POST', 'account', formData, function(result) {
@@ -280,35 +259,6 @@
 					}
 					_this.loadContacts();
 				});
-				// uni.request({
-				// 	method: 'POST',
-				// 	dataType: 'json',
-				// 	url: this.baseUrl+'account',
-				// 	data: formData,
-				// 	header: {
-				// 		Authorization:this.authToken,
-				// 	},
-				// 	success: (res) => {
-				// 		var result = res.data;
-				// 		if (result.code == 0) {
-				// 			uni.showToast({title:"添加成功!"});
-				// 			if (action == 'save') {
-				// 				uni.navigateBack();
-				// 			}
-				// 		} else {
-				// 			uni.showModal({
-				// 				content: result.msg,
-				// 				showCancel: false
-				// 			});
-				// 		}
-				// 	},
-				// 	fail: (err) => {
-				// 		uni.showModal({
-				// 			content: err.errMsg,
-				// 			showCancel: false
-				// 		});
-				// 	}
-				// });
 			},
 			setType: function (category) {
 				this.category = category;

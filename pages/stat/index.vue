@@ -1,13 +1,14 @@
 <template>
 	<view class="content">
+		<contact-indexed :rightDrawerVisible="rightDrawerVisible" :showSelect="true" ref="contactIndexed"></contact-indexed>
 		<sl-filter :ref="'slFilter'" :topFixed="true" :isTransNav="true" :navHeight="0" :color="titleColor" :themeColor="themeColor" :menuList="menuList"
 		 @result="slfilterResult"></sl-filter>
 		<view><button style="width: 80px;float: right;font-size: 12px;" @click="openPopup">姓名</button></view>
-		<uni-popup ref="popup" type="top">
+		<!-- <uni-popup ref="popup" type="top">
 			<view class="popup-content" :style="{height: indexListHeight}">
 				<uni-indexed-list :options="contactList" :show-select="false" @click="contactClick" />
 			</view>
-		</uni-popup>
+		</uni-popup> -->
 		<view class="uni-list-cell uni-collapse" v-for="(list,index) in dataList" :key="index" :class="index === dataList.length - 1 ? 'uni-list-cell-last' : ''">
 		    <view class="uni-list-cell-navigate uni-navigate-bottom" hover-class="uni-list-cell-hover" :class="list.show ? 'uni-active' : ''"
 		        @click="trigerCollapse(index)">
@@ -50,11 +51,13 @@
 	import slFilter from '@/components/sl-filter/sl-filter.vue';
 	import uniIndexedList from '@/components/uni-indexed-list/uni-indexed-list.vue'
 	import uniPopup from "@/components/uni-popup/uni-popup.vue"
+	import contactIndexed from '@/components/contact-indexed.vue';
 	export default {
 		components: {
 			slFilter,
 			uniIndexedList,
-			uniPopup
+			uniPopup,
+			contactIndexed
 		},
 		computed: {
 			// 滚动区高度
@@ -68,8 +71,26 @@
 			  return h;
 			}
 		},
+		onNavigationBarButtonTap(e) {
+			this.$refs.contactIndexed.showRightDrawer();
+		},
+		onBackPress() {
+			// 返回按钮监听
+			if (this.rightDrawerVisible) {
+				this.rightDrawerVisible = false;
+				return true;
+			}
+		},
+		//重新选择账本后回调函数
+		provide(){
+			return{
+				afterSelect:this.selectContact
+			}
+		},
 		data() {
 			return {
+				//顶部账本选择菜单
+				rightDrawerVisible: true,
 				themeColor: '#000000',
 				titleColor: '#666666',
 				selectedResult: {},
@@ -130,7 +151,7 @@
 							}
 						]
 					}],
-				contactList: [],
+				// contactList: [],
 				selectedContact: "",
 				dataList: [],
 				listItems: [],
@@ -138,6 +159,9 @@
 			};
 		},
 		methods: {
+			contactClick: function(item) {
+				console.log('select user',item);
+			},
 			init: function() {
 				var _this = this;
 			},
@@ -166,7 +190,7 @@
 				this.request('GET', 'stat/filters', {}, function(result){
 					_this.menuList[0]['detailList'] = result['years'];
 					_this.menuList[1]['detailList'] = result['books'];
-					_this.contactList = result['contacts'];
+					// _this.contactList = result['contacts'];
 					//过滤条件菜单项
 					_this.$refs.slFilter.resetMenuList(_this.menuList)
 				});
@@ -181,6 +205,11 @@
 				this.selectedResult = val;//JSON.stringify(val, null, 2)
 				//根据选择条件返回结果
 				this.getList(this.selectedResult)
+			},
+			selectContact(item){
+				console.log(item);
+				this.selectedResult.contact = item.name;
+				this.getList(this.selectedResult);
 			},
 			contactClick(e) {
 				console.log('点击item，返回数据' + JSON.stringify(e))
