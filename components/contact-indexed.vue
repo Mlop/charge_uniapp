@@ -1,18 +1,23 @@
 <template>
 	<uni-drawer :visible="visible" mode="right" @close="closeRightDrawer">
-		<view class="uni-list uni-common-mt">
-			<view :style="{height: indexListHeight}">
-				<uni-indexed-list :options="contactList" :showSelect="showSelect" @click="selectContact" ref="myIndexed" />
-			</view>
-			<view class="uni-list-cell uni-list-cell-last" hover-class="uni-list-cell-hover">
-				<view class="text">
-					<button class="btn-submit" type="default" name="action" @click="clearSelected">清除</button>
-				</view>
-				<view class="text">
-					<button class="btn-submit" type="primary" name="action" @click="confirmSelected">保存</button>
+		<!-- <view> -->
+			<view class="uni-title" style="padding-left:30upx;">选择要搜索的联系人：</view>
+			<view class="uni-list uni-common-mt">
+				<view :style="{height: indexListHeight}">
+					<uni-indexed-list :options="contactList" :showSelect="showSelect" @click="selectContact" ref="myIndexed" />
 				</view>
 			</view>
-		</view>
+			<view class="uni-list uni-common-mt">
+				<view class="uni-list-cell uni-list-cell-last">
+					<view class="text">
+						<button class="btn-submit" type="default" name="action" @click="clearSelected">清除</button>
+					</view>
+					<view class="text">
+						<button class="btn-submit" type="primary" name="action" @click="confirmSelected">搜索</button>
+					</view>
+				</view>
+			</view>
+		<!-- </view> -->
 	</uni-drawer>
 </template>
 
@@ -33,8 +38,6 @@
 			// (业务需求：手机屏幕高度减去头部标题和底部tabbar的高度，当然这2个高度也是可以动态获取的)
 			indexListHeight: function() {
 			  const res = uni.getSystemInfoSync();
-			  // this.style.pageHeight = res.windowHeight;
-			  // console.log(uni.getSystemInfoSync().screenWidth / 750 * 100);
 			  var contentViewHeight = res.windowHeight - uni.getSystemInfoSync().screenWidth / 750 * 100; //像素
 			  var h = contentViewHeight + 'px';
 			  return h;
@@ -82,16 +85,34 @@
 			},
 			//确认选择
 			confirmSelected() {
+				this.visible = false;
 				this.afterSelect(this.selected);
 			},
+			//选中其中一个
 			selectContact(e) {
+				if (e.select.length > 2) {
+					uni.showToast({
+						title: '最多可选择5人',
+						duration: 2000
+					});
+					this.cancelSelected(e.select.pop());
+				}
 				this.selected = e.select;
-				console.log(e.select);
 			},
+			cancelSelected(cancelItem) {//取消单个选择
+				var sourceList = this.$refs.myIndexed.lists;
+				let items = sourceList.map(indexed => {
+					if (cancelItem.key == indexed.key) {
+						indexed.items.map(item => {
+							if (item.itemIndex == cancelItem.itemIndex) {
+								item.checked = false;
+								return item;
+							}
+						});
+						return indexed;
+					}
+				});
+			}
 		}
 	}
 </script>
-
-<style>
-
-</style>

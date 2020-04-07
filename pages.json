@@ -193,7 +193,7 @@
 			}
 		},
 		{
-            "path" : "pages/stat/index",
+            "path" : "pages/search/index",
             "style" : {
 				"navigationBarTitleText": "搜索列表",
 				"app-plus" : {
@@ -209,7 +209,25 @@
 				    "bounce" : "none"
 				}
 			}
-        }
+        },
+		{
+		    "path" : "pages/stat/index",
+		    "style" : {
+				"navigationBarTitleText": "选择统计方式"
+			}
+		},
+		{
+		    "path" : "pages/stat/year",
+		    "style" : {
+				"navigationBarTitleText": "按年统计"
+			}
+		},
+		{
+		    "path" : "pages/stat/book",
+		    "style" : {
+				"navigationBarTitleText": "按账本统计"
+			}
+		}
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
@@ -230,13 +248,13 @@
 	            "text" : "记账"
 	        },
 	        {
-	            "pagePath" : "pages/stat/index",
+	            "pagePath" : "pages/search/index",
 	            "iconPath" : "static/search.png",
 	            "selectedIconPath" : "static/search_selected.png",
 	            "text" : "搜索"
 	        },
 			{
-			    "pagePath" : "pages/account/list",
+			    "pagePath" : "pages/stat/index",
 			    "iconPath" : "static/api.png",
 			    "selectedIconPath" : "static/apiHL.png",
 			    "text" : "统计"
