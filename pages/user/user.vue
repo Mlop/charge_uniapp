@@ -99,32 +99,9 @@
 				});
 			},
 			getYearSummary() {
-				uni.request({
-					url: this.baseUrl+'yearly',
-					data: {
-					},
-					header: {
-						Authorization:this.authToken,
-					},
-					success: (res) => {
-						var result = res.data;
-						if (result.code == 0) {
-							this.list = result.data;
-							console.log(this.list);
-						} else {
-							this.checkLogin(result);
-							// uni.showModal({
-							// 	content: result.msg,
-							// 	showCancel: false
-							// });
-						}
-					},
-					fail: (err) => {
-						uni.showModal({
-							content: err.errMsg,
-							showCancel: false
-						});
-					}
+				var _this = this;
+				_this.request('GET', 'report/yearly', {}, function(data){
+					_this.list = data;
 				});
 			},
 			init() {

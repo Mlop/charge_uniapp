@@ -98,7 +98,7 @@
 			openMonthly(i) {
 				var _this = this;
 				var monthData = _this.lists[i];
-				this.request('GET', 'monthly', {date: monthData['ym']}, function(data){
+				this.request('GET', 'report/monthly', {date: monthData['ym']}, function(data){
 					_this.detail = data;
 				});
 			},
@@ -115,7 +115,7 @@
             },
 			init() {
 				var _this = this;
-				_this.request('GET', 'summary', {}, function(data){
+				_this.request('GET', 'report/summary', {}, function(data){
 					_this.lists = data;
 				});
 			}

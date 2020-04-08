@@ -217,9 +217,9 @@
 			}
 		},
 		{
-		    "path" : "pages/stat/year",
+		    "path" : "pages/stat/month",
 		    "style" : {
-				"navigationBarTitleText": "按年统计"
+				"navigationBarTitleText": "按月统计"
 			}
 		},
 		{

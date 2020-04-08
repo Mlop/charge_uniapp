@@ -6,8 +6,8 @@
 					统计总额
 				</view>
 				<view class="uni-list-cell" hover-class="uni-list-cell-hover">
-					<view class="uni-list-cell-navigate uni-navigate-right" @click="navigateTo('year')">
-						按年统计
+					<view class="uni-list-cell-navigate uni-navigate-right" @click="navigateTo('month')">
+						按月统计
 					</view>
 				</view>
 				<view class="uni-list-cell uni-list-cell-last" hover-class="uni-list-cell-hover">
@@ -20,15 +20,10 @@
 	</view>
 </template>
 <script>
-	// import uniBadge from "@/components/uni-badge.vue";
 	export default {
 		data() {
 			return {
-				// title: 'list-with-badges'
 			}
-		},
-		components: {
-			// uniBadge
 		},
 		methods:{
 			navigateTo(page) {
