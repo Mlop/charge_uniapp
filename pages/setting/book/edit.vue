@@ -98,10 +98,13 @@
 					}else{
 						this.$set(item,'checked',false)
 					}
-					
 				}
 			},
 			checkBox: function(e, item) {
+				if (this.id == 0) {
+					uni.showToast({title:"请先创建账本", icon:"none"});
+					return false;
+				}
 				common.request(
 					'PUT', 
 					'book/' + this.id + '/checkitem', 
@@ -115,12 +118,12 @@
 					});
 			},
 			getBookItems: function() {
-				if (this.id != 0) {
+				// if (this.id != 0) {
 					var _this = this;
-					common.request('GET', 'book/' + this.id + '/items', {}, function(data) {
+					common.request('GET', 'book/' + this.id + '/items', {}, function(data) {console.log('bookitem',data);
 						_this.bookItems = data;
 					});
-				}
+				// }
 			}
 		},
 		onNavigationBarButtonTap(e) {

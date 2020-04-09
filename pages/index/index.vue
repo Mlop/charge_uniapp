@@ -19,14 +19,15 @@
 			</navigator>
 		</view>
 		<view class="uni-padding-wrap uni-common-mt">
-			<view class="uni-list" v-for="(item,key) in result.items" :key="key">
-				
-				<view class="uni-flex uni-row" @click="gotoDetail(item)">
-					<view class="text" style="text-align: left;width: 100upx;">{{item.record_at|formatDate}}</view>
-					<view class="title">{{item.title}}</view>
-					<view class="text uni-ellipsis" style="text-align: left;flex: 1 1 0%;">{{item.remark}}</view>
-					<view class="text" v-bind:class="item.type" style="text-align: right;width: 100upx;">￥{{item.cash}}</view>
-				</view>	
+			<view class="uni-list" v-if="totalItems>0">
+				<view class="uni-list-item" v-for="(item,key) in result.items" :key="key">
+					<view class="uni-flex uni-row" @click="gotoDetail(item)">
+						<view class="text" style="text-align: left;width: 100upx;">{{item.record_at|formatDate}}</view>
+						<view class="title">{{item.title}}</view>
+						<view class="text uni-ellipsis" style="text-align: left;flex: 1 1 0%;">{{item.remark}}</view>
+						<view class="text" v-bind:class="item.type" style="text-align: right;width: 100upx;">￥{{item.cash}}</view>
+					</view>	
+				</view>
 			</view>
 			<view class="text" @tap="openAccountList"><span class="uni-icon uni-icon-arrowdown"></span></view>
 		</view>
@@ -42,6 +43,7 @@
 		data() {
 			return {
 				result: {},
+				totalItems: 0,
 				//顶部账本选择菜单
 				rightDrawerVisible: false
 			}
@@ -84,25 +86,10 @@
 				uni.navigateTo({url:"../account/edit?type=" + item.type + "&id=" + item.id});
 			},
 			init() {
-				uni.request({
-					method: 'GET',
-					url: this.baseUrl+'report',
-					header: {
-						Authorization:this.authToken,
-					},
-					success: (res) => {
-						var result = res.data;
-						this.checkLogin(result);
-						if (result.code == 0) {
-							this.result = result.data;
-						} 
-					},
-					fail: (err) => {
-						uni.showModal({
-							content: err.errMsg,
-							showCancel: false
-						});
-					}
+				var _this = this;
+				_this.request('GET', 'report', {}, function(data){
+					_this.result = data;
+					_this.totalItems = _this.result.items.length;
 				});
 			},
 		}

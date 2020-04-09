@@ -26,7 +26,6 @@
 	import uniDrawer from '@/components/uni-drawer.vue';
 	import uniIcons from "@/components/uni-icons/uni-icons.vue"
 	import uniBadge from "@/components/uni-badge.vue";
-	import {book} from '@/common/book.js';
 	export default {
 		components: {
 			uniDrawer,
@@ -66,13 +65,6 @@
 				uni.showToast({
 					title: '选中' + item.title
 				});
-// 				uni.setNavigationBarTitle({
-// 					title: "帐目   " + item.title,
-// 					success: () => {
-// 					},
-// 					fail: (err) => {
-// 					}
-// 				});
 				uni.setStorageSync('book', item);
 				//选择账本后的回调函数
 				if (this.afterSelect != undefined) {
@@ -81,27 +73,42 @@
 			},
 			init() {
 				//初始化账本
-				book.baseUrl = this.baseUrl;
-				book.authToken = this.authToken;
 				var _this = this;
-				book.getBookList(function(result){
-					if (result.code == 0) {
-						var data = result.data;
-						_this.bookList = data;
-						var currentBook = uni.getStorageSync('book');
-						//没有将默认第一个账本写入本地存储
-						if (!currentBook) {
-							currentBook = data[0];
-							_this.selectBook(currentBook);
-							uni.setStorageSync('book', currentBook);
-						}
-						_this.selectBookId = currentBook.id;
-					} else {
-						uni.showModal({
-							content: result.msg,
-							showCancel: false
+				_this.request('GET', 'books', {}, function(data){
+					if (data.length == 0) {
+						uni.showToast({
+							duration:1500,
+							title: "还没创建账本哦"
 						});
+						setTimeout(function () {
+							uni.showActionSheet({
+								itemList: ['去创建账本 >', '去创建账本条目 >'],
+								success: function (res) {
+									if (res.tapIndex == 0) {
+										uni.navigateTo({
+											url: '/pages/setting/book/edit'
+										});
+									} else if (res.tapIndex == 1) {
+										uni.navigateTo({
+											url: '/pages/setting/item'
+										});
+									}
+								},
+								fail: function (res) {
+								}
+							});
+						}, 1500);
+						return false;
 					}
+					_this.bookList = data;
+					var currentBook = uni.getStorageSync('book');
+					//没有将默认第一个账本写入本地存储
+					if (!currentBook) {
+						currentBook = data[0];
+						_this.selectBook(currentBook);
+						uni.setStorageSync('book', currentBook);
+					}
+					_this.selectBookId = currentBook.id;
 				});
 			}
 		}
@@ -109,5 +116,7 @@
 </script>
 
 <style>
-
+.uni-actionsheet__cell {
+	font-size: 14px;
+}
 </style>

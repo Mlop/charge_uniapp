@@ -66,40 +66,18 @@
 				this.showPassword = !this.showPassword;
 			},
 			register: function (formData) {
-				uni.request({
-					method: 'POST',
-					dataType: 'json',
-					url: this.baseUrl+'register',
-					data: formData,
-					success: (res) => {
-						console.log(res);
-						var result = res.data;
-						if (result.code == 0) {
-							//成功，保存用户信息
-							uni.clearStorage();
-							uni.setStorage({
-								key:'user', 
-								'data':result.data,
-								success: function () {
-									uni.switchTab({
-										url:'../index/index'
-									});
-								},
+				this.request('POST', 'register', formData, function(data){
+					//成功，保存用户信息
+					uni.clearStorage();
+					uni.setStorage({
+						key:'user', 
+						'data':data,
+						success: function () {
+							uni.switchTab({
+								url:'../index/index'
 							});
-							
-						} else {
-							uni.showModal({
-								content: result.msg,
-								showCancel: false
-							});
-						}
-					},
-					fail: (err) => {
-						uni.showModal({
-							content: err.errMsg,
-							showCancel: false
-						});
-					}
+						},
+					});
 				});
 			},
 		},

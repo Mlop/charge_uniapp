@@ -195,10 +195,18 @@
 		},
 		onLoad(option) {
 			option.parent_id = (option.parent_id == undefined) ? 0 : option.parent_id;
-			option.type = (option.type == undefined) ? 'out' : option.type;
+			option.type = (option.type == undefined) ? 'outgo' : option.type;
 			option.show_title = (option.title == undefined) ? '类别管理' : option.title;
 			if (option.parent_id == 0) {
-				option.show_title = ((option.type == 'out') ? '支出' : '收入') + option.show_title;
+				var prefix = '收入';
+				if (option.type == 'outgo') {
+					prefix = '支出';
+				} else if (option.type == 'loan') {
+					prefix = '借贷';
+				} else {
+					prefix = '收入';
+				}
+				option.show_title = prefix + option.show_title;
 			}
 			option.id = (option.id == undefined) ? 0 : option.id;
 			uni.setNavigationBarTitle({

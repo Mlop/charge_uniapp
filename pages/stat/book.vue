@@ -45,7 +45,7 @@
 				detail: [],
 				current_book_id: 0,
 				current_page: 1,
-				page_size: 1,
+				page_size: 20,
 				last_page: 1,
 				loadmore_status: 'more'
             }

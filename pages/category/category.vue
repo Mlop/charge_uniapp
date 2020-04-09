@@ -6,13 +6,25 @@
 				    v-for="(item,index) in categoryList">
 					{{item.title}}
 				</view>
-			</scroll-view>
-			<scroll-view class="nav-right" scroll-y :scroll-top="scrollTop" @scroll="scroll" :style="'height:'+height+'px'" scroll-with-animation>
-				<view :id="index===0?'first':''" class="nav-right-item" v-for="(item,index) in subCategoryList" :key="index">
-					<view @click="categoryClickSub(item)">{{item.title}}</view>
-					<view style="float: right;" @click="changeFavorite(item)"><span class="uni-icon" :class="item.isFav == 1 ? 'uni-icon-star-filled' : 'uni-icon-star'"></span></view>
+				<view class="nav-left-item">
+					<navigator :url="'/pages/setting/category/category?type=' + options.type">
+						<button type="primary" style="font-size: 15px;">去添加>></button>
+					</navigator>
 				</view>
 			</scroll-view>
+			<scroll-view v-if="subCategoryLength>0" class="nav-right" scroll-y :scroll-top="scrollTop" @scroll="scroll" :style="'height:'+height+'px'" scroll-with-animation>
+				<view :id="index===0?'first':''" class="nav-right-item" v-for="(item,index) in subCategoryList" :key="index">
+					<view @click="categoryClickSub(item)" class="uni-triplex-left" style="text-align: left;">{{item.title}}</view>
+					<view class="uni-triplex-right" @click="changeFavorite(item)">
+						<span class="uni-icon" :class="item.isFav == 1 ? 'uni-icon-star-filled' : 'uni-icon-star'" style="font-size: 16px;"></span>
+					</view>
+				</view>
+			</scroll-view>
+			<view v-else class="uni-triplex-left">
+				<navigator :url="'/pages/setting/category/category?type=' + options.type" style="margin: 20px;">
+					<button type="primary" style="font-size: 14px;">去添加吧>></button>
+				</navigator>
+			</view>
 		</view>
 	</view>
 </template>
@@ -23,7 +35,8 @@
 		data() {
 			return {
 				categoryList: [],
-				subCategoryList: [],
+				subCategoryList: [],//子类别数组
+				subCategoryLength: 0,//子类别数量
 				height: 0,
 				categoryActive: 0,
 				scrollTop: 0,
@@ -38,6 +51,7 @@
 			categoryClickMain(categroy, index) {
 				this.categoryActive = index;
 				this.subCategoryList = categroy.sub;
+				this.subCategoryLength = this.subCategoryList.length;
 				this.scrollTop = -this.scrollHeight * index;
 			},
 			categoryClickSub(category) {
@@ -92,6 +106,7 @@
 					if (data.code == 0) {
 						_this.categoryList = data.data;
 						_this.subCategoryList = data.data[0].sub;
+						_this.subCategoryLength = _this.subCategoryList.length;
 					} else {
 						uni.showModal({
 							content: data.msg,
@@ -104,7 +119,6 @@
 			},
 		},
 		onLoad: function (options) {
-			console.log(options);
 			this.options = options;
 			this.getAuthToken(this.init);
 		}
