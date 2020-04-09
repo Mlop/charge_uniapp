@@ -24,7 +24,7 @@
 				<view class="uni-flex uni-row" @click="gotoDetail(item)">
 					<view class="text" style="text-align: left;width: 100upx;">{{item.record_at|formatDate}}</view>
 					<view class="title">{{item.title}}</view>
-					<view class="text" style="text-align: left;flex: 1 1 0%;">{{item.remark}}</view>
+					<view class="text uni-ellipsis" style="text-align: left;flex: 1 1 0%;">{{item.remark}}</view>
 					<view class="text" v-bind:class="item.type" style="text-align: right;width: 100upx;">￥{{item.cash}}</view>
 				</view>	
 			</view>
@@ -78,9 +78,7 @@
 		},
 		methods: {
 			openAccountList() {
-				uni.switchTab({
-					url: '../account/list'
-				});
+				uni.navigateTo({url:"../stat/month"});
 			},
 			gotoDetail(item) {
 				uni.navigateTo({url:"../account/edit?type=" + item.type + "&id=" + item.id});

@@ -225,7 +225,8 @@
 		{
 		    "path" : "pages/stat/book",
 		    "style" : {
-				"navigationBarTitleText": "按账本统计"
+				"navigationBarTitleText": "按账本统计",
+				"enablePullDownRefresh": true
 			}
 		}
     ],

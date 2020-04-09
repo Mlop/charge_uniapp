@@ -115,7 +115,7 @@
             },
 			init() {
 				var _this = this;
-				_this.request('GET', 'summary', {}, function(data){
+				_this.request('GET', 'report/summary', {}, function(data){
 					_this.lists = data;
 				});
 			}
