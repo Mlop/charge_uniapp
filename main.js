@@ -9,8 +9,8 @@ const app = new Vue({
     ...App
 })
 app.$mount()
-Vue.prototype.baseUrl = 'http://charge.api.com/';
-// Vue.prototype.baseUrl = 'http://119.27.163.89:8082/';
+// Vue.prototype.baseUrl = 'http://charge.api.com/';
+Vue.prototype.baseUrl = 'http://119.27.163.89:8082/';
 Vue.prototype.authToken = '';
 Vue.prototype.checkLogin = function(result) {
 	if (result.code == 401) {

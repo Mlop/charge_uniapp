@@ -51,18 +51,6 @@
 			uniIndexedList,
 			contactIndexed
 		},
-		computed: {
-			// 滚动区高度
-			// (业务需求：手机屏幕高度减去头部标题和底部tabbar的高度，当然这2个高度也是可以动态获取的)
-			indexListHeight: function() {
-			  const res = uni.getSystemInfoSync();
-			  // this.style.pageHeight = res.windowHeight;
-			  // console.log(uni.getSystemInfoSync().screenWidth / 750 * 100);
-			  var contentViewHeight = res.windowHeight - uni.getSystemInfoSync().screenWidth / 750 * 100; //像素
-			  var h = contentViewHeight + 'px';
-			  return h;
-			}
-		},
 		onNavigationBarButtonTap(e) {
 			this.$refs.contactIndexed.showRightDrawer();
 		},

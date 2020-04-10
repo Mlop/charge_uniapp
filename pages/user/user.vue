@@ -2,7 +2,7 @@
 	<view class="page">
 		<view class="uni-card" v-show="user">
 			<view class="uni-card-header uni-card-media">
-				<image class="uni-card-media-logo" src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/uni@2x.png"></image>
+				<image class="uni-card-media-logo" mode="aspectFit" style="width: 30px;" src="/static/contact.png"></image>
 				<view class="uni-card-media-body">
 					<text class="uni-card-media-text-top">{{user.phone}} {{user.email}}</text>
 					<text class="uni-card-media-text-bottom">{{user.name}}</text>
@@ -13,7 +13,6 @@
 					<text>{{user.created_at}} 注册</text>
 				</view>
 			</view>
-			
 		</view>
 		<view class="uni-card" style="margin-top:50px;">
 		    <view class="uni-list">
@@ -30,7 +29,7 @@
 										<view v-if="item.type == 'income'" :class="item.type">总收入</view>
 										<view v-if="item.type == 'balance'" :class="item.type">净收入</view>
 										<view v-if="item.type == 'loan'">总借贷</view>
-										<view :class="getClass(item)">￥{{item.total}}</view>
+										<view :class="item.total>0 ? 'income' : 'outgo'">￥{{item.total}}</view>
 									</label>
 								</view>
 								<view v-if="item.type == 'balance'" class="uni-list" style="color: #C0C0C0;padding-left: 50upx;">
@@ -41,13 +40,6 @@
 		            </view>
 		        </block>
 		    </view>
-		</view>
-		<view class="uni-padding-wrap uni-common-mt">
-			<view class="uni-card">
-				<view class="uni-card-content">
-					<button class="btn-submit" type="primary" @click="logout" v-if="user">退出登录</button>
-				</view>
-			</view>
 		</view>
 		<view class="uni-card" v-if="!user">
 			<view class="uni-card-footer">
@@ -108,12 +100,6 @@
 				this.getUser();
 				this.getYearSummary();
 			},
-			logout(){
-				uni.clearStorage();
-				uni.navigateTo({
-					url: 'login'
-				});
-			}
 		},
 		onLoad(option) {
 			this.getAuthToken(this.init);

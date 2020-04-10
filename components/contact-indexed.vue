@@ -1,23 +1,17 @@
 <template>
 	<uni-drawer :visible="visible" mode="right" @close="closeRightDrawer">
-		<!-- <view> -->
-			<view class="uni-title" style="padding-left:30upx;">选择要搜索的联系人：</view>
-			<view class="uni-list uni-common-mt">
-				<view :style="{height: indexListHeight}">
-					<uni-indexed-list :options="contactList" :showSelect="showSelect" @click="selectContact" ref="myIndexed" />
-				</view>
+		<view class="uni-title" style="padding-left:30upx;">选择要搜索的联系人：</view>
+		<view class="uni-list uni-common-mt">
+			<view :style="{height: indexListHeight}">
+				<uni-indexed-list :options="contactList" :showSelect="showSelect" @click="selectContact" ref="myIndexed" />
 			</view>
-			<view class="uni-list uni-common-mt">
-				<view class="uni-list-cell uni-list-cell-last">
-					<view class="text">
-						<button class="btn-submit" type="default" name="action" @click="clearSelected">清除</button>
-					</view>
-					<view class="text">
-						<button class="btn-submit" type="primary" name="action" @click="confirmSelected">搜索</button>
-					</view>
-				</view>
+		</view>
+		<view class="uni-list uni-common-mt list-btn">
+			<view class="uni-list-cell uni-list-cell-last">
+				<button class="btn-submit" type="default" name="action" @click="clearSelected">清除</button>
+				<button class="btn-submit" type="primary" name="action" @click="confirmSelected">搜索</button>
 			</view>
-		<!-- </view> -->
+		</view>
 	</uni-drawer>
 </template>
 
@@ -38,7 +32,7 @@
 			// (业务需求：手机屏幕高度减去头部标题和底部tabbar的高度，当然这2个高度也是可以动态获取的)
 			indexListHeight: function() {
 			  const res = uni.getSystemInfoSync();
-			  var contentViewHeight = res.windowHeight - uni.getSystemInfoSync().screenWidth / 750 * 100; //像素
+			  var contentViewHeight = res.windowHeight - uni.getSystemInfoSync().screenHeight/ 750 * 100;//像素
 			  var h = contentViewHeight + 'px';
 			  return h;
 			}
@@ -116,3 +110,12 @@
 		}
 	}
 </script>
+<style>
+	.list-btn:before{display:none !important;}
+	.list-btn:after{display:none !important;}
+	.list-btn button{
+		font-size: 16px;
+		margin: 0 10px 0 10px;
+		width: 100%;
+	}
+</style>

@@ -21,7 +21,7 @@
 						收入类别管理
 					</view>
 				</view>
-				<view class="uni-list-cell uni-list-cell-last" hover-class="uni-list-cell-hover">
+				<view class="uni-list-cell" hover-class="uni-list-cell-hover">
 					<view class="uni-list-cell-navigate uni-navigate-right" @click="navigateTo('category/category?type=loan')">
 						借贷类别管理
 					</view>
@@ -42,7 +42,7 @@
 				<view class="uni-list-cell-divider" style="background-color: #EEEEEE;">
 					时间表
 				</view>
-				<view class="uni-list-cell uni-list-cell-last" hover-class="uni-list-cell-hover">
+				<view class="uni-list-cell" hover-class="uni-list-cell-hover">
 					<view class="uni-list-cell-navigate uni-navigate-right" @click="navigateTo('timeline')">
 						时间表图
 					</view>
@@ -50,6 +50,14 @@
 				<view class="uni-list-cell uni-list-cell-last" hover-class="uni-list-cell-hover">
 					<view class="uni-list-cell-navigate uni-navigate-right" @click="navigateTo('train')">
 						火车票可购买区间
+					</view>
+				</view>
+				<view class="uni-list-cell-divider" style="background-color: #EEEEEE;">
+					账户管理
+				</view>
+				<view class="uni-list-cell uni-list-cell-last" hover-class="uni-list-cell-hover">
+					<view class="uni-list-cell-navigate" style="display: flow-root;">
+						<button class="btn-submit" type="warn" @click="logout">退出登录</button>
 					</view>
 				</view>
 			</view>
@@ -73,6 +81,12 @@
 					url: page
 				})
 			},
+			logout(){
+				uni.clearStorage();
+				uni.navigateTo({
+					url: '../user/login'
+				});
+			}
 		}
 	}
 </script>
