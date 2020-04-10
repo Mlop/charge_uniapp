@@ -8,7 +8,7 @@
 				</view>
 				<view class="nav-left-item">
 					<navigator :url="'/pages/setting/category/category?type=' + options.type">
-						<button type="primary" style="font-size: 15px;">去添加>></button>
+						添加>>
 					</navigator>
 				</view>
 			</scroll-view>
@@ -22,7 +22,7 @@
 			</scroll-view>
 			<view v-else class="uni-triplex-left">
 				<navigator :url="'/pages/setting/category/category?type=' + options.type" style="margin: 20px;">
-					<button type="primary" style="font-size: 14px;">去添加吧>></button>
+					<button type="primary" style="font-size: 14px;">去添加>></button>
 				</navigator>
 			</view>
 		</view>
