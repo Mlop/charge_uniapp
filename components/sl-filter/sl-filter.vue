@@ -8,7 +8,7 @@
 				</view>
 				<view class="select-tab-item" style="width: 40px;" @click="showContact">
 					<text>姓名</text>
-					<contact-indexed :rightDrawerVisible="false" :showSelect="true" ref="contactIndexed2"></contact-indexed>
+					<contact-indexed :rightDrawerVisible="indexed_visible" :showSelect="true" ref="contactIndexed2"></contact-indexed>
 				</view>
 			</view>
 		</view>
@@ -157,7 +157,8 @@
 				statusList: [],
 				selectedIndex: '',
 				titleList: [],
-				tempTitleObj: {}
+				tempTitleObj: {},
+				indexed_visible: false
 			};
 		},
 		methods: {
@@ -263,6 +264,7 @@
 				for (let i = 0; i < this.statusList.length; i++) {
 					this.statusList[i].isActive = false;
 				}
+				this.indexed_visible = false;
 			}
 		}
 	}

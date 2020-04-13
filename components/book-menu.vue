@@ -63,7 +63,7 @@
 				this.visible = false;
 				this.selectBookId = item.id;
 				uni.showToast({
-					title: '选中' + item.title
+					title: '当前使用账本-' + item.title
 				});
 				uni.setStorageSync('book', item);
 				//选择账本后的回调函数

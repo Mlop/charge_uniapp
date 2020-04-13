@@ -62,13 +62,13 @@
 				
 				<view class="uni-padding-wrap uni-common-mt">
 					<textarea style="height: 45upx;" maxlength="200" name="remark" placeholder="备注" :value="initData.remark" />
-					<!-- #ifndef H5 -->
+					<!-- #ifdef H5 -->
 					<view class="uni-list list-pd">
 						<view class="uni-list-cell cell-pd">
 							<view class="uni-uploader">
 								<view class="uni-uploader-head">
 									<view class="uni-uploader-title">点击可预览选好的图片</view>
-									<view class="uni-uploader-info">{{imageList.length}}/9</view>
+									<view class="uni-uploader-info">{{imageList.length}}/{{picCount}}</view>
 								</view>
 								<view class="uni-uploader-body">
 									<view class="uni-uploader__files">
@@ -149,6 +149,7 @@
 				savedFilePath: "",
 				bookItems: [],
 				contacts: [],
+				picCount: 3,
 	        }
 	    },
 // 		onNavigationBarButtonTap(e) {
@@ -179,7 +180,7 @@
 	    methods: {
 			chooseImage: async function() {
 				var _this = this;
-				if (this.imageList.length === 9) {
+				if (this.imageList.length === this.picCount) {
 					let isContinue = await this.isFullImg();
 					console.log("是否继续?", isContinue);
 					if (!isContinue) {
@@ -189,7 +190,7 @@
 				uni.chooseImage({
 					sourceType: ['camera', 'album'],
 					sizeType: ['compressed', 'original'],
-					count: 3,
+					count: this.picCount,
 					success: (res) => {
 						var img = res.tempFilePaths;
 						this.imageList = this.imageList.concat(res.tempFilePaths);
@@ -326,6 +327,8 @@
 // 				}
 				formData.type = this.types[this.current];
 				formData.items = this.initData.items;
+				//拍摄的图片
+				formData.images = this.imageList;
 				// formData.book_id = currentBook.id;
 				if (this.savedFilePath != "") {
 					formData.remark = this.savedFilePath;
