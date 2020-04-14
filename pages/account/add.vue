@@ -6,23 +6,12 @@
 			 activeColor="#007aff"></uni-segmented-control>
 		</view>
 		<view class="content">
-			<view v-show="current === 0">
-			</view>
-			<view v-show="current === 1">
-			</view>
-			<view v-show="current === 2">
-			</view>
+			<!-- <view v-show="current === 0"></view>
+			<view v-show="current === 1"></view>
+			<view v-show="current === 2"></view> -->
 			<form style="height: 160px;text-align:left;">
 				<view class="uni-padding-wrap uni-common-mt">
 					<view class="uni-list">
-						<!-- <view class="uni-list-cell">
-							<view class="uni-list-cell-left">
-								姓名
-							</view>
-							<view class="uni-list-cell-right" style="text-align: right;">
-								<uni-combox :candidates="contacts" placeholder="输入或选择姓名" emptyTips="" v-model="formData.contact"></uni-combox>
-							</view>
-						</view> -->
 						<view class="uni-list-cell" v-for="item in bookItems">
 							<view class="uni-list-cell-left">
 								{{item.name}}
@@ -30,10 +19,10 @@
 							<view class="uni-list-cell-right" v-if="item.value_type==3" style="text-align: right;">
 								<uni-combox :candidates="contacts" :placeholder="item.default_value" emptyTips="" v-model="item.formValue"></uni-combox>
 							</view>
-							<view class="uni-list-cell-db" style="text-align: right;" v-if="item.value_type==0">
+							<view class="uni-list-cell-db" style="text-align: right;" v-else-if="item.value_type==0">
 								<input class="uni-input" v-model="item.formValue" focus :placeholder="item.default_value" />
 							</view>
-							<view class="uni-list-cell-db" style="text-align: right;" v-if="item.value_type!=0 && item.value_type!=3">
+							<view class="uni-list-cell-db" style="text-align: right;" v-else>
 								<input class="uni-input" type="number" v-model="item.formValue" focus :placeholder="item.default_value" />
 							</view>
 						</view>
@@ -55,6 +44,29 @@
 				<view class="uni-padding-wrap uni-common-mt">
 					<view class="uni-list-cell-left">
 						<textarea style="height: 45upx;" class="uni-input" maxlength="200" v-model="formData.remark" name="remark" placeholder="备注" />
+						<!-- #ifdef H5 -->
+						<view class="uni-list list-pd">
+							<view class="uni-list-cell cell-pd">
+								<view class="uni-uploader">
+									<view class="uni-uploader-head">
+										<view class="uni-uploader-info">{{imageList.length}}/{{picCount}}</view>
+									</view>
+									<view class="uni-uploader-body">
+										<view class="uni-uploader__files">
+											<block v-for="(image,index) in imageList" :key="index">
+												<view class="uni-uploader__file">
+													<image class="uni-uploader__img" :src="image" :data-src="image" @tap="previewImage"></image>
+												</view>
+											</block>
+											<view class="uni-uploader__input-box">
+												<view class="uni-uploader__input" @tap="chooseImage"></view>
+											</view>
+										</view>
+									</view>
+								</view>
+							</view>
+						</view>
+						<!-- #endif -->
 					</view>
 				</view>
 				<view class="uni-padding-wrap uni-common-mt">
@@ -116,7 +128,9 @@
 				formData: {"category_id":category.id, "cash":"", "remark":"", "record_at":currentDate},
 				currentBook: {},
 				bookItems: [],
-				contacts: []
+				contacts: [],
+				imageList: [],
+				picCount: 3,
 	        }
 	    },
 		onNavigationBarButtonTap(e) {
@@ -152,6 +166,26 @@
 			}
 		},
 	    methods: {
+			chooseImage: async function() {
+				var _this = this;
+				if (this.imageList.length === this.picCount) {
+					let isContinue = await this.isFullImg();
+					console.log("是否继续?", isContinue);
+					if (!isContinue) {
+						return;
+					}
+				}
+				uni.chooseImage({
+					sourceType: ['camera', 'album'],
+					sizeType: ['compressed', 'original'],
+					count: this.picCount,
+					success: (res) => {
+						var img = res.tempFilePaths;
+						this.imageList = this.imageList.concat(res.tempFilePaths);
+						_this.savedFilePath = img[0];
+					}
+				})
+			},
 			init() {
 				switch (this.options.type) {
 					case 'outgo':
@@ -240,19 +274,26 @@
 				return `${year}-${month}-${day}`;
 			},
 			formSubmit: function (action) {//提交表单
-				this.formData.items = this.bookItems;
 				for (var i = 0; i < this.bookItems.length; i++) {
-					var type = this.bookItems[i]['value_type'];
+					var item = this.bookItems[i];
+					var type = ['value_type'];
 					if (type == 3) {//保存用户名称
-						this.formData.contact = this.bookItems[i]['formValue'];
+						this.formData.contact = item['formValue'];
 					} else if (type == 1) {//现金金额
-						this.formData.cash = this.bookItems[i]['formValue'];
+						this.formData.cash = item['formValue'];
+					}
+					//未输入值时，表单值为默认值
+					if (item['formValue'] == undefined) {
+						this.bookItems[i]['formValue'] = item['default_value'];
 					}
 				}
-				formData.type = this.types[this.current];
-				formData.book_id = this.currentBook.id;
+				this.formData.items = this.bookItems;
+				this.formData.type = this.types[this.current];
+				this.formData.book_id = this.currentBook.id;
+				//拍摄的图片
+				this.formData.images = this.imageList;
 				var _this = this;
-				this.request('POST', 'account', formData, function(result) {
+				_this.request('POST', 'account', _this.formData, function(result) {
 					uni.showToast({title:"添加成功!"});
 					if (action == 'save') {
 						uni.navigateBack();

@@ -1,8 +1,11 @@
 <template>
 	<view class="content">
-		<contact-indexed :rightDrawerVisible="rightDrawerVisible" :showSelect="true" ref="contactIndexed"></contact-indexed>
 		<sl-filter :ref="'slFilter'" :topFixed="true" :isTransNav="true" :navHeight="0" :color="titleColor" :themeColor="themeColor" :menuList="menuList"
 		 @result="slfilterResult"></sl-filter>
+		 <view class="filter-contact">
+		 	<text @click="showContactIndexed">姓名</text>
+		 	<contact-indexed :rightDrawerVisible="rightDrawerVisible" :showSelect="true" ref="contactIndexed"></contact-indexed>
+		 </view>
 		<view class="uni-list-cell uni-collapse" v-for="(list,index) in dataList" :key="index" :class="index === dataList.length - 1 ? 'uni-list-cell-last' : ''">
 		    <view class="uni-list-cell-navigate uni-navigate-bottom" hover-class="uni-list-cell-hover" :class="list.show ? 'uni-active' : ''"
 		        @click="trigerCollapse(index)">
@@ -52,7 +55,7 @@
 			contactIndexed
 		},
 		onNavigationBarButtonTap(e) {
-			this.$refs.contactIndexed.showRightDrawer();
+			this.showContactIndexed();
 		},
 		onBackPress() {
 			// 返回按钮监听
@@ -127,6 +130,10 @@
 								'value': 'cash#asc'
 							}
 						]
+					},{
+						'title':'',
+						'key':'name',
+						'detailList': []
 					}],
 				// contactList: [],
 				selectedContact: "",
@@ -136,8 +143,8 @@
 			};
 		},
 		methods: {
-			contactClick: function(item) {
-				console.log('select user',item);
+			showContactIndexed: function() {
+				this.$refs.contactIndexed.showRightDrawer();
 			},
 			init: function() {
 				var _this = this;
@@ -208,7 +215,6 @@
 			}
 		},
 		onLoad: function (options) {
-			// console.log(options);
 			this.options = options;
 			this.getAuthToken(this.init);
 			this.getList({});
@@ -242,5 +248,16 @@ text{
 }
 .loan {
 	color: #f0ad4e;
+}
+.filter-contact {
+	width: calc(100%);
+	height: 40px;
+	position: absolute;
+	top: 13px;
+	left: calc(78%);
+	line-height: 1.8;
+}
+.filter-contact uni-text {
+	font-size: 14px;color: #666666;
 }
 </style>

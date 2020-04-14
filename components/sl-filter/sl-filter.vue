@@ -6,10 +6,6 @@
 					<text :style="{color:color}">{{item.title}}</text>
 					<text class="arrows sl-font" :class="statusList[index].isActive?up:down"></text>
 				</view>
-				<view class="select-tab-item" style="width: 40px;" @click="showContact">
-					<text>姓名</text>
-					<contact-indexed :rightDrawerVisible="indexed_visible" :showSelect="true" ref="contactIndexed2"></contact-indexed>
-				</view>
 			</view>
 		</view>
 		<popup-layer ref="popupRef" :direction="'bottom'" @close="close" :isTransNav="isTransNav" :navHeight="navHeight"
@@ -24,12 +20,10 @@
 <script>
 	import popupLayer from '@/components/sl-filter/popup-layer.vue';
 	import slFilterView from '@/components/sl-filter/filter-view.vue';
-	import contactIndexed from '@/components/contact-indexed.vue';
 	export default {
 		components: {
 			popupLayer,
-			slFilterView,
-			contactIndexed
+			slFilterView
 		},
 		props: {
 			menuList: {
@@ -162,9 +156,6 @@
 			};
 		},
 		methods: {
-			showContact() {
-				this.$refs.contactIndexed2.showRightDrawer();
-			},
 			getMenuListTemp() {
 				let arr = this.menuList;
 				for (let i = 0; i < arr.length; i++) {
