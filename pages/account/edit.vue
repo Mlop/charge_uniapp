@@ -12,19 +12,6 @@
 			<view v-show="current === 2">
 			</view>
 			<form @submit="formSubmit" style="height: 160px;text-align:left;">
-				<!-- <view class="uni-padding-wrap uni-common-mt">
-					<view class="uni-list">
-						<view class="uni-list-cell">
-							<view class="uni-list-cell-left">
-								{{category.title}}
-								<input type="text" name="category_id" :value="category.id" v-show="false" />
-							</view>
-							<view class="uni-list-cell-db" style="text-align: right;">
-								<input class="uni-input" type="number" focus placeholder="0.00" :value="initData.cash" name="cash" />
-							</view>
-						</view>
-					</view>
-				</view> -->
 				<view class="uni-list-cell" v-for="item in initData.items">
 					<view class="uni-list-cell-left">
 						{{item.name}}
@@ -32,10 +19,10 @@
 					<view class="uni-list-cell-right" v-if="item.value_type==3" style="text-align: right;">
 						<uni-combox :candidates="contacts" :placeholder="item.default_value" emptyTips="" v-model="item.formValue"></uni-combox>
 					</view>
-					<view class="uni-list-cell-db" style="text-align: right;" v-if="item.value_type==0">
+					<view class="uni-list-cell-db" style="text-align: right;" v-else-if="item.value_type==0">
 						<input class="uni-input" v-model="item.formValue" focus :placeholder="item.default_value" />
 					</view>
-					<view class="uni-list-cell-db" style="text-align: right;" v-if="item.value_type!=0 && item.value_type!=3">
+					<view class="uni-list-cell-db" style="text-align: right;" v-else>
 						<input class="uni-input" type="number" v-model="item.formValue" focus :placeholder="item.default_value" />
 					</view>
 				</view>
@@ -43,7 +30,9 @@
 					<view class="uni-active">
 						<view class="" hover-class="uni-list-cell-hover">
 							<view @click="gotoCategory" class="uni-title uni-list-cell-navigate uni-navigate-right">
-								<text>常用类别</text>
+								<text>常用类别
+									<text style="font-size: 14px;color:#f0ad4e;">({{category.title}})</text>
+								</text>
 							</view>
 						</view>
 					</view>
@@ -51,33 +40,23 @@
 						<uni-tag :text="item.title" inverted="true" :type="item.tagType" @click="setType(item)"></uni-tag>
 					</view>
 				</view>
-				<!-- <view class="uni-list-cell">
-					<view class="uni-list-cell-left">
-						姓名
-					</view>
-					<view class="uni-list-cell-right" style="text-align: right;">
-						<uni-combox :candidates="contacts" placeholder="输入或选择姓名" emptyTips="" v-model="initData.contact"></uni-combox>
-					</view>
-				</view> -->
-				
 				<view class="uni-padding-wrap uni-common-mt">
 					<textarea style="height: 45upx;" maxlength="200" name="remark" placeholder="备注" :value="initData.remark" />
-					<!-- #ifdef H5 -->
+					
 					<view class="uni-list list-pd">
 						<view class="uni-list-cell cell-pd">
 							<view class="uni-uploader">
 								<view class="uni-uploader-head">
-									<view class="uni-uploader-title">点击可预览选好的图片</view>
 									<view class="uni-uploader-info">{{imageList.length}}/{{picCount}}</view>
 								</view>
 								<view class="uni-uploader-body">
 									<view class="uni-uploader__files">
 										<block v-for="(image,index) in imageList" :key="index">
 											<view class="uni-uploader__file">
-												<image class="uni-uploader__img" :src="image" :data-src="image" @tap="previewImage"></image>
+												<image class="uni-uploader__img" :src="image" :data-src="image" @tap="previewImage(index)"></image>
 											</view>
 										</block>
-										<view class="uni-uploader__input-box">
+										<view class="uni-uploader__input-box" v-if="imageList.length<picCount">
 											<view class="uni-uploader__input" @tap="chooseImage"></view>
 										</view>
 									</view>
@@ -85,7 +64,7 @@
 							</view>
 						</view>
 					</view>
-					<!-- #endif -->
+					
 				</view>
 				<view class="uni-padding-wrap uni-common-mt">
 					<picker mode="date" :value="date" :start="startDate" :end="endDate" @change="bindDateChange">
@@ -131,6 +110,7 @@
 				format: true
 			});
 	        return {
+				testType: 'error',
 				initData: {date: currentDate,},
 				date: currentDate,
 				category: {},
@@ -145,7 +125,7 @@
 				//顶部账本选择菜单
 				rightDrawerVisible: false,
 				options: {},
-				imageList: ["blob:http://192.168.33.1:8081/1aa1af8a-f83c-4613-a7da-21e514781994"],
+				imageList: [],
 				savedFilePath: "",
 				bookItems: [],
 				contacts: [],
@@ -180,23 +160,37 @@
 	    methods: {
 			chooseImage: async function() {
 				var _this = this;
-				if (this.imageList.length === this.picCount) {
-					let isContinue = await this.isFullImg();
-					console.log("是否继续?", isContinue);
-					if (!isContinue) {
-						return;
-					}
-				}
 				uni.chooseImage({
 					sourceType: ['camera', 'album'],
 					sizeType: ['compressed', 'original'],
 					count: this.picCount,
 					success: (res) => {
 						var img = res.tempFilePaths;
-						this.imageList = this.imageList.concat(res.tempFilePaths);
-						_this.savedFilePath = img[0];
+						const uploadTask = uni.uploadFile({
+							url: _this.baseUrl + 'img/upload',
+							filePath: img[0],
+							name: 'file',
+							success: (uploadFileRes) => {
+								var result = JSON.parse(uploadFileRes.data);
+								_this.imageList = _this.imageList.concat(result.data);
+							}
+						});
+						uploadTask.onProgressUpdate((res) => {
+							if (res.progress < 100) {
+								uni.showToast({
+									title: '文件上传失败'
+								});
+								uploadTask.abort();
+							}
+						});
 					}
 				})
+			},
+			previewImage: function(currentIndex) {
+				uni.previewImage({
+					urls: this.imageList,
+					current: currentIndex,
+				});
 			},
 			init() {
 				this.setTabIndex(this.options.type);
@@ -228,11 +222,11 @@
 						//未选择任何类别初始化第一个关注的常用类别
 						if (!_this.category) {
 							_this.setType(data[0]);
-						} else {//console.log(_this.category);
+						} else {
 							_this.setType(_this.category);
 						}
 						if (changeCategory != undefined) {
-							_this.setType(data[0]);
+							_this.setType(data[1]);
 						}
 					} else {
 						uni.showModal({
@@ -259,7 +253,6 @@
 				}
 			},
 			initForm(options) {
-				var url = this.baseUrl + "account/" + this.options.id;
 				var _this = this;
 				this.setTabIndex(options.type);
 				this.request('GET', "account/" + this.options.id, {}, function(data){
@@ -269,6 +262,7 @@
 						_this.category = {"id":data.category_id, "title":data.category_title};
 					}
 					_this.setType(_this.category);
+					_this.imageList = data.images;
 				});
 			},
 			onClickItem(index) {
@@ -311,48 +305,18 @@
 				return `${year}-${month}-${day}`;
 			},
 			formSubmit: function (e) {
-// 				console.log(e.detail.value,this.initData.items);
-// 				return false;
 				//进行表单检查
 				var formData = e.detail.value;
-				//金额和备注必须填写一个
-// 				if (formData.cash == "" && formData.remark == "") {
-// 					uni.showToast({ title: '金额和备注必须填写其中一个', icon: "none" });
-// 				}
-// 				var checkRes = graceChecker.check(formData, rule);
-// 				if(checkRes){
-// 					// uni.showToast({title:"验证通过!", icon:"none"});
-// 				}else{
-// 					uni.showToast({ title: graceChecker.error, icon: "none" });
-// 				}
 				formData.type = this.types[this.current];
 				formData.items = this.initData.items;
+				formData.category_id = this.category.id;
 				//拍摄的图片
 				formData.images = this.imageList;
-				// formData.book_id = currentBook.id;
 				if (this.savedFilePath != "") {
 					formData.remark = this.savedFilePath;
 				}
-				uni.request({
-					method: 'PUT',
-					dataType: 'json',
-					url: this.baseUrl+"account/"+this.options.id,
-					data: formData,
-					header: {
-						Authorization:this.authToken,
-					},
-					success: (res) => {
-						this.showResult(res.data, true, "编辑成功!");
-					},
-					fail: (err) => {
-						uni.showModal({
-							content: err.errMsg,
-							showCancel: false
-						});
-					},
-					complete: () => {
-						this.loading = false;
-					}
+				this.request('PUT', "account/"+this.options.id, formData, function(data){
+					this.showResult(data, true, "编辑成功!");
 				});
 			},
 			setType: function (category) {
@@ -367,34 +331,10 @@
 				}
 			},
 			deleteItem: function() {
-				var url = this.baseUrl + "account/" + this.options.id;
-				uni.request({
-					method: 'DELETE',
-					// dataType: 'json',
-					url: url,
-					// data: {},
-					header: {
-						Authorization:this.authToken,
-					},
-					success: (res) => {
-						var result = res.data;
-						if (result.code == 0) {
-							uni.showToast({title:"删除成功!", success() {
-								uni.navigateBack();
-							}});
-						} else {
-							uni.showModal({
-								content: result.msg,
-								showCancel: false
-							});
-						}
-					},
-					fail: (err) => {
-						uni.showModal({
-							content: err.errMsg,
-							showCancel: false
-						});
-					}
+				this.request('DELETE', "account/"+this.options.id, {}, function(data){
+					uni.showToast({title:"删除成功!", success() {
+						uni.navigateBack();
+					}});
 				});
 			}
 	    }

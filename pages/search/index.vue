@@ -6,7 +6,7 @@
 		 	<text @click="showContactIndexed">姓名</text>
 		 	<contact-indexed :rightDrawerVisible="rightDrawerVisible" :showSelect="true" ref="contactIndexed"></contact-indexed>
 		 </view>
-		<view class="uni-list-cell uni-collapse" v-for="(list,index) in dataList" :key="index" :class="index === dataList.length - 1 ? 'uni-list-cell-last' : ''">
+		<view class="uni-list-cell uni-collapse" v-for="(list,index) in dataList" :key="index" >
 		    <view class="uni-list-cell-navigate uni-navigate-bottom" hover-class="uni-list-cell-hover" :class="list.show ? 'uni-active' : ''"
 		        @click="trigerCollapse(index)">
 				<view class="uni-media-list" style="width: 150upx; height: 80upx;">
@@ -15,10 +15,10 @@
 						<view class="uni-media-list-text-bottom uni-ellipsis">{{list.totalTimes}}次，共{{list.cash}}元</view>
 					</view>
 				</view>
-				<view class="uni-media-list" hover-class="uni-list-cell-hover" style="height: 60upx;text-align: right;">
+				<view class="uni-media-list" hover-class="uni-list-cell-hover" style="text-align: right;">
 					<view class="uni-media-list-body">
 						<view class="uni-media-list-text-top" v-for="(row,i) in list.items" :key="i">
-							<text v-bind:class="row.type">{{row.title}}：{{row.totalValue}}</text>
+							<text v-bind:class="row.type">{{row.title}}: {{row.totalValue}}</text>
 						</view>
 					</view>
 				</view>
@@ -33,8 +33,8 @@
 					    </view>
 					    <view class="uni-triplex-right" style="width: 50%;text-align: right;">
 							<view v-for="(ditem,i) in item.items">
-								<text class="uni-h5" v-bind:class="item.type" v-if="ditem.value_type==1">{{ditem.title}}:{{ditem.item_value}}</text>
-								<text class="uni-h5" v-bind:class="item.type" v-else>{{ditem.title}}:{{ditem.item_value}}</text>
+								<text class="uni-h5" v-bind:class="item.type" v-if="ditem.value_type==1">{{ditem.title}}: {{ditem.item_value}}</text>
+								<text class="uni-h5" v-bind:class="item.type" v-else>{{ditem.title}}: {{ditem.item_value}}</text>
 							</view>
 					    </view>
 					</view>

@@ -44,7 +44,7 @@
 				<view class="uni-padding-wrap uni-common-mt">
 					<view class="uni-list-cell-left">
 						<textarea style="height: 45upx;" class="uni-input" maxlength="200" v-model="formData.remark" name="remark" placeholder="备注" />
-						<!-- #ifdef H5 -->
+						
 						<view class="uni-list list-pd">
 							<view class="uni-list-cell cell-pd">
 								<view class="uni-uploader">
@@ -55,10 +55,10 @@
 										<view class="uni-uploader__files">
 											<block v-for="(image,index) in imageList" :key="index">
 												<view class="uni-uploader__file">
-													<image class="uni-uploader__img" :src="image" :data-src="image" @tap="previewImage"></image>
+													<image class="uni-uploader__img" :src="image" :data-src="image" @tap="previewImage(index)"></image>
 												</view>
 											</block>
-											<view class="uni-uploader__input-box">
+											<view class="uni-uploader__input-box" v-if="imageList.length<picCount">
 												<view class="uni-uploader__input" @tap="chooseImage"></view>
 											</view>
 										</view>
@@ -66,7 +66,7 @@
 								</view>
 							</view>
 						</view>
-						<!-- #endif -->
+						
 					</view>
 				</view>
 				<view class="uni-padding-wrap uni-common-mt">
@@ -168,23 +168,40 @@
 	    methods: {
 			chooseImage: async function() {
 				var _this = this;
-				if (this.imageList.length === this.picCount) {
-					let isContinue = await this.isFullImg();
-					console.log("是否继续?", isContinue);
-					if (!isContinue) {
-						return;
-					}
-				}
 				uni.chooseImage({
 					sourceType: ['camera', 'album'],
 					sizeType: ['compressed', 'original'],
 					count: this.picCount,
 					success: (res) => {
 						var img = res.tempFilePaths;
-						this.imageList = this.imageList.concat(res.tempFilePaths);
-						_this.savedFilePath = img[0];
+						const uploadTask = uni.uploadFile({
+							url: _this.baseUrl + 'img/upload',
+							filePath: img[0],
+							name: 'file',
+							success: (uploadFileRes) => {
+								var result = JSON.parse(uploadFileRes.data);
+								_this.imageList = _this.imageList.concat(result.data);
+							}
+						});
+						uploadTask.onProgressUpdate((res) => {
+							if (res.progress < 100) {
+								uni.showToast({
+									title: '文件上传失败'
+								});
+								uploadTask.abort();
+							}
+// 							console.log('上传进度' + res.progress);
+// 							console.log('已经上传的数据长度' + res.totalBytesSent);
+// 							console.log('预期需要上传的数据总长度' + res.totalBytesExpectedToSend);
+						});
 					}
 				})
+			},
+			previewImage: function(currentIndex) {
+				uni.previewImage({
+					urls: this.imageList,
+					current: currentIndex,
+				});
 			},
 			init() {
 				switch (this.options.type) {
