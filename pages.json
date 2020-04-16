@@ -150,6 +150,12 @@
 			}
 		},
 		{
+			"path": "pages/setting/version_update",
+			"style": {
+				"navigationBarTitleText": "版本更新"
+			}
+		},
+		{
 			"path": "pages/setting/timeline",
 			"style": {
 				"navigationBarTitleText": "时间表图"
