@@ -1,7 +1,6 @@
 <template>
     <view>
 		<book-menu :rightDrawerVisible="rightDrawerVisible" ref="bookMenu"></book-menu>
-		
 		<view class="uni-common-mt">
 			<view class="uni-form-item uni-column">
 				<view class="title">本月支出</view>
@@ -22,7 +21,7 @@
 			<view class="uni-list" v-if="totalItems>0">
 				<view class="uni-list-item" v-for="(item,key) in result.items" :key="key">
 					<view class="uni-flex uni-row" @click="gotoDetail(item)">
-						<view class="text" style="text-align: left;width: 100upx;">{{item.record_at|formatDate}}</view>
+						<view class="text" style="text-align: left;width: 100upx;">{{item.m}}-{{item.days}}</view>
 						<view class="title">{{item.title}}</view>
 						<view class="text uni-ellipsis" style="text-align: left;flex: 1 1 0%;">{{item.remark}}</view>
 						<view class="text" v-bind:class="item.type" style="text-align: right;width: 100upx;">￥{{item.cash}}</view>

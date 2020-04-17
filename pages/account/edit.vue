@@ -67,8 +67,8 @@
 					
 				</view>
 				<view class="uni-padding-wrap uni-common-mt">
-					<picker mode="date" :value="date" :start="startDate" :end="endDate" @change="bindDateChange">
-						<view class="uni-input">{{date}}<input type="text" :value="date" name="record_at" v-show="false" /></view>
+					<picker mode="date" :value="initData.record_at_date" :start="startDate" :end="endDate" @change="bindDateChange">
+						<view class="uni-input">{{initData.record_at_date}}<input type="text" :value="initData.record_at_date" name="record_at" v-show="false" /></view>
 					</picker>
 				</view>
 				<view class="uni-padding-wrap uni-common-mt">
@@ -106,13 +106,9 @@
 			uniCombox
 	    },
 	    data() {
-			const currentDate = this.getDate({
-				format: true
-			});
 	        return {
 				testType: 'error',
-				initData: {date: currentDate,},
-				date: currentDate,
+				initData: {},
 				category: {},
 				items: [
 					'支出',
@@ -257,7 +253,6 @@
 				this.setTabIndex(options.type);
 				this.request('GET', "account/" + this.options.id, {}, function(data){
 					_this.initData = data;
-					_this.date = _this.formatDate(data.record_at);
 					if (options.category_id == undefined) {
 						_this.category = {"id":data.category_id, "title":data.category_title};
 					}
@@ -272,8 +267,7 @@
 				this.initCategory('', true);
 			},
 			bindDateChange: function(e) {
-				this.initData.date = e.target.value;
-				this.date = e.target.value;
+				this.initData.record_at_date = e.target.value;
 			},
 			formatDate(dateStr) {
 				const date = new Date(dateStr);
@@ -316,7 +310,7 @@
 					formData.remark = this.savedFilePath;
 				}
 				this.request('PUT', "account/"+this.options.id, formData, function(data){
-					this.showResult(data, true, "编辑成功!");
+					uni.showToast({title:"编辑成功!"});
 				});
 			},
 			setType: function (category) {

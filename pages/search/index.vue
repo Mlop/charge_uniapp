@@ -1,56 +1,55 @@
 <template>
 	<view class="content">
-		<sl-filter :ref="'slFilter'" :topFixed="true" :isTransNav="true" :navHeight="0" :color="titleColor" :themeColor="themeColor" :menuList="menuList"
-		 @result="slfilterResult"></sl-filter>
-		 <view class="filter-contact">
-		 	<text @click="showContactIndexed">姓名</text>
-		 	<contact-indexed :rightDrawerVisible="rightDrawerVisible" :showSelect="true" ref="contactIndexed"></contact-indexed>
-		 </view>
+		<sl-filter ref="slFilter" :topFixed="true" :isTransNav="true" :navHeight="0" :color="titleColor" :themeColor="themeColor" :menuList="menuList" @result="slfilterResult"></sl-filter>
+		<view class="filter-contact"> 
+			<text @click="showContactIndexed">姓名</text>
+			<contact-indexed :rightDrawerVisible="rightDrawerVisible" :showSelect="true" ref="contactIndexed"></contact-indexed>
+		</view>
 		<view class="uni-list-cell uni-collapse" v-for="(list,index) in dataList" :key="index" >
 		    <view class="uni-list-cell-navigate uni-navigate-bottom" hover-class="uni-list-cell-hover" :class="list.show ? 'uni-active' : ''"
 		        @click="trigerCollapse(index)">
-				<view class="uni-media-list" style="width: 150upx; height: 80upx;">
-					<view class="uni-media-list-logo" style="width: auto;">
-						<view class="uni-media-list-text-top" style="width: 220upx;">{{list.contact | formatContact}}</view>
-						<view class="uni-media-list-text-bottom uni-ellipsis">{{list.totalTimes}}次，共{{list.cash}}元</view>
-					</view>
-				</view>
-				<view class="uni-media-list" hover-class="uni-list-cell-hover" style="text-align: right;">
-					<view class="uni-media-list-body">
-						<view class="uni-media-list-text-top" v-for="(row,i) in list.items" :key="i">
-							<text v-bind:class="row.type">{{row.title}}: {{row.totalValue}}</text>
-						</view>
-					</view>
-				</view>
+		    	<view class="uni-media-list" style="width: 150upx; height: 80upx;">
+		    		<view class="uni-media-list-logo" style="width: auto;">
+		    			<view class="uni-media-list-text-top" style="width: 220upx;">{{list.contact | formatContact}}</view>
+		    			<view class="uni-media-list-text-bottom uni-ellipsis">{{list.totalTimes}}次，共{{list.cash}}元</view>
+		    		</view>
+		    	</view>
+		    	<view class="uni-media-list" hover-class="uni-list-cell-hover" style="text-align: right;">
+		    		<view class="uni-media-list-body">
+		    			<view class="uni-media-list-text-top" v-for="(row,i) in list.items" :key="i">
+		    				<text v-bind:class="row.type">{{row.title}}: {{row.totalValue}}</text>
+		    			</view>
+		    		</view>
+		    	</view>
 		    </view>
 		    <view class="uni-list uni-collapse" :class="list.show ? 'uni-active' : ''">
-				<view class="uni-list-cell"  v-if="item.id>0" hover-class="uni-list-cell-hover" v-for="(item,key) in detail" :key="key" :class="key === detail.length - 1 ? 'uni-list-cell-last' : ''">
-					<view class="uni-media-list-text-body" style="margin-left: 30upx;font-size: 12px;">{{item.bookTitle}}</view>
-					<view class="uni-triplex-row" hover-class="uni-list-cell-hover">
-					    <view class="uni-triplex-left" style="text-align: center;">
-					        <text class="uni-title uni-ellipsis">{{item.remark}}</text>
-							<text class="uni-text">{{item.created_date}} 创建</text>
-					    </view>
-					    <view class="uni-triplex-right" style="width: 50%;text-align: right;">
-							<view v-for="(ditem,i) in item.items">
-								<text class="uni-h5" v-bind:class="item.type" v-if="ditem.value_type==1">{{ditem.title}}: {{ditem.item_value}}</text>
-								<text class="uni-h5" v-bind:class="item.type" v-else>{{ditem.title}}: {{ditem.item_value}}</text>
-							</view>
-					    </view>
-					</view>
-				</view>
+		    	<view class="uni-list-cell"  v-if="item.id>0" hover-class="uni-list-cell-hover" v-for="(item,key) in detail" :key="key" :class="key === detail.length - 1 ? 'uni-list-cell-last' : ''">
+		    		<view class="uni-media-list-text-body" style="margin-left: 30upx;font-size: 12px;">{{item.bookTitle}}</view>
+		    		<view class="uni-triplex-row" hover-class="uni-list-cell-hover">
+		    		    <view class="uni-triplex-left" style="text-align: center;">
+		    		        <text class="uni-title uni-ellipsis">{{item.remark}}</text>
+		    				<text class="uni-text">记录于 {{item.record_date}}</text>
+		    		    </view>
+		    		    <view class="uni-triplex-right" style="width: 50%;text-align: right;">
+		    				<view v-for="(ditem,i) in item.items">
+		    					<text class="uni-h5" v-bind:class="item.type" v-if="ditem.value_type==1">{{ditem.title}}: {{ditem.item_value}}</text>
+		    					<text class="uni-h5" v-bind:class="item.type" v-else>{{ditem.title}}: {{ditem.item_value}}</text>
+		    				</view>
+		    		    </view>
+		    		</view>
+		    	</view>
 		    </view>
 		</view>
 	</view>
 </template>
 
 <script>
-	import slFilter from '@/components/sl-filter/sl-filter.vue';
+	import listFilter from '@/components/sl-filter/sl-filter.vue';
 	import uniIndexedList from '@/components/uni-indexed-list/uni-indexed-list.vue'
 	import contactIndexed from '@/components/contact-indexed.vue';
 	export default {
 		components: {
-			slFilter,
+			listFilter,
 			uniIndexedList,
 			contactIndexed
 		},
@@ -146,9 +145,6 @@
 			showContactIndexed: function() {
 				this.$refs.contactIndexed.showRightDrawer();
 			},
-			init: function() {
-				var _this = this;
-			},
 			trigerCollapse(e) {
 				console.log(e);
 			    for (let i = 0, len = this.dataList.length; i < len; ++i) {
@@ -216,7 +212,7 @@
 		},
 		onLoad: function (options) {
 			this.options = options;
-			this.getAuthToken(this.init);
+			this.getAuthToken();
 			this.getList({});
 			
 		},
@@ -250,7 +246,7 @@ text{
 	color: #f0ad4e;
 }
 .filter-contact {
-	width: calc(100%);
+	/* width: calc(100%); */
 	height: 40px;
 	position: absolute;
 	top: 13px;

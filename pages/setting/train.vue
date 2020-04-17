@@ -1,28 +1,34 @@
 <template>
+	<view class="page">
 	<view class="uni-card">
-		<view class="uni-card-header uni-card-media">
-			<view class="uni-card-media-body">
-				<view>
-					<uni-calendar 
-						:insert="true"
-						:lunar="true" 
-						:start-date=departureStart
-						:end-date=departureEnd
-						@change="changeDepartureCalendar"
-						 ></uni-calendar>
-				</view>
-				<view>
-					<uni-calendar 
-						:insert="true"
-						:lunar="true" 
-						:endDate=buyEnd
-						:selected=buySelected
-						:date="buyDate"
-						ref="buyCalendar"
-						 ></uni-calendar>
-				</view>
+		<view class="uni-list">
+			<view class="uni-list-cell-divider" style="background-color: #EEEEEE;">
+				购买日期
+			</view>
+			<view class="uni-list-cell" hover-class="uni-list-cell-hover">
+				<uni-calendar
+					:insert="true"
+					:lunar="true" 
+					:start-date=departureStart
+					:end-date=departureEnd
+					@change="changeDepartureCalendar"
+					 ></uni-calendar>
+			</view>
+			<view class="uni-list-cell-divider" style="background-color: #EEEEEE;">
+				出行日期
+			</view>
+			<view class="uni-list-cell" hover-class="uni-list-cell-hover">
+				<uni-calendar 
+					:insert="true"
+					:lunar="true" 
+					:endDate=buyEnd
+					:selected=buySelected
+					:date="buyDate"
+					ref="buyCalendar"
+					 ></uni-calendar>
 			</view>
 		</view>
+	</view>
 	</view>
 </template>
 

@@ -75,7 +75,7 @@
 				}
 			}
 		},
-		// #ifndef H5
+		
 		onReady: function() {
 			let arr = [];
 			let titleArr = [];
@@ -108,9 +108,8 @@
 			this.titleList = titleArr;
 			this.tempTitleObj = r;
 		},
-		// #endif
+		
 
-		// #ifdef H5
 		created: function() {
 			let arr = [];
 			let titleArr = [];
@@ -142,7 +141,6 @@
 			this.titleList = titleArr;
 			this.tempTitleObj = r;
 		},
-		// #endif
 		data() {
 			return {
 				down: 'sl-down',

@@ -251,10 +251,10 @@
 				}
 
 
-				// #ifdef H5
+				
 				this.selectedObj = this.selectedObj;
 				this.$forceUpdate();
-				// #endif
+				
 			},
 			initIndependenceObj(index) {
 				this.independenceObj = {};
@@ -324,9 +324,9 @@
 						}
 					}
 				}
-				// #ifdef H5
+				
 				this.$forceUpdate();
-				// #endif
+				
 			},
 			resetSelected(list, key) {
 				if (typeof this.result[key] == 'object') {
@@ -343,9 +343,9 @@
 						list[i].isSelected = false;
 					}
 				}
-				// #ifdef H5
+				
 				this.$forceUpdate();
-				// #endif
+				
 			},
 			sortTap(index, list, key) {
 				if (this.independence) {

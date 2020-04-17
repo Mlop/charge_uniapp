@@ -63,15 +63,20 @@
 					url: this.baseUrl+'login',
 					data: formData,
 					success: (res, statusCode, header) => {
-						
 						var result = res.data;
 						if (result.code == 0) {
 							//登录成功，保存用户信息
 							uni.clearStorageSync();
 							uni.setStorageSync('user', result.data);
 							// uni.navigateBack();
+							//跳转到首页后调用init初始化页面数据
 							uni.switchTab({
-								url:'../index/index'
+								url:'../index/index',
+								success: function(e) {
+									var page = getCurrentPages()[0];
+									if (page == undefined || page == null) return;
+									page.init();
+								}
 							});
 						} else {
 							uni.showModal({

@@ -293,15 +293,18 @@
 			formSubmit: function (action) {//提交表单
 				for (var i = 0; i < this.bookItems.length; i++) {
 					var item = this.bookItems[i];
-					var type = ['value_type'];
+					var type = item['value_type'];
 					if (type == 3) {//保存用户名称
+						if (item['formValue'] == undefined) {//未输入名称
+							item['formValue'] = "";
+						}
 						this.formData.contact = item['formValue'];
 					} else if (type == 1) {//现金金额
 						this.formData.cash = item['formValue'];
 					}
 					//未输入值时，表单值为默认值
 					if (item['formValue'] == undefined) {
-						this.bookItems[i]['formValue'] = item['default_value'];
+						this.bookItems[i]['formValue'] = "";
 					}
 				}
 				this.formData.items = this.bookItems;
