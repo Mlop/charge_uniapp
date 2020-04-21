@@ -10,7 +10,7 @@
 		        @click="trigerCollapse(index)">
 		    	<view class="uni-media-list" style="width: 150upx; height: 80upx;">
 		    		<view class="uni-media-list-logo" style="width: auto;">
-		    			<view class="uni-media-list-text-top" style="width: 220upx;">{{list.contact | formatContact}}</view>
+		    			<view class="uni-media-list-text-top" style="width: 220upx;">{{list.contact}}</view>
 		    			<view class="uni-media-list-text-bottom uni-ellipsis">{{list.totalTimes}}次，共{{list.cash}}元</view>
 		    		</view>
 		    	</view>
@@ -67,14 +67,6 @@
 		provide(){
 			return{
 				afterSelect:this.selectContact
-			}
-		},
-		filters: {
-			formatContact(value) {//格式化名称的显示
-				if (value == '') {
-					return '自己';
-				}
-				return value;
 			}
 		},
 		data() {
