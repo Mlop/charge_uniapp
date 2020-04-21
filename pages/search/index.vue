@@ -194,14 +194,12 @@
 				this.getList(this.selectedResult);
 			},
 			contactClick(e) {
-				console.log('点击item，返回数据' + JSON.stringify(e))
 				this.selectedContact = e.item.name;
 				var contactMenu = this.menuList[2];
 				var list = this.menuList[2]['detailList'];
 				// contactMenu['detailList'] = [{"title":this.selectedContact,"value":this.selectedContact}];
 				list.push({"title":this.selectedContact,"value":this.selectedContact});
 				contactMenu.defaultSelectedIndex = list.length - 1;
-				console.log(contactMenu);
 				this.menuList[2] = contactMenu;
 				this.$refs.slFilter.resetMenuList(this.menuList)
 				// this.$refs.slFilter.sureClick();
