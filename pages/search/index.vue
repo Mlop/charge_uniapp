@@ -107,6 +107,17 @@
 							'value': ''
 						}],
 					},{
+						'title': '类型',
+						'key': 'type',
+						'isMutiple': true,
+						'reflexTitle': true,
+						'detailTitle': '请选择类型（多选）',
+						'defaultSelectedIndex': 0,
+						'detailList': [{
+							'title': '类型不限',
+							'value': ''
+						}],
+					},{
 						'title': '排序',
 						'key': 'sort',
 						'isSort': true,
@@ -170,6 +181,7 @@
 				this.request('GET', 'stat/filters', {}, function(result){
 					_this.menuList[0]['detailList'] = result['years'];
 					_this.menuList[1]['detailList'] = result['books'];
+					_this.menuList[2]['detailList'] = result['types'];
 					// _this.contactList = result['contacts'];
 					//过滤条件菜单项
 					_this.$refs.slFilter.resetMenuList(_this.menuList)
@@ -193,20 +205,6 @@
 				this.selectedResult.contact = names;
 				this.getList(this.selectedResult);
 			},
-			contactClick(e) {
-				this.selectedContact = e.item.name;
-				var contactMenu = this.menuList[2];
-				var list = this.menuList[2]['detailList'];
-				// contactMenu['detailList'] = [{"title":this.selectedContact,"value":this.selectedContact}];
-				list.push({"title":this.selectedContact,"value":this.selectedContact});
-				contactMenu.defaultSelectedIndex = list.length - 1;
-				this.menuList[2] = contactMenu;
-				this.$refs.slFilter.resetMenuList(this.menuList)
-				// this.$refs.slFilter.sureClick();
-				this.$refs.popup.close();
-				this.selectedResult.contact = this.selectedContact;
-				this.getList(this.selectedResult);
-			}
 		},
 		onLoad: function (options) {
 			this.options = options;
@@ -248,7 +246,7 @@ text{
 	height: 40px;
 	position: absolute;
 	top: 13px;
-	left: calc(78%);
+	left: calc(82%);
 	line-height: 1.8;
 }
 .filter-contact uni-text {
