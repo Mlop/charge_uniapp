@@ -42,17 +42,6 @@ Vue.prototype.getAuthToken = function(afterLogin) {
 			url:'/pages/user/login'
 		});
 	}
-	
-	/*uni.getStorage({
-		key: 'user',
-		success: function (res) {console.log(res);
-			Vue.prototype.authToken = "Bearer " + res.data.token;
-			console.log('get auth token ' +Vue.prototype.authToken);
-			afterLogin();
-		},fail: function(res) {
-			console.log("fail",res);
-		}
-	});*/
 }
 Vue.prototype.currency = function(price) {
 	return '￥' + price;
@@ -93,10 +82,6 @@ Vue.prototype.request = function(method, uri, data, sucCallback) {
 					sucCallback((result.data == undefined) ? result.msg : result.data);
 				} else {
 					Vue.prototype.checkLogin(result);
-					// uni.showModal({
-					// 	content: result.msg,
-					// 	showCancel: false
-					// });
 				}
 			},
 			fail: (err) => {
