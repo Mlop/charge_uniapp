@@ -56,13 +56,6 @@
 			}
 		},
 		{
-			"path": "pages/account/list",
-			"style": {
-				"navigationBarTitleText": "详细",
-				"enablePullDownRefresh" : true
-			}
-		},
-		{
 			"path": "pages/category/category",
 			"style": {
 				"navigationBarTitleText": "分类"

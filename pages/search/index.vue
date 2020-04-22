@@ -149,19 +149,20 @@
 				this.$refs.contactIndexed.showRightDrawer();
 			},
 			trigerCollapse(e) {
-				console.log(e);
 			    for (let i = 0, len = this.dataList.length; i < len; ++i) {
 			        if (e === i) {
 			            this.dataList[i].show = !this.dataList[i].show;
-						this.openDetail(this.dataList[i]);
+						if (this.dataList[i].show) {//显示才获取详情
+							this.openDetail(this.dataList[i]);
+						}
 			        } else {
 			            this.dataList[i].show = false;
+						this.detail = [];
 			        }
 			    }
 			},
 			openDetail(list) {
 				var _this = this;
-				// var monthData = _this.lists[i];
 				_this.selectedResult['contact'] = list['contact'];
 				this.request('GET', 'stat/list/detail', _this.selectedResult, function(data){
 					_this.detail = data;

@@ -12,6 +12,11 @@
 				<view class="title">本月收入<label class="uni-input uni-bold income">￥{{result.totalIn}}</label></view>
 			</view>
 		</view>
+		<view class="uni-common-mt" v-if="result.totalLoan>0">
+			<view class="uni-form-item uni-column">
+				<view class="title">本月借贷<label class="uni-input uni-bold loan">￥{{result.totalLoan}}</label></view>
+			</view>
+		</view>
 		<view class="uni-padding-wrap uni-common-mt">
 			<navigator url="../account/add" hover-class="navigator-hover">
 				<button type="primary" >记一笔</button>

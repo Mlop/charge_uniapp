@@ -16,6 +16,13 @@
 		</view>
 		<view class="uni-card" style="margin-top:50px;">
 		    <view class="uni-list">
+				<view class="uni-list-cell" hover-class="uni-list-cell-hover">
+					<view class="uni-list-cell-navigate uni-navigate-right">
+						<navigator url="../setting/setting" hover-class="navigator-hover" style="width: 100%;">
+							设置
+						</navigator>
+					</view>
+				</view>
 		        <block v-for="(row, i) in list" :key="i">
 		            <view class="uni-list-cell uni-collapse">
 		                <view class="uni-list-cell-navigate uni-navigate-bottom" :class="currentShow == i ? 'uni-active' : ''" @click="trigerCollapse(i)">

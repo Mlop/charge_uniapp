@@ -338,11 +338,11 @@
 </script>
 
 <style>
-.tag-view {
-	margin: 10upx 20upx;
-	display: inline-block;
-}
-.flex-item {
+	.tag-view {
+		margin: 10upx 20upx;
+		display: inline-block;
+	}
+	.flex-item {
 		width: 33.3%;
 		/* height: 200upx; */
 		text-align: center;
