@@ -159,6 +159,11 @@
 			"style": {
 				"navigationBarTitleText": "火车票可购买区间"
 			}
+		},{
+			"path": "pages/setting/workrecord",
+			"style": {
+				"navigationBarTitleText": "打卡记录"
+			}
 		},
 		{
 			"path": "pages/user/user",

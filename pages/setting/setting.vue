@@ -52,6 +52,11 @@
 						火车票可购买区间
 					</view>
 				</view>
+				<view class="uni-list-cell uni-list-cell-last" hover-class="uni-list-cell-hover">
+					<view class="uni-list-cell-navigate uni-navigate-right" @click="navigateTo('workrecord')">
+						打卡记录
+					</view>
+				</view>
 				<view class="uni-list-cell-divider" style="background-color: #EEEEEE;">
 					账户管理
 				</view>
