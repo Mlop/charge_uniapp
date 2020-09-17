@@ -9,7 +9,7 @@
 				<uni-calendar
 					:insert="true"
 					:lunar="true" 
-					:selected=buySelected
+					:selected=curSelected
 					@change="changeDepartureCalendar"
 					ref="recordCalendar"
 					 ></uni-calendar>
@@ -17,7 +17,7 @@
 			</view>
 			<button type="primary" @click="record">打卡</button>
 		</view>
-		<label>{{recordInfo.extraInfo.info}} {{recordInfo.extraInfo.custom}}</label>
+		<label>{{recordInfo.extraInfo.custom}}</label>
 	</view>
 	</view>
 </template>
@@ -30,9 +30,9 @@
 		},
 		data() {
 			return {
-				buySelected: [{date:'2020-09-03',info:'red',custom:'自定义信息'}],
-				currentDate: '',
-				recordInfo: {extraInfo:{date:'',info:'',custom:''}},
+				curSelected: [],//当前选中日历
+				currentDate: '',//当前选中日期对象
+				recordInfo: {extraInfo:{date:'',info:'',custom:[]}},//日历下方显示
 			}
 		},
 		methods: {
@@ -66,26 +66,30 @@
 			record(){
 				var date = this.dateFormat(this.currentDate, 'Y-MM-dd');
 				var hm = this.dateFormat(new Date(), 'HH:mm');
-				this.buySelected.push({date: date, info: hm, custom:'after'});
-			},
-			//首次进入默认当天开始1月后可买日期
-			setCalendar() {
-				var today = new Date();
-				var latestTime = today.setDate(today.getDate() + 29);
-				var buyDate = new Date(latestTime);
-				var y = buyDate.getFullYear();
-				var m = (buyDate.getMonth() + 1);
-				var buyDateStr = y + '-' + m + '-' + buyDate.getDate();
-				this.buyDate = buyDateStr;
-				this.buySelected.push({
-    				date: buyDateStr,
-					// info: '买此之前票'
+				var _this = this;
+				
+				this.request('PUT', 'workrecord', {"work_date":date,"record_at":hm}, function(data) {
+					_this.recordInfo.extraInfo.custom.push(hm);
+					_this.curSelected.push({date: date, info: hm, custom:_this.recordInfo.extraInfo.custom});
 				});
 			},
 		},
 		onLoad(option) {
 			this.currentDate = new Date();
-			// this.setCalendar();
+			var _this = this;
+			this.request('GET', 'workrecord', {"month":this.dateFormat(this.currentDate, 'Y-MM')}, function(data) {
+				var ymd = _this.dateFormat(_this.currentDate, 'Y-MM-dd');
+				var len = data.length;
+				for(var i = 0; i < len; i++) {
+					var item = data[i];
+					_this.curSelected.push({date: item['work_date'], info: item['record_info'][0], custom:item['record_info']});
+					if (ymd == item['work_date']) {
+						_this.recordInfo.extraInfo.custom = item['record_info'];
+						console.log(_this.recordInfo);
+					}
+				}
+				// _this.curSelected.push({date: date, info: hm, custom:'after'});
+			})
 		},
 	}
 </script>

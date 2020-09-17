@@ -38,6 +38,8 @@
 		},
 		methods: {
 			formSubmit: function (e) {
+				// var user = uni.getStorageSync('user');
+				// console.log(user);return false;
 				//将下列代码加入到对应的检查位置
 				//定义表单规则
 				var rule = [
