@@ -10,14 +10,31 @@
 					:insert="true"
 					:lunar="true" 
 					:selected=curSelected
-					@change="changeDepartureCalendar"
+					@change="changeCalendarDay"
+					@monthSwitch="monthSwitch"
 					ref="recordCalendar"
 					 ></uni-calendar>
 					 
 			</view>
+			
+			<view class="uni-list-cell-divider" style="background-color: rgb(150,166,188);color: #000000;">
+				<view class="uni-list" style="background-color: rgb(150,166,188);">
+					<view class="uni-list-cell">
+						<view class="uni-list-cell-left">
+							选择时间
+						</view>
+						<view class="uni-list-cell-db">
+							<picker mode="time" :value="currentTime" @change="bindTimeChange">
+								<view class="uni-input">{{currentTime}}</view>
+							</picker>
+						</view>
+					</view>
+				</view>
+			</view>
+			
 			<button type="primary" @click="record">打卡</button>
 		</view>
-		<label>{{recordInfo.extraInfo.custom}}</label>
+		<label>{{recordInfo.fulldate ? recordInfo.fulldate:recordInfo.extraInfo.date}}:  {{recordInfo.extraInfo.custom}}</label>
 	</view>
 	</view>
 </template>
@@ -32,6 +49,7 @@
 			return {
 				curSelected: [],//当前选中日历
 				currentDate: '',//当前选中日期对象
+				currentTime: '',//当前时：分
 				recordInfo: {extraInfo:{date:'',info:'',custom:[]}},//日历下方显示
 			}
 		},
@@ -58,38 +76,51 @@
 			            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
 			    return fmt;
 			},
-			changeDepartureCalendar(e) {
-				console.log(e);
+			bindTimeChange: function(e) {
+				this.currentTime = e.target.value
+				var stime = this.currentTime.split(":");
+				this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), this.currentDate.getDate(), stime[0], stime[1]);
+			},
+			//改变选中的天
+			changeCalendarDay(e) {
 				this.recordInfo = e;
 				this.currentDate = new Date(e.fulldate);
 			},
+			//改变月份
+			monthSwitch(monthObj){
+				this.currentDate = new Date(monthObj.year, monthObj.month - 1, 1);
+				this.initMonthList();
+			},
 			record(){
 				var date = this.dateFormat(this.currentDate, 'Y-MM-dd');
-				var hm = this.dateFormat(new Date(), 'HH:mm');
+				var hm = this.dateFormat(this.currentDate, 'HH:mm');
 				var _this = this;
-				
 				this.request('PUT', 'workrecord', {"work_date":date,"record_at":hm}, function(data) {
 					_this.recordInfo.extraInfo.custom.push(hm);
 					_this.curSelected.push({date: date, info: hm, custom:_this.recordInfo.extraInfo.custom});
 				});
 			},
+			//初始化某月的所有记录
+			initMonthList(){
+				var _this = this;
+				this.request('GET', 'workrecord', {"month":this.dateFormat(this.currentDate, 'Y-MM')}, function(data) {
+					var ymd = _this.dateFormat(_this.currentDate, 'Y-MM-dd');
+					var len = data.length;
+					for(var i = 0; i < len; i++) {
+						var item = data[i];
+						_this.curSelected.push({date: item['work_date'], info: item['record_info'][0], custom:item['record_info']});
+						if (ymd == item['work_date']) {
+							_this.recordInfo.extraInfo.custom = item['record_info'];
+							_this.recordInfo.extraInfo.date = item['work_date'];
+						}
+					}
+				})
+			},
 		},
 		onLoad(option) {
 			this.currentDate = new Date();
-			var _this = this;
-			this.request('GET', 'workrecord', {"month":this.dateFormat(this.currentDate, 'Y-MM')}, function(data) {
-				var ymd = _this.dateFormat(_this.currentDate, 'Y-MM-dd');
-				var len = data.length;
-				for(var i = 0; i < len; i++) {
-					var item = data[i];
-					_this.curSelected.push({date: item['work_date'], info: item['record_info'][0], custom:item['record_info']});
-					if (ymd == item['work_date']) {
-						_this.recordInfo.extraInfo.custom = item['record_info'];
-						console.log(_this.recordInfo);
-					}
-				}
-				// _this.curSelected.push({date: date, info: hm, custom:'after'});
-			})
+			this.currentTime = this.dateFormat(this.currentDate, 'HH:mm');
+			this.initMonthList();
 		},
 	}
 </script>
