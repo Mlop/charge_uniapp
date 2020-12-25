@@ -21,7 +21,6 @@
 				<uni-calendar 
 					:insert="true"
 					:lunar="true" 
-					:endDate=buyEnd
 					:selected=buySelected
 					:date="buyDate"
 					ref="buyCalendar"
@@ -60,7 +59,6 @@
 				var buyCalendar = this.$refs.buyCalendar;
 				this.buySelected = [{date: buyDate, info: '在此之后买票'}];
 				this.buyEnd = buyDate;
-				console.log(buyDate);
 				// buyCalendar.endDate = buyDate;
 				buyCalendar.setDate(buyDate);
 				buyCalendar.monthSwitch();
@@ -69,12 +67,13 @@
 			//首次进入默认当天开始1月后可买日期
 			setCalendar() {
 				var today = new Date();
+				this.buyDate = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
 				var latestTime = today.setDate(today.getDate() + 29);
 				var buyDate = new Date(latestTime);
 				var y = buyDate.getFullYear();
 				var m = (buyDate.getMonth() + 1);
 				var buyDateStr = y + '-' + m + '-' + buyDate.getDate();
-				this.buyDate = buyDateStr;
+				// this.buyDate = buyDateStr;
 				this.buySelected.push({
     				date: buyDateStr,
 					// info: '买此之前票'

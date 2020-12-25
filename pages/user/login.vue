@@ -29,6 +29,7 @@
 </template>
 
 <script>
+	import CryptoJS from '../../node_modules/crypto-js/crypto-js.js' 
 	var  graceChecker = require("@/common/graceChecker.js");
 	export default {
 		data() {
@@ -38,9 +39,6 @@
 		},
 		methods: {
 			formSubmit: function (e) {
-				// var user = uni.getStorageSync('user');
-				// console.log(user);return false;
-				//将下列代码加入到对应的检查位置
 				//定义表单规则
 				var rule = [
 					{name:"account", checkType : "notnull", checkRule:"",  errorMsg:"请输入账号名称"},
@@ -70,6 +68,9 @@
 							//登录成功，保存用户信息
 							uni.clearStorageSync();
 							uni.setStorageSync('user', result.data);
+							let words = CryptoJS.enc.Utf8.parse(JSON.stringify(formData));   //  加密
+							let base64 = CryptoJS.enc.Base64.stringify(words);   //base64加密
+							uni.setStorageSync('user_login', base64);
 							// uni.navigateBack();
 							//跳转到首页后调用init初始化页面数据
 							uni.switchTab({
