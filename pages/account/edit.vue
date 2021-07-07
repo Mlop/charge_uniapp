@@ -98,6 +98,7 @@
 	
 	import {outgo} from '@/common/outgo.js';
 	import {category} from '@/common/category.js';
+	import Store from '@/common/local-store.js';
 	
 	export default {
 	    components: {
@@ -206,31 +207,20 @@
 			},
 			initCategory(options, changeCategory) {
 				var _this = this;
+				var tp = this.types[this.current];
 				//初始化常用类别
-				category.baseUrl = this.baseUrl;
-				category.type = this.types[this.current];
-				category.authToken = this.authToken;
-				category.getFavoriteCategory(function(result){
-					_this.checkLogin(result);
-					if (result.code == 0) {
-						var data = result.data;
-						_this.categoryFavorite = data;
-						//未选择任何类别初始化第一个关注的常用类别
-						if (!_this.category) {
-							_this.setType(data[0]);
-						} else {
-							_this.setType(_this.category);
-						}
-						if (changeCategory != undefined) {
-							_this.setType(data[1]);
-						}
+				_this.request('GET', 'category/favorites', {type: tp,include_sub: true,}, function(data){
+					_this.categoryFavorite = data;
+					//未选择任何类别初始化第一个关注的常用类别
+					if (!_this.category) {
+						_this.setType(data[0]);
 					} else {
-						uni.showModal({
-							content: result.msg,
-							showCancel: false
-						});
+						_this.setType(_this.category);
 					}
-				});
+					if (changeCategory != undefined) {
+						_this.setType(data[1]);
+					}
+				}, 'default_config', tp);
 			},
 			setTabIndex(type) {
 				switch (type) {
@@ -252,13 +242,14 @@
 				var _this = this;
 				this.setTabIndex(options.type);
 				this.request('GET', "account/" + this.options.id, {}, function(data){
+					console.log(data);
 					_this.initData = data;
 					if (options.category_id == undefined) {
 						_this.category = {"id":data.category_id, "title":data.category_title};
 					}
 					_this.setType(_this.category);
 					_this.imageList = data.images;
-				});
+				}, "account", this.options.id);
 			},
 			onClickItem(index) {
 				if (this.current !== index) {
@@ -309,9 +300,27 @@
 				if (this.savedFilePath != "") {
 					formData.remark = this.savedFilePath;
 				}
-				this.request('PUT', "account/"+this.options.id, formData, function(data){
-					uni.showToast({title:"编辑成功!"});
-				});
+				if (Store.isLocal()) {
+					var item = formData.items[0];
+					var type = item['value_type'];
+					if (type == 3) {//保存用户名称
+						if (item['formValue'] == undefined) {//未输入名称
+							item['formValue'] = "";
+						}
+						formData.contact = item['formValue'];
+					} else if (type == 1) {//现金金额
+						formData.cash = item['formValue'];
+					}
+					var oriList = Store.getData("account");
+					formData.title = formData.category_title = this.category.title;
+					formData.record_at_date = formData.record_at;
+					oriList[this.options.id] = formData;
+					Store.setData("account", oriList);
+				} else {
+					this.request('PUT', "account/"+this.options.id, formData, function(data){
+						uni.showToast({title:"编辑成功!"});
+					});
+				}
 			},
 			setType: function (category) {
 				this.category = category;

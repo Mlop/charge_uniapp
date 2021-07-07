@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import App from './App'
-
+import global from './common/global.js'
+import Store from './common/local-store.js'
+import {common} from '@/common/common.js'
 Vue.config.productionTip = false
 
 App.mpType = 'app'
@@ -14,48 +16,55 @@ Vue.prototype.baseUrl = 'http://119.27.163.89:8082/';
 Vue.prototype.authToken = '';
 import CryptoJS from './node_modules/crypto-js/crypto-js.js' 
 Vue.prototype.checkLogin = function(result) {
-	if (result.code == 401) {
-		if (Vue.prototype.isExistsLogin()) {
-			return true;
-		}
-		//如果本地已经登录过，再次调用登录接口获取token
-		var userLogin = uni.getStorageSync('user_login');
-		if (userLogin) {
-			let base64 = CryptoJS.enc.Base64.parse(userLogin);   //base64解密
-			let loginInfo = JSON.parse(CryptoJS.enc.Utf8.stringify(base64)); 
-			uni.request({
-				method: 'POST',
-				dataType: 'json',
-				url: this.baseUrl + 'login',
-				data: loginInfo,
-				success: (res) => {
-					var result = res.data;
-					if (result.code == 0) {
-						//登录成功，保存用户信息
-						uni.clearStorageSync();
-						uni.setStorageSync('user', result.data);
-						let words = CryptoJS.enc.Utf8.parse(JSON.stringify(loginInfo));   //  加密
-						let base64 = CryptoJS.enc.Base64.stringify(words);   //base64加密
-						uni.setStorageSync('user_login', base64);
-					}
-				},
+	switch(result.code) {
+		case 401:
+			if (Vue.prototype.isExistsLogin()) {
+				return true;
+			}
+			//如果本地已经登录过，再次调用登录接口获取token
+			var userLogin = uni.getStorageSync('user_login');
+			if (userLogin) {
+				let base64 = CryptoJS.enc.Base64.parse(userLogin);   //base64解密
+				let loginInfo = JSON.parse(CryptoJS.enc.Utf8.stringify(base64)); 
+				uni.request({
+					method: 'POST',
+					dataType: 'json',
+					url: this.baseUrl + 'login',
+					data: loginInfo,
+					success: (res) => {
+						var result = res.data;
+						if (result.code == 0) {
+							//登录成功，保存用户信息
+							uni.clearStorageSync();
+							uni.setStorageSync('user', result.data);
+							let words = CryptoJS.enc.Utf8.parse(JSON.stringify(loginInfo));   //  加密
+							let base64 = CryptoJS.enc.Base64.stringify(words);   //base64加密
+							uni.setStorageSync('user_login', base64);
+						}
+					},
+				});
+			} else {
+				uni.navigateTo({
+					url:'/pages/user/login'
+				});
+			}
+			break;
+		case 402:
+			Vue.prototype.authToken = "Bearer " + result.data;
+			//保存token信息
+			var user = uni.getStorageSync('user');
+			user.token = result.data;
+			uni.setStorageSync('user', user);
+			break;
+		case 405://连接DB失败
+			Store.setDatasource('local');
+		break;
+		case 1:
+			uni.showModal({
+				content: result.msg,
+				showCancel: false
 			});
-		} else {
-			uni.navigateTo({
-				url:'/pages/user/login'
-			});
-		}
-	} else if (result.code == 402) {
-		Vue.prototype.authToken = "Bearer " + result.data;
-		//保存token信息
-		var user = uni.getStorageSync('user');
-		user.token = result.data;
-		uni.setStorageSync('user', user);
-	} else if (result.code == 1) {
-		uni.showModal({
-			content: result.msg,
-			showCancel: false
-		});
+			break;
 	}
 };
 //local storage中存在user对象则已经登录
@@ -86,16 +95,7 @@ Vue.prototype.getAuthToken = function(afterLogin) {
 		});
 	}
 }
-Vue.prototype.currency = function(price) {
-	return '￥' + price;
-}
-Vue.prototype.jsonToQueryStr = function(options) {
-	var tmps = [];
-	for (var key in options) {
-		tmps.push(key + '=' + options[key]);
-	}
-	return tmps.join('&');
-}
+
 Vue.prototype.showResult = function(result, showSuccess = true, title = "保存成功!", callback = "") {
 	if (result.code == 0) {
 		if (showSuccess) {
@@ -109,8 +109,60 @@ Vue.prototype.showResult = function(result, showSuccess = true, title = "保存�
 		Vue.prototype.checkLogin(result);
 	}
 }
-
-Vue.prototype.request = async function(method, uri, data, sucCallback) {
+Vue.prototype.requestLocal = async function(method, uri, data, sucCallback, localKey, valueKey) {
+	// var checkTime = Store.getData("data_source_check");
+	//定期检查DB连接情况
+	if (Store.checkDB()) {
+		// if (checkTime["next"] <= common.now) {
+			// Store.setDatasource("network");
+		return await this.request(method, uri, data, sucCallback, localKey, valueKey);
+		// }
+	}
+	//进入首页准备默认数据
+	if (!Store.isExists("default_config")) {
+		Store.setDefaultData();
+	}
+	var result = [];
+	if (localKey != undefined) {
+		switch (method.toUpperCase()) {
+			case 'GET':
+			result = Store.getData(localKey);
+			break;
+			case 'POST':
+			if (valueKey != undefined) {
+				var obj = {};
+				obj[valueKey] = data;
+				result = Store.setData(localKey, obj);
+			} else {
+				result = Store.setData(localKey, data);
+			}
+			break;
+		}
+		if (result != undefined) {
+			if (valueKey != undefined) {
+				result = result[valueKey];
+			}
+			sucCallback(result);
+		}
+	}
+}
+/**
+ * @param {string} method GET/POST
+ * @param {string} uri 接口相对路径
+ * @param {Object} data 条件
+ * @param {fun} sucCallback 处理数据的回调函数
+ * @param {string} localKey 本地key
+ * @param {string} valueKey 值中的key
+ */
+Vue.prototype.request = async function(method, uri, data, sucCallback, localKey, valueKey) {
+	// var pages = getCurrentPages();
+	// var currPage = pages[pages.length - 1].route; //当前页面
+	//从本地读取数据
+	if (Store.isLocal()) {
+		this.requestLocal(method, uri, data, sucCallback, localKey, valueKey);
+		return true;
+	}
+	
 	await this.getAuthToken();
 	await uni.request({
 		method: method,
@@ -173,6 +225,10 @@ Vue.prototype.request = async function(method, uri, data, sucCallback) {
 					user.token = result.data;
 					uni.setStorageSync('user', user);
 					Vue.prototype.request(method, uri, data, sucCallback);
+				break;
+				case 405://DB未连接
+					Store.setDatasource('local');
+					sucCallback(result.data);
 				break;
 			}
 		},

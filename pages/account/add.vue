@@ -97,7 +97,7 @@
 	//来自 graceUI 的表单验证， 使用说明见手册 http://grace.hcoder.net/doc/info/73-3.html
 	var  graceChecker = require("@/common/graceChecker.js");
 	import uniTag from '@/components/uni-tag.vue'
-	
+	import Store from '@/common/local-store.js'
 	import {category} from '@/common/category.js';
 	
 	export default {
@@ -225,32 +225,21 @@
 			},
 			initCategory(options) {
 				var _this = this;
+				var tp = this.types[this.current];
 				//初始化常用类别
-				category.baseUrl = this.baseUrl;
-				category.type = this.types[this.current];
-				category.authToken = this.authToken;
-				category.getFavoriteCategory(function(result){
-					_this.checkLogin(result);
-					if (result.code == 0) {
-						var data = result.data;
-						_this.categoryFavorite = data;
-						//未选择任何类别初始化第一个关注的常用类别
-						if (options == undefined || options.category_id == undefined) {
-							_this.setType(data[0]);
-						}
-					} else {
-						uni.showModal({
-							content: result.msg,
-							showCancel: false
-						});
+				_this.request('GET', 'category/favorites', {type: tp,include_sub: true,}, function(data){
+					_this.categoryFavorite = data;
+					//未选择任何类别初始化第一个关注的常用类别
+					if (options == undefined || options.category_id == undefined) {
+						_this.setType(data[0]);
 					}
-				});
+				}, 'default_config', tp);
 			},
 			getBookItems: function() {
 				var _this = this;
 				this.request('GET', 'book/' + this.currentBook.id + '/items', {"is_include_uncheck":0}, function(data) {
 					_this.bookItems = data;
-				});
+				}, 'default_config', 'book_items');
 			},
 			loadContacts: function() {
 				var _this = this;
@@ -313,13 +302,26 @@
 				//拍摄的图片
 				this.formData.images = this.imageList;
 				var _this = this;
-				_this.request('POST', 'account', _this.formData, function(result) {
+				if (Store.isLocal()) {
+					var oriList = Store.getData("account");
+					oriList = oriList ? oriList : [];
+					_this.formData["category_title"] = _this.formData["title"] = this.category.title;
+					_this.formData["record_at_date"] = (new Date(_this.formData["record_at"])).getTime() / 1000;
+					oriList.push(_this.formData);
+					Store.setData("account", oriList);
 					uni.showToast({title:"添加成功!"});
 					if (action == 'save') {
 						uni.navigateBack();
 					}
-					_this.loadContacts();
-				});
+				} else {
+					_this.request('POST', 'account', _this.formData, function(result) {
+						uni.showToast({title:"添加成功!"});
+						if (action == 'save') {
+							uni.navigateBack();
+						}
+						_this.loadContacts();
+					});
+				}
 			},
 			setType: function (category) {
 				this.category = category;

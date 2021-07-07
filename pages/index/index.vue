@@ -40,6 +40,7 @@
 
 <script>
 	import bookMenu from '@/components/book-menu.vue';
+	import Store from '@/common/local-store.js'
 	export default {
 		components: {
 			bookMenu,
@@ -53,6 +54,7 @@
 			}
 		},
 		onLoad() {
+			this.asyncData();
 			this.getAuthToken(this.init);
 		},
 		onNavigationBarButtonTap() {
@@ -89,12 +91,30 @@
 			gotoDetail(item) {
 				uni.navigateTo({url:"../account/edit?type=" + item.type + "&id=" + item.id});
 			},
+			asyncData(){
+				var data = Store.getData("account");
+				if (!Store.isLocal() && Store.checkDB() && data) {
+					data.forEach(function(row, i){
+						_this.request('POST', 'account', row, function(result) {
+							data.splice(i, 1);
+						});
+					});
+				}
+			},
 			init() {
 				var _this = this;
 				_this.request('GET', 'report', {}, function(data){
-					_this.result = data;
-					_this.totalItems = _this.result.items.length;
-				});
+					if (Store.isLocal() && !Store.checkDB()) {
+						var items = Store.generateLocalReport();
+						var data = Store.getData("account");
+						_this.result = {"totalOut":0,"totalIn":0,"totalLoan":0,"items":items};
+						_this.totalItems = data.length;
+						return true;
+					} else {
+						_this.result = data;
+						_this.totalItems = _this.result.items.length;
+					}
+				},"account");
 			},
 		}
 	}

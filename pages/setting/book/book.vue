@@ -48,31 +48,42 @@
 				});
 			},
 			init(){
-				uni.request({
-					method: 'GET',
-					dataType: 'json',
-					url: this.baseUrl+'books',
-					header: {
-						Authorization:this.authToken,
-					},
-					success: (res) => {
-						var result = res.data;
-						if (result.code == 0) {
-							this.list = result.data;
-						} else {
-							uni.showModal({
-								content: result.msg,
-								showCancel: false
-							});
-						}
-					},
-					fail: (err) => {
+				this.request('GET','books',[], function(){
+					var result = res.data;
+					if (result.code == 0) {
+						this.list = result.data;
+					} else {
 						uni.showModal({
-							content: err.errMsg,
+							content: result.msg,
 							showCancel: false
 						});
 					}
 				});
+				// uni.request({
+				// 	method: 'GET',
+				// 	dataType: 'json',
+				// 	url: this.baseUrl+'books',
+				// 	header: {
+				// 		Authorization:this.authToken,
+				// 	},
+				// 	success: (res) => {
+				// 		var result = res.data;
+				// 		if (result.code == 0) {
+				// 			this.list = result.data;
+				// 		} else {
+				// 			uni.showModal({
+				// 				content: result.msg,
+				// 				showCancel: false
+				// 			});
+				// 		}
+				// 	},
+				// 	fail: (err) => {
+				// 		uni.showModal({
+				// 			content: err.errMsg,
+				// 			showCancel: false
+				// 		});
+				// 	}
+				// });
 			}
 		},
 		onLoad(options) {

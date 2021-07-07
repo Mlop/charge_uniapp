@@ -109,7 +109,7 @@
 						uni.setStorageSync('book', currentBook);
 					}
 					_this.selectBookId = currentBook.id;
-				});
+				}, 'default_config', 'books');
 			}
 		}
 	}
